@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home_24"
+        android:title="Home"/>
+
+    <item
+        android:id="@+id/nav_payments"
+        android:icon="@drawable/ic_account_balance_wallet_24"
+        android:title="Payments"/>
+
+    <item
+        android:id="@+id/nav_scan"
+        android:icon="@drawable/ic_qr_code_scanner_24"
+        android:title="Scan"/>
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_menu_24"
+        android:title="Menu"/>
+
+</menu>

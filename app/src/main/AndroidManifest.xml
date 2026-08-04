@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyBank"
+        android:usesCleartextTraffic="true">
+
+        <!-- Splash -->
+        <activity
+            android:name=".activities.splash.SplashActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <!-- Authentication -->
+        <activity
+            android:name=".activities.auth.LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.auth.RegisterActivity"
+            android:exported="false" />
+
+        <!-- Dashboard -->
+        <activity
+            android:name=".activities.dashboard.DashboardActivity"
+            android:exported="false" />
+
+        <!-- KYC Activities -->
+        <activity
+            android:name=".activities.kyc.PersonalDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.kyc.ContactDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.kyc.GovernmentIdActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.kyc.AddressActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.kyc.EmploymentActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.kyc.ReviewActivity"
+            android:exported="false" />
+
+        <!-- Banking -->
+        <activity
+            android:name=".activities.banking.CreateAccountActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.banking.DepositActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.banking.WithdrawActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.banking.TransferActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.banking.TransactionHistoryActivity"
+            android:exported="false" />
+
+        <!-- Profile -->
+        <activity
+            android:name=".activities.profile.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.PaymentsActivity"
+            android:parentActivityName=".activities.dashboard.DashboardActivity"/>
+
+        <activity
+            android:name=".activities.qr.QRScannerActivity"/>
+
+        <activity
+            android:name=".activities.profile.EditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.profile.ChangePasswordActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.pin.SetTransactionPinActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".activities.payments.MobileRechargeActivity"/>
+
+        <activity
+            android:name=".activities.pin.VerifyTransactionPinActivity"/>
+
+        <activity
+            android:name=".activities.payments.ElectricityBillActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.WaterBillActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".activities.payments.GasBillActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".activities.payments.DthRechargeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.BroadbandRechargeActivity"/>
+
+        <activity
+            android:name=".activities.payments.FastagRechargeActivity"/>
+
+
+        <activity
+            android:name=".activities.payments.InsurancePaymentActivity"/>
+
+        <activity
+            android:name=".activities.payments.FixedDepositActivity"/>
+
+        <!-- Main -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+
+
+    </application>
+
+</manifest>

@@ -1,0 +1,9 @@
+<resources>
+
+    <string name="app_name">My Bank</string>
+
+    <string name="tagline">
+        Safe • Secure • Smart Banking
+    </string>
+
+</resources>
