@@ -15,24 +15,42 @@ public class AuthInterceptor implements Interceptor {
     private final SessionManager sessionManager;
 
     public AuthInterceptor(Context context) {
+
         sessionManager = new SessionManager(context);
+
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
 
-        Request original = chain.request();
+        Request originalRequest = chain.request();
 
-        String token = sessionManager.getToken();
+        // Do not attach Authorization header for login or refresh requests
+        String path = originalRequest.url().encodedPath();
 
-        if (token == null || token.isEmpty()) {
-            return chain.proceed(original);
+        if (path.endsWith("/auth/login")
+                || path.endsWith("/auth/register")
+                || path.endsWith("/auth/refresh")) {
+
+            return chain.proceed(originalRequest);
+
         }
 
-        Request request = original.newBuilder()
-                .header("Authorization", "Bearer " + token)
+        String accessToken = sessionManager.getToken();
+
+        // If user is not logged in, continue without Authorization header
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+
+            return chain.proceed(originalRequest);
+
+        }
+
+        Request authenticatedRequest = originalRequest.newBuilder()
+                .header("Authorization", "Bearer " + accessToken)
                 .build();
 
-        return chain.proceed(request);
+        return chain.proceed(authenticatedRequest);
+
     }
+
 }

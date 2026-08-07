@@ -23,11 +23,34 @@ public class AuthRepository {
 
     }
 
+    // =====================================
+    // Login
+    // =====================================
+
     public Call<LoginResponse> login(LoginRequest request) {
+
         return apiService.login(request);
+
     }
 
-    public Call<RegisterResponse> register(RegisterRequest request) {
-        return apiService.register(request);
+    // =====================================
+    // Refresh Token
+    // =====================================
+
+    public Call<LoginResponse> refreshToken(String refreshToken) {
+
+        return apiService.refreshToken(refreshToken);
+
     }
+
+    // =====================================
+    // Register
+    // =====================================
+
+    public Call<RegisterResponse> register(RegisterRequest request) {
+
+        return apiService.register(request);
+
+    }
+
 }

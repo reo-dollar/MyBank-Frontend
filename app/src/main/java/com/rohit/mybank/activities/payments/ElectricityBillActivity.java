@@ -19,24 +19,26 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.rohit.mybank.R;
 import com.rohit.mybank.activities.pin.VerifyTransactionPinActivity;
+import com.rohit.mybank.callback.PaymentCallback;
 import com.rohit.mybank.model.electricity.ElectricityBillRequest;
 import com.rohit.mybank.model.electricity.ElectricityBillResponse;
 import com.rohit.mybank.repository.ElectricityBillRepository;
+import com.rohit.mybank.utils.PaymentSecurityHelper;
 
 public class ElectricityBillActivity extends AppCompatActivity {
 
-    //==================================================
+    // =====================================================
     // Layouts
-    //==================================================
+    // =====================================================
 
     private TextInputLayout layoutConsumerNumber;
     private TextInputLayout layoutBoard;
     private TextInputLayout layoutState;
     private TextInputLayout layoutAmount;
 
-    //==================================================
+    // =====================================================
     // Inputs
-    //==================================================
+    // =====================================================
 
     private TextInputEditText etConsumerNumber;
     private TextInputEditText etAmount;
@@ -44,46 +46,68 @@ public class ElectricityBillActivity extends AppCompatActivity {
     private AutoCompleteTextView actBoard;
     private AutoCompleteTextView actState;
 
-    //==================================================
-    // Summary Views
-    //==================================================
+    // =====================================================
+    // Summary
+    // =====================================================
 
     private TextView tvSummaryConsumer;
     private TextView tvSummaryBoard;
     private TextView tvSummaryState;
     private TextView tvSummaryAmount;
 
-    //==================================================
+    // =====================================================
     // Button
-    //==================================================
+    // =====================================================
 
     private MaterialButton btnPayBill;
 
-    //==================================================
+    // =====================================================
     // Repository
-    //==================================================
+    // =====================================================
 
     private ElectricityBillRepository repository;
 
-    //==================================================
+    // =====================================================
     // Data
-    //==================================================
+    // =====================================================
 
-    private String consumerNumber;
-    private String board;
-    private String state;
-    private double billAmount;
+    private String consumerNumber = "";
+    private String board = "";
+    private String state = "";
+    private double billAmount = 0;
 
-    //==================================================
-    // PIN Launcher
-    //==================================================
+    // =====================================================
+    // Transaction PIN Launcher
+    // =====================================================
 
     private final ActivityResultLauncher<Intent> pinVerificationLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
 
-                        if (result.getResultCode() == RESULT_OK) {
+                        if (result.getResultCode() != RESULT_OK) {
+
+                            Toast.makeText(
+                                    this,
+                                    "Transaction cancelled.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            return;
+
+                        }
+
+                        if (result.getData() == null) {
+                            return;
+                        }
+
+                        boolean verified =
+                                result.getData().getBooleanExtra(
+                                        VerifyTransactionPinActivity.EXTRA_PIN_VERIFIED,
+                                        false
+                                );
+
+                        if (verified) {
 
                             performPayment();
 
@@ -91,16 +115,23 @@ public class ElectricityBillActivity extends AppCompatActivity {
 
                             Toast.makeText(
                                     this,
-                                    "Transaction cancelled",
+                                    "Transaction PIN verification failed.",
                                     Toast.LENGTH_SHORT
                             ).show();
+
                         }
 
                     });
 
+    // =====================================================
+    // onCreate
+    // =====================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_electricity_bill);
 
         initializeViews();
@@ -114,7 +145,12 @@ public class ElectricityBillActivity extends AppCompatActivity {
         updateSummary();
 
         btnPayBill.setOnClickListener(v -> validateInputs());
+
     }
+
+    // =====================================================
+    // Initialize Views
+    // =====================================================
 
     private void initializeViews() {
 
@@ -135,55 +171,87 @@ public class ElectricityBillActivity extends AppCompatActivity {
         tvSummaryAmount = findViewById(R.id.tvSummaryAmount);
 
         btnPayBill = findViewById(R.id.btnPayBill);
+        getOnBackPressedDispatcher().addCallback(
+                this,
+                new androidx.activity.OnBackPressedCallback(true) {
+
+                    @Override
+                    public void handleOnBackPressed() {
+
+                        finish();
+
+                    }
+
+                }
+        );
+
     }
+
+    // =====================================================
+// Load Dropdown Data
+// =====================================================
 
     private void loadDropdowns() {
 
         String[] boards = {
+
                 "MSEDCL",
                 "Adani Electricity",
-                "Tata Power",
                 "BEST",
-                "Torrent Power"
+                "Tata Power",
+                "Torrent Power",
+                "BSES Rajdhani",
+                "BSES Yamuna",
+                "UHBVN",
+                "DHBVN",
+                "PSPCL",
+                "KSEB",
+                "TANGEDCO"
+
         };
 
         String[] states = {
+
                 "Maharashtra",
-                "Gujarat",
                 "Delhi",
-                "Karnataka",
-                "Tamil Nadu",
+                "Gujarat",
+                "Haryana",
                 "Punjab",
+                "Kerala",
+                "Tamil Nadu",
+                "Karnataka",
                 "Rajasthan",
-                "West Bengal"
+                "Uttar Pradesh",
+                "Madhya Pradesh"
+
         };
 
         ArrayAdapter<String> boardAdapter =
                 new ArrayAdapter<>(
                         this,
-                        android.R.layout.simple_list_item_1,
-                        boards);
-
-        actBoard.setAdapter(boardAdapter);
-
-        actBoard.setOnItemClickListener((parent, view, position, id) ->
-                updateSummary());
+                        android.R.layout.simple_dropdown_item_1line,
+                        boards
+                );
 
         ArrayAdapter<String> stateAdapter =
                 new ArrayAdapter<>(
                         this,
-                        android.R.layout.simple_list_item_1,
-                        states);
+                        android.R.layout.simple_dropdown_item_1line,
+                        states
+                );
 
+        actBoard.setAdapter(boardAdapter);
         actState.setAdapter(stateAdapter);
 
-        actState.setOnItemClickListener((parent, view, position, id) ->
-                updateSummary());
     }
+
+// =====================================================
+// Summary Listeners
+// =====================================================
 
     private void setupSummaryListeners() {
 
-        TextWatcher watcher = new TextWatcher() {
+        etConsumerNumber.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence s,
@@ -205,49 +273,112 @@ public class ElectricityBillActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
             }
-        };
 
-        etConsumerNumber.addTextChangedListener(watcher);
-        etAmount.addTextChangedListener(watcher);
+        });
+
+        etAmount.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s,
+                                          int start,
+                                          int count,
+                                          int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s,
+                                      int start,
+                                      int before,
+                                      int count) {
+
+                updateSummary();
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+        });
+
+        actBoard.setOnItemClickListener(
+                (parent, view, position, id) ->
+                        updateSummary()
+        );
+
+        actState.setOnItemClickListener(
+                (parent, view, position, id) ->
+                        updateSummary()
+        );
+
     }
+
+// =====================================================
+// Update Summary Card
+// =====================================================
 
     private void updateSummary() {
 
-        String consumer =
-                etConsumerNumber.getText() == null
-                        ? ""
-                        : etConsumerNumber.getText().toString().trim();
+        String consumer = "";
 
-        String boardValue =
-                actBoard.getText().toString().trim();
+        if (etConsumerNumber.getText() != null) {
+            consumer = etConsumerNumber
+                    .getText()
+                    .toString()
+                    .trim();
+        }
 
-        String stateValue =
-                actState.getText().toString().trim();
+        String amount = "";
 
-        String amount =
-                etAmount.getText() == null
-                        ? ""
-                        : etAmount.getText().toString().trim();
+        if (etAmount.getText() != null) {
+            amount = etAmount
+                    .getText()
+                    .toString()
+                    .trim();
+        }
+
+        String selectedBoard = "";
+
+        if (actBoard.getText() != null) {
+            selectedBoard = actBoard
+                    .getText()
+                    .toString()
+                    .trim();
+        }
+
+        String selectedState = "";
+
+        if (actState.getText() != null) {
+            selectedState = actState
+                    .getText()
+                    .toString()
+                    .trim();
+        }
 
         tvSummaryConsumer.setText(
                 "Consumer No : " +
-                        (consumer.isEmpty() ? "-" : consumer));
+                        (consumer.isEmpty() ? "-" : consumer)
+        );
 
         tvSummaryBoard.setText(
                 "Board : " +
-                        (boardValue.isEmpty() ? "-" : boardValue));
+                        (selectedBoard.isEmpty() ? "-" : selectedBoard)
+        );
 
         tvSummaryState.setText(
                 "State : " +
-                        (stateValue.isEmpty() ? "-" : stateValue));
+                        (selectedState.isEmpty() ? "-" : selectedState)
+        );
 
         tvSummaryAmount.setText(
                 "Amount : ₹" +
-                        (amount.isEmpty() ? "0" : amount));
+                        (amount.isEmpty() ? "0.00" : amount)
+        );
+
     }
-    //==================================================
-    // Validate Inputs
-    //==================================================
+    // =====================================================
+// Validate Inputs
+// =====================================================
 
     private void validateInputs() {
 
@@ -256,98 +387,195 @@ public class ElectricityBillActivity extends AppCompatActivity {
         layoutState.setError(null);
         layoutAmount.setError(null);
 
-        consumerNumber = etConsumerNumber.getText() == null
-                ? ""
-                : etConsumerNumber.getText().toString().trim();
+        consumerNumber = "";
+
+        if (etConsumerNumber.getText() != null) {
+            consumerNumber = etConsumerNumber.getText().toString().trim();
+        }
 
         board = actBoard.getText().toString().trim();
 
         state = actState.getText().toString().trim();
 
-        String amountText = etAmount.getText() == null
-                ? ""
-                : etAmount.getText().toString().trim();
+        String amountText = "";
+
+        if (etAmount.getText() != null) {
+            amountText = etAmount.getText().toString().trim();
+        }
+
+        // Consumer Number
 
         if (consumerNumber.isEmpty()) {
-            layoutConsumerNumber.setError("Enter consumer number");
+
+            layoutConsumerNumber.setError("Enter Consumer Number");
+
+            etConsumerNumber.requestFocus();
+
             return;
+
         }
+
+        if (consumerNumber.length() < 8) {
+
+            layoutConsumerNumber.setError(
+                    "Invalid Consumer Number"
+            );
+
+            etConsumerNumber.requestFocus();
+
+            return;
+
+        }
+
+        // Board
 
         if (board.isEmpty()) {
-            layoutBoard.setError("Select electricity board");
+
+            layoutBoard.setError(
+                    "Select Electricity Board"
+            );
+
+            actBoard.requestFocus();
+
             return;
+
         }
+
+        // State
 
         if (state.isEmpty()) {
-            layoutState.setError("Select state");
+
+            layoutState.setError(
+                    "Select State"
+            );
+
+            actState.requestFocus();
+
             return;
+
         }
 
+        // Amount
+
         if (amountText.isEmpty()) {
-            layoutAmount.setError("Enter bill amount");
+
+            layoutAmount.setError(
+                    "Enter Bill Amount"
+            );
+
+            etAmount.requestFocus();
+
             return;
+
         }
 
         try {
+
             billAmount = Double.parseDouble(amountText);
-        } catch (NumberFormatException e) {
-            layoutAmount.setError("Invalid amount");
+
+        } catch (Exception e) {
+
+            layoutAmount.setError(
+                    "Invalid Amount"
+            );
+
+            etAmount.requestFocus();
+
             return;
+
         }
 
         if (billAmount <= 0) {
-            layoutAmount.setError("Amount must be greater than ₹0");
+
+            layoutAmount.setError(
+                    "Amount must be greater than zero"
+            );
+
+            etAmount.requestFocus();
+
             return;
+
         }
 
-        showConfirmation();
+        showConfirmationDialog();
+
     }
 
-    //==================================================
-    // Confirmation Dialog
-    //==================================================
+// =====================================================
+// Confirmation Dialog
+// =====================================================
 
-    private void showConfirmation() {
+    private void showConfirmationDialog() {
 
         String message =
+
                 "Consumer Number : " + consumerNumber +
+
                         "\n\nBoard : " + board +
-                        "\nState : " + state +
-                        "\nAmount : ₹" + billAmount +
+
+                        "\n\nState : " + state +
+
+                        "\n\nBill Amount : ₹" + billAmount +
+
                         "\n\nProceed with payment?";
 
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Electricity Bill")
+
+                .setTitle("Confirm Electricity Bill Payment")
+
                 .setMessage(message)
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Pay", (dialog, which) -> {
 
-                    Intent intent = new Intent(
-                            ElectricityBillActivity.this,
-                            VerifyTransactionPinActivity.class
-                    );
+                .setNegativeButton(
+                        "Cancel",
+                        null
+                )
 
-                    pinVerificationLauncher.launch(intent);
+                .setPositiveButton(
+                        "Continue",
+                        (dialog, which) ->
 
-                })
+                                new PaymentSecurityHelper(
+
+                                        ElectricityBillActivity.this,
+
+                                        pinVerificationLauncher,
+
+                                        new PaymentCallback() {
+
+                                            @Override
+                                            public void onSuccess() {
+
+                                                performPayment();
+
+                                            }
+
+                                        }
+
+                                ).verifyPayment()
+
+                )
+
                 .show();
-    }
 
-    //==================================================
-    // Perform Payment
-    //==================================================
+    }
+    // =====================================================
+// Perform Electricity Bill Payment
+// =====================================================
 
     private void performPayment() {
 
-        ElectricityBillRequest request =
-                new ElectricityBillRequest(
-                        consumerNumber,
-                        board,
-                        state,
-                        billAmount
-                );
+        btnPayBill.setEnabled(false);
 
-        repository.payElectricityBill(request)
+        ElectricityBillRequest request =
+                new ElectricityBillRequest();
+
+        request.setConsumerNumber(consumerNumber);
+        request.setBoard(board);
+        request.setState(state);
+        request.setAmount(billAmount);
+
+        repository.payBill(request)
+
                 .enqueue(new retrofit2.Callback<ElectricityBillResponse>() {
 
                     @Override
@@ -355,37 +583,49 @@ public class ElectricityBillActivity extends AppCompatActivity {
                             retrofit2.Call<ElectricityBillResponse> call,
                             retrofit2.Response<ElectricityBillResponse> response) {
 
-                        if (response.isSuccessful()
-                                && response.body() != null
-                                && response.body().isSuccess()) {
+                        btnPayBill.setEnabled(true);
 
-                            showSuccessDialog(response.body());
+                        if (!response.isSuccessful()) {
+
+                            Toast.makeText(
+                                    ElectricityBillActivity.this,
+                                    "HTTP Error : " + response.code(),
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            return;
+
+                        }
+
+                        if (response.body() == null) {
+
+                            Toast.makeText(
+                                    ElectricityBillActivity.this,
+                                    "Empty server response.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            return;
+
+                        }
+
+                        ElectricityBillResponse billResponse =
+                                response.body();
+
+                        if (billResponse.isSuccess()) {
+
+                            showSuccessDialog(
+                                    billResponse
+                            );
 
                         } else {
 
-                            try {
+                            Toast.makeText(
+                                    ElectricityBillActivity.this,
+                                    billResponse.getMessage(),
+                                    Toast.LENGTH_LONG
+                            ).show();
 
-                                String error =
-                                        response.errorBody() != null
-                                                ? response.errorBody().string()
-                                                : "Payment failed.";
-
-                                new AlertDialog.Builder(
-                                        ElectricityBillActivity.this)
-                                        .setTitle("Payment Failed")
-                                        .setMessage(error)
-                                        .setPositiveButton("OK", null)
-                                        .show();
-
-                            } catch (Exception e) {
-
-                                Toast.makeText(
-                                        ElectricityBillActivity.this,
-                                        e.getMessage(),
-                                        Toast.LENGTH_LONG
-                                ).show();
-
-                            }
                         }
 
                     }
@@ -395,36 +635,100 @@ public class ElectricityBillActivity extends AppCompatActivity {
                             retrofit2.Call<ElectricityBillResponse> call,
                             Throwable t) {
 
-                        new AlertDialog.Builder(
-                                ElectricityBillActivity.this)
-                                .setTitle("Network Error")
-                                .setMessage(t.getMessage())
-                                .setPositiveButton("OK", null)
-                                .show();
+                        btnPayBill.setEnabled(true);
+
+                        Toast.makeText(
+                                ElectricityBillActivity.this,
+                                "Network Error\n" + t.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+
                     }
 
                 });
+
     }
+    // =====================================================
+// Payment Success Dialog
+// =====================================================
 
-    //==================================================
-    // Success Dialog
-    //==================================================
+    private void showSuccessDialog(
+            ElectricityBillResponse response
+    ) {
 
-    private void showSuccessDialog(ElectricityBillResponse response) {
+        String paymentId = "";
 
-        String receipt =
-                "✓ " + response.getMessage() +
-                        "\n\nPayment ID : " + response.getPaymentId() +
-                        "\n\nConsumer Number : " + consumerNumber +
-                        "\nBoard : " + board +
-                        "\nState : " + state +
-                        "\nAmount : ₹" + billAmount;
+        if (response.getPaymentId() != null) {
+            paymentId = response.getPaymentId();
+        }
+
+        String message =
+
+                "✅ Electricity Bill Paid Successfully"
+
+                        + "\n\nConsumer Number : "
+                        + consumerNumber
+
+                        + "\n\nElectricity Board : "
+                        + board
+
+                        + "\n\nState : "
+                        + state
+
+                        + "\n\nAmount Paid : ₹"
+                        + String.format("%.2f", billAmount)
+
+                        + "\n\nPayment ID : "
+                        + paymentId
+
+                        + "\n\nStatus : SUCCESS";
 
         new AlertDialog.Builder(this)
+
                 .setTitle("Payment Successful")
+
+                .setMessage(message)
+
                 .setCancelable(false)
-                .setMessage(receipt)
-                .setPositiveButton("Done", (dialog, which) -> finish())
+
+                .setPositiveButton(
+                        "Done",
+                        (dialog, which) -> {
+
+                            setResult(RESULT_OK);
+
+                            finish();
+
+                        })
+
                 .show();
+
     }
+
+// =====================================================
+// Clear Validation Errors
+// =====================================================
+
+    private void clearErrors() {
+
+        layoutConsumerNumber.setError(null);
+        layoutBoard.setError(null);
+        layoutState.setError(null);
+        layoutAmount.setError(null);
+
+    }
+
+// =====================================================
+// Back Button
+// =====================================================
+
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        finish();
+
+        return true;
+
+    }
+
 }

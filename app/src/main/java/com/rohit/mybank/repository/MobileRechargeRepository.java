@@ -18,9 +18,10 @@ public class MobileRechargeRepository {
         apiService = RetrofitClient
                 .getClient(context)
                 .create(ApiService.class);
+
     }
 
-    public Call<MobileRechargeResponse> mobileRecharge(
+    public Call<MobileRechargeResponse> recharge(
             MobileRechargeRequest request
     ) {
 

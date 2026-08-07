@@ -41,6 +41,18 @@ import com.rohit.mybank.model.fixeddeposit.FixedDepositRequest;
 import com.rohit.mybank.model.fixeddeposit.FixedDepositResponse;
 import com.rohit.mybank.model.fixeddeposit.CreateFixedDepositRequest;
 import com.rohit.mybank.model.fixeddeposit.CreateFixedDepositResponse;
+import com.rohit.mybank.model.recurringdeposit.RDCalculatorRequest;
+import com.rohit.mybank.model.recurringdeposit.RDCalculatorResponse;
+import com.rohit.mybank.model.recurringdeposit.CreateRecurringDepositRequest;
+import com.rohit.mybank.model.recurringdeposit.CreateRecurringDepositResponse;
+import com.rohit.mybank.model.recurringdeposit.RDResponse;
+import com.rohit.mybank.model.recurringdeposit.RDHistoryResponse;
+import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentRequest;
+import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentResponse;
+import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDRequest;
+import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDResponse;
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 
@@ -230,4 +242,71 @@ public interface ApiService {
     Call<CreateFixedDepositResponse> createFixedDeposit(
             @Body CreateFixedDepositRequest request
     );
+
+    // ==========================================
+// Recurring Deposit
+// ==========================================
+
+// RD Calculator
+
+    @POST("payments/recurring-deposit/calculate")
+    Call<RDCalculatorResponse> calculateRecurringDeposit(
+            @Body RDCalculatorRequest request
+    );
+
+// Open RD
+
+    @POST("payments/recurring-deposit/create")
+    Call<CreateRecurringDepositResponse> createRecurringDeposit(
+            @Body CreateRecurringDepositRequest request
+    );
+
+// My RD List
+
+    @GET("payments/recurring-deposit")
+    Call<List<RDResponse>> getMyRecurringDeposits();
+
+// RD Details
+
+    @GET("payments/recurring-deposit/{rdNumber}")
+    Call<RDResponse> getRecurringDepositDetails(
+            @Path("rdNumber") String rdNumber
+    );
+
+// Matured RD List
+
+    @GET("payments/recurring-deposit/matured")
+    Call<List<RDResponse>> getMaturedRecurringDeposits();
+
+// RD History
+
+    @GET("payments/recurring-deposit/history/{rdNumber}")
+    Call<List<RDHistoryResponse>> getRecurringDepositHistory(
+            @Path("rdNumber") String rdNumber
+    );
+
+// Pay RD Installment
+
+    @POST("payments/recurring-deposit/pay-installment")
+    Call<PayRecurringDepositInstallmentResponse> payRecurringDepositInstallment(
+            @Body PayRecurringDepositInstallmentRequest request
+    );
+
+// Premature Close RD
+
+    @POST("payments/recurring-deposit/premature-close")
+    Call<PrematureCloseRDResponse> prematureCloseRecurringDeposit(
+            @Body PrematureCloseRDRequest request
+    );
+
+    // ==========================
+// Refresh Token
+// ==========================
+
+    @POST("auth/refresh")
+    Call<LoginResponse> refreshToken(
+            @Query("token") String refreshToken
+    );
+
+
 }

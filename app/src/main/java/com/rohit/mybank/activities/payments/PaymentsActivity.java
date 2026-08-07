@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.card.MaterialCardView;
 import com.rohit.mybank.R;
+import com.rohit.mybank.activities.payments.recurringdeposit.RDDashboardActivity;
 
 public class PaymentsActivity extends AppCompatActivity {
 
@@ -112,15 +113,18 @@ public class PaymentsActivity extends AppCompatActivity {
                 startActivity(new Intent(
                         PaymentsActivity.this,
                         FixedDepositActivity.class)));
-
         // ==========================================
         // Recurring Deposit
         // ==========================================
 
         cardRecurringDeposit.setOnClickListener(v -> {
 
-            // Coming Soon
-            // Replace with RecurringDepositActivity later
+            Intent intent = new Intent(
+                    PaymentsActivity.this,
+                    RDDashboardActivity.class
+            );
+
+            startActivity(intent);
 
         });
 

@@ -2,6 +2,7 @@ package com.rohit.mybank.activities.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import com.rohit.mybank.databinding.ActivityProfileBinding;
 import com.rohit.mybank.model.profile.ProfileResponse;
 import com.rohit.mybank.repository.ProfileRepository;
 import com.rohit.mybank.session.SessionManager;
+import com.rohit.mybank.utils.BiometricHelper;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +23,9 @@ public class ProfileActivity extends AppCompatActivity {
     private ActivityProfileBinding binding;
     private SessionManager sessionManager;
     private ProfileRepository repository;
+
+    // Prevents duplicate callbacks when switch state is changed programmatically
+    private boolean isUpdatingFingerprintSwitch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +38,11 @@ public class ProfileActivity extends AppCompatActivity {
         repository = new ProfileRepository(this);
 
         loadProfile();
-
         initializeClickListeners();
     }
 
     /**
-     * Load profile from backend
+     * Load Profile
      */
     private void loadProfile() {
 
@@ -80,6 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
                     ).show();
 
                 }
+
             }
 
             @Override
@@ -88,18 +93,42 @@ public class ProfileActivity extends AppCompatActivity {
 
                 Toast.makeText(
                         ProfileActivity.this,
-                        "Network Error: " + t.getMessage(),
+                        "Network Error : " + t.getMessage(),
                         Toast.LENGTH_LONG
                 ).show();
 
             }
+
         });
+
     }
 
     /**
-     * Button Clicks
+     * Button Click Listeners
      */
     private void initializeClickListeners() {
+
+        // -----------------------------------------
+        // Initialize Fingerprint UI
+        // -----------------------------------------
+
+        isUpdatingFingerprintSwitch = true;
+
+        binding.switchFingerprint.setChecked(
+                sessionManager.isFingerprintEnabled()
+        );
+
+        isUpdatingFingerprintSwitch = false;
+
+        binding.tvFingerprintStatus.setText(
+                sessionManager.isFingerprintEnabled()
+                        ? "Enabled"
+                        : "Disabled"
+        );
+
+        // -----------------------------------------
+        // Edit Profile
+        // -----------------------------------------
 
         binding.cardEditProfile.setOnClickListener(v ->
                 startActivity(
@@ -110,6 +139,10 @@ public class ProfileActivity extends AppCompatActivity {
                 )
         );
 
+        // -----------------------------------------
+        // Change Password
+        // -----------------------------------------
+
         binding.cardChangePassword.setOnClickListener(v ->
                 startActivity(
                         new Intent(
@@ -119,6 +152,10 @@ public class ProfileActivity extends AppCompatActivity {
                 )
         );
 
+        // -----------------------------------------
+        // Notifications
+        // -----------------------------------------
+
         binding.cardNotifications.setOnClickListener(v ->
                 Toast.makeText(
                         this,
@@ -126,6 +163,10 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT
                 ).show()
         );
+
+        // -----------------------------------------
+        // Dark Mode
+        // -----------------------------------------
 
         binding.cardDarkMode.setOnClickListener(v ->
                 Toast.makeText(
@@ -135,15 +176,121 @@ public class ProfileActivity extends AppCompatActivity {
                 ).show()
         );
 
-        binding.cardFingerprint.setOnClickListener(v ->
-                Toast.makeText(
-                        this,
-                        "Coming Soon",
-                        Toast.LENGTH_SHORT
-                ).show()
-        );
+        // =========================================
+        // Fingerprint Login
+        // =========================================
+        binding.switchFingerprint.setOnCheckedChangeListener(
+                new CompoundButton.OnCheckedChangeListener() {
+
+                    @Override
+                    public void onCheckedChanged(
+                            CompoundButton buttonView,
+                            boolean isChecked) {
+
+                        // Prevent callback loop
+                        if (isUpdatingFingerprintSwitch) {
+                            return;
+                        }
+
+                        // ===========================
+                        // Enable Fingerprint
+                        // ===========================
+
+                        if (isChecked) {
+
+                            if (!BiometricHelper.isBiometricAvailable(ProfileActivity.this)) {
+
+                                Toast.makeText(
+                                        ProfileActivity.this,
+                                        BiometricHelper.getBiometricStatus(ProfileActivity.this),
+                                        Toast.LENGTH_LONG
+                                ).show();
+
+                                isUpdatingFingerprintSwitch = true;
+
+                                binding.switchFingerprint.setChecked(false);
+
+                                isUpdatingFingerprintSwitch = false;
+
+                                binding.tvFingerprintStatus.setText("Disabled");
+
+                                return;
+                            }
+
+                            BiometricHelper.authenticate(
+                                    ProfileActivity.this,
+                                    new BiometricHelper.AuthenticationListener() {
+
+                                        @Override
+                                        public void onAuthenticationSuccess() {
+
+                                            sessionManager.setFingerprintEnabled(true);
+
+                                            binding.tvFingerprintStatus.setText("Enabled");
+
+                                            Toast.makeText(
+                                                    ProfileActivity.this,
+                                                    "Fingerprint Login Enabled Successfully",
+                                                    Toast.LENGTH_SHORT
+                                            ).show();
+
+                                        }
+
+                                        @Override
+                                        public void onAuthenticationFailed(String message) {
+
+                                            sessionManager.setFingerprintEnabled(false);
+
+                                            isUpdatingFingerprintSwitch = true;
+
+                                            binding.switchFingerprint.setChecked(false);
+
+                                            isUpdatingFingerprintSwitch = false;
+
+                                            binding.tvFingerprintStatus.setText("Disabled");
+
+                                            Toast.makeText(
+                                                    ProfileActivity.this,
+                                                    message,
+                                                    Toast.LENGTH_SHORT
+                                            ).show();
+
+                                        }
+
+                                    });
+
+                        }
+
+                        // ===========================
+                        // Disable Fingerprint
+                        // ===========================
+
+                        else {
+
+                            sessionManager.setFingerprintEnabled(false);
+
+                            binding.tvFingerprintStatus.setText("Disabled");
+
+                            Toast.makeText(
+                                    ProfileActivity.this,
+                                    "Fingerprint Login Disabled",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                        }
+
+                    }
+
+                });
+
+        // ==========================================
+        // Logout
+        // ==========================================
 
         binding.btnLogout.setOnClickListener(v -> {
+
+            // Disable fingerprint after logout
+            sessionManager.setFingerprintEnabled(false);
 
             sessionManager.clearSession();
 
@@ -162,5 +309,7 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
 
         });
+
     }
+
 }

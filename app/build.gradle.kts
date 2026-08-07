@@ -71,11 +71,16 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     // Material Components
     implementation("com.google.android.material:material:1.12.0")
-
-// RecyclerView (Recent Transactions)
+    // RecyclerView
     implementation("androidx.recyclerview:recyclerview:1.3.2")
 
 // CardView
     implementation("androidx.cardview:cardview:1.0.0")
+
+// Biometric
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
+// Android Security Crypto
+    implementation("androidx.security:security-crypto:1.0.0")
 
 }

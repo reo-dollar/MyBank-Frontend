@@ -12,8 +12,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.rohit.mybank.activities.pin.VerifyTransactionPinActivity;
+import com.rohit.mybank.callback.PaymentCallback;
+import com.rohit.mybank.utils.PaymentSecurityHelper;
 import com.rohit.mybank.databinding.ActivityBroadbandRechargeBinding;
 import com.rohit.mybank.model.broadband.BroadbandRechargeRequest;
 import com.rohit.mybank.model.broadband.BroadbandRechargeResponse;
@@ -22,6 +22,10 @@ import com.rohit.mybank.repository.BroadbandRechargeRepository;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class BroadbandRechargeActivity extends AppCompatActivity {
 
@@ -86,149 +90,194 @@ public class BroadbandRechargeActivity extends AppCompatActivity {
 
         repository = new BroadbandRechargeRepository(this);
 
+        binding.actProvider.setKeyListener(null);
+        binding.actPlan.setKeyListener(null);
+
         setupProviders();
 
         setupListeners();
 
         updateSummary();
     }
-
-    // ===========================================
-    // Providers
-    // ===========================================
+    // =====================================================
+// Setup Providers
+// =====================================================
 
     private void setupProviders() {
 
         providerPlans.put(
                 "JioFiber",
                 new String[]{
-                        "₹399 - 30 Days",
-                        "₹699 - 60 Days",
-                        "₹999 - 90 Days"
+                        "30 Mbps",
+                        "100 Mbps",
+                        "300 Mbps",
+                        "1 Gbps"
                 });
 
         providerPlans.put(
-                "Airtel Xstream Fiber",
+                "Airtel Xstream",
                 new String[]{
-                        "₹499 - 30 Days",
-                        "₹799 - 60 Days",
-                        "₹1099 - 90 Days"
+                        "40 Mbps",
+                        "100 Mbps",
+                        "200 Mbps",
+                        "1 Gbps"
                 });
 
         providerPlans.put(
-                "BSNL FTTH",
+                "BSNL Bharat Fiber",
                 new String[]{
-                        "₹329 - 30 Days",
-                        "₹599 - 60 Days",
-                        "₹899 - 90 Days"
+                        "30 Mbps",
+                        "60 Mbps",
+                        "100 Mbps",
+                        "300 Mbps"
                 });
 
         providerPlans.put(
                 "ACT Fibernet",
                 new String[]{
-                        "₹549 - 30 Days",
-                        "₹749 - 60 Days",
-                        "₹1049 - 90 Days"
+                        "50 Mbps",
+                        "150 Mbps",
+                        "300 Mbps",
+                        "1 Gbps"
                 });
 
         providerPlans.put(
                 "Tata Play Fiber",
                 new String[]{
-                        "₹450 - 30 Days",
-                        "₹850 - 60 Days",
-                        "₹950 - 90 Days"
+                        "50 Mbps",
+                        "100 Mbps",
+                        "300 Mbps",
+                        "1 Gbps"
                 });
-
-        // =====================================
-        // Plan Amount Mapping
-        // =====================================
-
-        planAmount.put("₹399 - 30 Days",399.0);
-        planAmount.put("₹699 - 60 Days",699.0);
-        planAmount.put("₹999 - 90 Days",999.0);
-
-        planAmount.put("₹499 - 30 Days",499.0);
-        planAmount.put("₹799 - 60 Days",799.0);
-        planAmount.put("₹1099 - 90 Days",1099.0);
-
-        planAmount.put("₹329 - 30 Days",329.0);
-        planAmount.put("₹599 - 60 Days",599.0);
-        planAmount.put("₹899 - 90 Days",899.0);
-
-        planAmount.put("₹549 - 30 Days",549.0);
-        planAmount.put("₹749 - 60 Days",749.0);
-        planAmount.put("₹1049 - 60 Days",1049.0);
-
-
-        planAmount.put("₹450 - 30 Days",450.0);
-        planAmount.put("₹850 - 30 Days",850.0);
-        planAmount.put("₹950 - 30 Days",950.0);
 
         ArrayAdapter<String> providerAdapter =
                 new ArrayAdapter<>(
                         this,
-                        android.R.layout.simple_list_item_1,
-                        providerPlans.keySet().toArray(new String[0]));
+                        android.R.layout.simple_dropdown_item_1line,
+                        providerPlans.keySet().toArray(new String[0])
+                );
 
         binding.actProvider.setAdapter(providerAdapter);
 
+        setupPlanAmount();
+
+        setupProviderListener();
+
+    }
+    // =====================================================
+// Broadband Plan Amount Mapping
+// =====================================================
+
+    private void setupPlanAmount() {
+
+        planAmount.put("30 Mbps", 399.0);
+
+        planAmount.put("40 Mbps", 499.0);
+
+        planAmount.put("50 Mbps", 599.0);
+
+        planAmount.put("60 Mbps", 699.0);
+
+        planAmount.put("100 Mbps", 799.0);
+
+        planAmount.put("150 Mbps", 999.0);
+
+        planAmount.put("200 Mbps", 1199.0);
+
+        planAmount.put("300 Mbps", 1499.0);
+
+        planAmount.put("1 Gbps", 2999.0);
+
+    }
+    // =====================================================
+// Provider Selection
+// =====================================================
+
+    private void setupProviderListener() {
+
         binding.actProvider.setOnItemClickListener(
+
                 (parent, view, position, id) -> {
 
-                    String selectedProvider =
+                    provider =
                             binding.actProvider
                                     .getText()
                                     .toString();
 
                     String[] plans =
-                            providerPlans.get(selectedProvider);
+                            providerPlans.get(provider);
 
-                    if (plans != null) {
+                    if (plans == null) {
 
-                        ArrayAdapter<String> planAdapter =
-                                new ArrayAdapter<>(
-                                        this,
-                                        android.R.layout.simple_list_item_1,
-                                        plans);
+                        return;
 
-                        binding.actPlan.setAdapter(planAdapter);
-
-                        binding.actPlan.setText("", false);
                     }
 
+                    ArrayAdapter<String> adapter =
+                            new ArrayAdapter<>(
+
+                                    this,
+
+                                    android.R.layout
+                                            .simple_dropdown_item_1line,
+
+                                    plans
+
+                            );
+
+                    binding.actPlan.setText("");
+
+                    binding.actPlan.setAdapter(adapter);
+
+                    selectedPlan = "";
+
+                    amount = 0;
+
                     updateSummary();
-                });
 
-        binding.actPlan.setOnItemClickListener(
-                (parent, view, position, id) -> {
+                }
 
-                    String plan =
-                            binding.actPlan
-                                    .getText()
-                                    .toString();
+        );
 
-                    Double value =
-                            planAmount.get(plan);
-
-                    if (value != null) {
-
-                        amount = value;
-                    }
-
-                    updateSummary();
-                });
     }
-    // ===========================================
-    // Listeners
-    // ===========================================
+    // =====================================================
+// Setup Listeners
+// =====================================================
 
     private void setupListeners() {
 
-        binding.etCustomerId.addTextChangedListener(textWatcher);
+        setupPlanListener();
 
-        binding.actProvider.addTextChangedListener(textWatcher);
+        binding.etCustomerId.addTextChangedListener(
 
-        binding.actPlan.addTextChangedListener(textWatcher);
+                new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s,
+                                                  int start,
+                                                  int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s,
+                                              int start,
+                                              int before,
+                                              int count) {
+
+                        customerId = s.toString().trim();
+
+                        updateSummary();
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+
+                }
+
+        );
 
         binding.btnRecharge.setOnClickListener(v -> {
 
@@ -241,161 +290,171 @@ public class BroadbandRechargeActivity extends AppCompatActivity {
         });
 
     }
+    // =====================================================
+// Plan Selection
+// =====================================================
 
-    // ===========================================
-    // TextWatcher
-    // ===========================================
+    private void setupPlanListener() {
 
-    private final TextWatcher textWatcher = new TextWatcher() {
+        binding.actPlan.setOnItemClickListener(
 
-        @Override
-        public void beforeTextChanged(CharSequence s,
-                                      int start,
-                                      int count,
-                                      int after) {
+                (parent, view, position, id) -> {
 
-        }
+                    selectedPlan =
+                            binding.actPlan
+                                    .getText()
+                                    .toString();
 
-        @Override
-        public void onTextChanged(CharSequence s,
-                                  int start,
-                                  int before,
-                                  int count) {
+                    Double value =
+                            planAmount.get(selectedPlan);
 
-            updateSummary();
+                    if (value == null) {
 
-        }
+                        amount = 0;
 
-        @Override
-        public void afterTextChanged(Editable s) {
+                    } else {
 
-        }
+                        amount = value;
 
-    };
+                    }
 
-    // ===========================================
-    // Update Summary
-    // ===========================================
+                    updateSummary();
+
+                }
+
+        );
+
+    }
+    // =====================================================
+// Update Summary
+// =====================================================
 
     private void updateSummary() {
 
         binding.tvCustomer.setText(
 
-                binding.etCustomerId
-                        .getText()
-                        .toString()
-                        .trim()
+                TextUtils.isEmpty(customerId)
+                        ? "-"
+                        : customerId
 
         );
 
         binding.tvProvider.setText(
 
-                binding.actProvider
-                        .getText()
-                        .toString()
-                        .trim()
+                TextUtils.isEmpty(provider)
+                        ? "-"
+                        : provider
 
         );
 
         binding.tvPlan.setText(
 
-                binding.actPlan
-                        .getText()
-                        .toString()
-                        .trim()
+                TextUtils.isEmpty(selectedPlan)
+                        ? "-"
+                        : selectedPlan
 
         );
 
-        String plan =
+        binding.tvAmount.setText(
 
-                binding.actPlan
-                        .getText()
-                        .toString();
+                String.format("₹%.2f", amount)
 
-        Double value = planAmount.get(plan);
-
-        if (value == null) {
-
-            binding.tvAmount.setText("₹0");
-
-        } else {
-
-            binding.tvAmount.setText("₹" + value.intValue());
-
-        }
+        );
 
     }
-
-    // ===========================================
-    // Validation
-    // ===========================================
+    // =====================================================
+// Validate Input
+// =====================================================
 
     private boolean validateInput() {
 
-        customerId =
+        binding.etCustomerId.setError(null);
+        binding.actProvider.setError(null);
+        binding.actPlan.setError(null);
 
-                binding.etCustomerId
-                        .getText()
-                        .toString()
-                        .trim();
+        customerId = "";
+
+        if (binding.etCustomerId.getText() != null) {
+
+            customerId =
+                    binding.etCustomerId
+                            .getText()
+                            .toString()
+                            .trim();
+
+        }
 
         provider =
-
                 binding.actProvider
                         .getText()
                         .toString()
                         .trim();
 
         selectedPlan =
-
                 binding.actPlan
                         .getText()
                         .toString()
                         .trim();
 
+        // Customer ID
+
         if (TextUtils.isEmpty(customerId)) {
 
             binding.etCustomerId.setError(
-                    "Enter Customer ID");
+                    "Enter Customer ID"
+            );
+
+            binding.etCustomerId.requestFocus();
 
             return false;
 
         }
 
-        if (customerId.length() < 8) {
+        if (customerId.length() < 6) {
 
             binding.etCustomerId.setError(
-                    "Invalid Customer ID");
+                    "Invalid Customer ID"
+            );
+
+            binding.etCustomerId.requestFocus();
 
             return false;
 
         }
+
+        // Provider
 
         if (TextUtils.isEmpty(provider)) {
 
             binding.actProvider.setError(
-                    "Select Broadband Provider");
+                    "Select Broadband Provider"
+            );
+
+            binding.actProvider.requestFocus();
 
             return false;
 
         }
+
+        // Plan
 
         if (TextUtils.isEmpty(selectedPlan)) {
 
             binding.actPlan.setError(
-                    "Select Recharge Plan");
+                    "Select Recharge Plan"
+            );
+
+            binding.actPlan.requestFocus();
 
             return false;
 
         }
 
-        Double value = planAmount.get(selectedPlan);
-
-        if (value == null) {
+        if (amount <= 0) {
 
             Toast.makeText(
                     this,
-                    "Invalid Plan",
+                    "Invalid Recharge Amount",
                     Toast.LENGTH_SHORT
             ).show();
 
@@ -403,170 +462,275 @@ public class BroadbandRechargeActivity extends AppCompatActivity {
 
         }
 
-        amount = value;
-
         return true;
 
     }
-    // ===========================================
-    // Confirmation Dialog
-    // ===========================================
+    // =====================================================
+// Confirmation Dialog
+// =====================================================
 
     private void showConfirmationDialog() {
+
+        String message =
+
+                "Customer ID : " + customerId +
+
+                        "\n\nProvider : " + provider +
+
+                        "\n\nPlan : " + selectedPlan +
+
+                        "\n\nRecharge Amount : ₹" + amount +
+
+                        "\n\nProceed with recharge?";
 
         new AlertDialog.Builder(this)
 
                 .setTitle("Confirm Broadband Recharge")
 
-                .setMessage(
-                        "Provider : "
-                                + provider
-                                + "\n\nCustomer ID : "
-                                + customerId
-                                + "\n\nPlan : "
-                                + selectedPlan
-                                + "\n\nAmount : ₹"
-                                + amount
-                )
+                .setMessage(message)
+
+                .setNegativeButton("Cancel", null)
 
                 .setPositiveButton(
+
                         "Continue",
+
                         (dialog, which) -> {
 
-                            Intent intent =
-                                    new Intent(
-                                            this,
-                                            VerifyTransactionPinActivity.class
-                                    );
+                            new PaymentSecurityHelper(
 
-                            verifyPinLauncher.launch(intent);
+                                    BroadbandRechargeActivity.this,
 
-                        })
+                                    verifyPinLauncher,
 
-                .setNegativeButton(
-                        "Cancel",
-                        null)
+                                    () -> rechargeBroadband()
+
+                            ).verifyPayment();
+
+                        }
+
+                )
 
                 .show();
-
     }
-
-    // ===========================================
-    // Recharge Broadband
-    // ===========================================
+    // =====================================================
+// Recharge Broadband
+// =====================================================
 
     private void rechargeBroadband() {
 
         binding.btnRecharge.setEnabled(false);
+
         binding.btnRecharge.setText("Processing...");
 
         BroadbandRechargeRequest request =
-                new BroadbandRechargeRequest(
-                        customerId,
-                        provider,
-                        BigDecimal.valueOf(amount)
-                );
+                new BroadbandRechargeRequest();
+
+        request.setCustomerId(
+                customerId
+        );
+
+        request.setProvider(
+                provider
+        );
+
+        request.setAmount(
+                BigDecimal.valueOf(amount)
+        );
 
         repository.recharge(request)
-                .enqueue(new retrofit2.Callback<BroadbandRechargeResponse>() {
 
-                    @Override
-                    public void onResponse(
-                            retrofit2.Call<BroadbandRechargeResponse> call,
-                            retrofit2.Response<BroadbandRechargeResponse> response) {
+                .enqueue(
 
-                        binding.btnRecharge.setEnabled(true);
-                        binding.btnRecharge.setText("RECHARGE BROADBAND");
+                        new Callback<BroadbandRechargeResponse>() {
 
-                        if (response.isSuccessful()
-                                && response.body() != null) {
+                            @Override
+                            public void onResponse(
 
-                            BroadbandRechargeResponse rechargeResponse =
-                                    response.body();
+                                    Call<BroadbandRechargeResponse> call,
 
-                            if (rechargeResponse.isSuccess()) {
+                                    Response<BroadbandRechargeResponse> response) {
 
-                                showSuccessDialog(
-                                        rechargeResponse.getPaymentId(),
-                                        rechargeResponse.getMessage());
+                                binding.btnRecharge.setEnabled(true);
 
-                            } else {
+                                binding.btnRecharge.setText(
+                                        "RECHARGE BROADBAND"
+                                );
+
+                                if (!response.isSuccessful()) {
+
+                                    Toast.makeText(
+
+                                            BroadbandRechargeActivity.this,
+
+                                            "HTTP Error : "
+                                                    + response.code(),
+
+                                            Toast.LENGTH_LONG
+
+                                    ).show();
+
+                                    return;
+
+                                }
+
+                                if (response.body() == null) {
+
+                                    Toast.makeText(
+
+                                            BroadbandRechargeActivity.this,
+
+                                            "Empty server response.",
+
+                                            Toast.LENGTH_LONG
+
+                                    ).show();
+
+                                    return;
+
+                                }
+
+                                BroadbandRechargeResponse rechargeResponse =
+                                        response.body();
+
+                                if (rechargeResponse.isSuccess()) {
+
+                                    showSuccessDialog(
+                                            rechargeResponse
+                                    );
+
+                                } else {
+
+                                    Toast.makeText(
+
+                                            BroadbandRechargeActivity.this,
+
+                                            rechargeResponse.getMessage(),
+
+                                            Toast.LENGTH_LONG
+
+                                    ).show();
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(
+
+                                    Call<BroadbandRechargeResponse> call,
+
+                                    Throwable t) {
+
+                                binding.btnRecharge.setEnabled(true);
+
+                                binding.btnRecharge.setText(
+                                        "RECHARGE BROADBAND"
+                                );
 
                                 Toast.makeText(
+
                                         BroadbandRechargeActivity.this,
-                                        rechargeResponse.getMessage(),
+
+                                        "Network Error\n"
+                                                + t.getMessage(),
+
                                         Toast.LENGTH_LONG
+
                                 ).show();
 
                             }
 
-                        } else {
-
-                            Toast.makeText(
-                                    BroadbandRechargeActivity.this,
-                                    "Broadband Recharge Failed",
-                                    Toast.LENGTH_LONG
-                            ).show();
-
                         }
 
-                    }
-
-                    @Override
-                    public void onFailure(
-                            retrofit2.Call<BroadbandRechargeResponse> call,
-                            Throwable t) {
-
-                        binding.btnRecharge.setEnabled(true);
-                        binding.btnRecharge.setText("RECHARGE BROADBAND");
-
-                        Toast.makeText(
-                                BroadbandRechargeActivity.this,
-                                t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                    }
-
-                });
+                );
 
     }
-
-    // ===========================================
-    // Success Dialog
-    // ===========================================
+    // =====================================================
+// Recharge Success Dialog
+// =====================================================
 
     private void showSuccessDialog(
-            String paymentId,
-            String message) {
+            BroadbandRechargeResponse response
+    ) {
 
-        String successMessage =
-                "Broadband Recharge Successful"
+        String paymentId = "";
+
+        if (response.getPaymentId() != null) {
+
+            paymentId = response.getPaymentId();
+
+        }
+
+        String message =
+
+                "✅ Broadband Recharge Successful"
+
+                        + "\n\nCustomer ID : "
+                        + customerId
+
+                        + "\n\nProvider : "
+                        + provider
+
+                        + "\n\nPlan : "
+                        + selectedPlan
+
+                        + "\n\nRecharge Amount : ₹"
+                        + amount
+
                         + "\n\nPayment ID : "
                         + paymentId
-                        + "\n\n"
-                        + message;
+
+                        + "\n\nStatus : SUCCESS";
 
         new AlertDialog.Builder(this)
 
                 .setTitle("Recharge Successful")
 
-                .setMessage(successMessage)
+                .setMessage(message)
 
                 .setCancelable(false)
 
                 .setPositiveButton(
-                        "OK",
+
+                        "Done",
+
                         (dialog, which) -> {
 
-                            dialog.dismiss();
+                            setResult(RESULT_OK);
 
                             finish();
 
-                        })
+                        }
+
+                )
 
                 .show();
 
     }
+    // =====================================================
+// Clear Errors
+// =====================================================
 
+    private void clearErrors() {
+
+        binding.etCustomerId.setError(null);
+
+        binding.actProvider.setError(null);
+
+        binding.actPlan.setError(null);
+
+    }
+    // =====================================================
+// Toolbar Back
+// =====================================================
+
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        finish();
+
+        return true;
+
+    }
 }

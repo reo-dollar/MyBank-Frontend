@@ -75,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
+
     }
 
     private void login() {
@@ -87,6 +88,7 @@ public class LoginActivity extends AppCompatActivity {
             etUsername.setError("Username is required");
             etUsername.requestFocus();
             return;
+
         }
 
         if (password.isEmpty()) {
@@ -94,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
             etPassword.setError("Password is required");
             etPassword.requestFocus();
             return;
+
         }
 
         btnLogin.setEnabled(false);
@@ -112,9 +115,25 @@ public class LoginActivity extends AppCompatActivity {
 
                     LoginResponse loginResponse = response.body();
 
+                    // ===========================
+                    // Save Access Token
+                    // ===========================
+
                     sessionManager.saveToken(
                             loginResponse.getAccessToken()
                     );
+
+                    // ===========================
+                    // Save Refresh Token
+                    // ===========================
+
+                    sessionManager.saveRefreshToken(
+                            loginResponse.getRefreshToken()
+                    );
+
+                    // ===========================
+                    // Save Username
+                    // ===========================
 
                     sessionManager.saveUsername(username);
 
@@ -135,6 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                     );
 
                     startActivity(intent);
+
                     finish();
 
                 } else {
@@ -144,7 +164,9 @@ public class LoginActivity extends AppCompatActivity {
                             "Invalid username or password.",
                             Toast.LENGTH_SHORT
                     ).show();
+
                 }
+
             }
 
             @Override
@@ -161,7 +183,11 @@ public class LoginActivity extends AppCompatActivity {
                                 + t.getMessage(),
                         Toast.LENGTH_LONG
                 ).show();
+
             }
+
         });
+
     }
+
 }

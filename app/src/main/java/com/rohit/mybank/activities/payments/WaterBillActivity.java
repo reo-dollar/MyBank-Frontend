@@ -3,21 +3,24 @@ package com.rohit.mybank.activities.payments;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.rohit.mybank.activities.pin.VerifyTransactionPinActivity;
+import com.rohit.mybank.callback.PaymentCallback;
 import com.rohit.mybank.databinding.ActivityWaterBillBinding;
 import com.rohit.mybank.model.water.WaterBillRequest;
 import com.rohit.mybank.model.water.WaterBillResponse;
 import com.rohit.mybank.repository.WaterBillRepository;
-import android.text.Editable;
-import android.text.TextWatcher;
+import com.rohit.mybank.utils.PaymentSecurityHelper;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -29,34 +32,115 @@ import retrofit2.Response;
 
 public class WaterBillActivity extends AppCompatActivity {
 
+    //=====================================================
+    // View Binding
+    //=====================================================
+
     private ActivityWaterBillBinding binding;
+
+    //=====================================================
+    // Repository
+    //=====================================================
+
     private WaterBillRepository repository;
 
+    //=====================================================
+    // Payment Data
+    //=====================================================
+
     private String consumerNumber;
+
     private String board;
+
     private String state;
+
     private BigDecimal amount;
 
-    /* State -> Water Board Mapping */
-    private final Map<String, String[]> boardMap = new HashMap<>();
+    //=====================================================
+    // State -> Board Mapping
+    //=====================================================
 
-    private final ActivityResultLauncher<Intent> pinLauncher =
+    private final Map<String, String[]> boardMap =
+            new HashMap<>();
+
+    //=====================================================
+    // Transaction PIN Launcher
+    //=====================================================
+
+    private final ActivityResultLauncher<Intent>
+            pinLauncher =
+
             registerForActivityResult(
+
                     new ActivityResultContracts.StartActivityForResult(),
+
                     result -> {
-                        if (result.getResultCode() == RESULT_OK) {
-                            payWaterBill();
+
+                        if (result.getResultCode()
+                                != RESULT_OK) {
+
+                            Toast.makeText(
+                                    this,
+                                    "Payment cancelled.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            return;
+
                         }
-                    });
+
+                        if (result.getData() == null) {
+
+                            return;
+
+                        }
+
+                        boolean verified =
+                                result.getData().getBooleanExtra(
+
+                                        VerifyTransactionPinActivity
+                                                .EXTRA_PIN_VERIFIED,
+
+                                        false
+
+                                );
+
+                        if (verified) {
+
+                            performPayment();
+
+                        } else {
+
+                            Toast.makeText(
+                                    this,
+                                    "Transaction PIN verification failed.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                        }
+
+                    }
+
+            );
+
+    //=====================================================
+    // onCreate
+    //=====================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        binding = ActivityWaterBillBinding.inflate(getLayoutInflater());
+        binding =
+                ActivityWaterBillBinding.inflate(
+                        getLayoutInflater()
+                );
+
         setContentView(binding.getRoot());
 
-        repository = new WaterBillRepository(this);
+        repository =
+                new WaterBillRepository(this);
 
         setupStates();
 
@@ -66,374 +150,819 @@ public class WaterBillActivity extends AppCompatActivity {
 
         setupSummaryWatcher();
 
-        binding.btnPayBill.setOnClickListener(v -> validateInput());
-
         updateSummary();
-    }
 
-    /**
-     * Available States
-     */
-    private void setupStates() {
+        binding.btnPayBill.setOnClickListener(
 
-        String[] states = {
-                "Maharashtra",
-                "Delhi",
-                "Karnataka",
-                "Telangana",
-                "Tamil Nadu",
-                "Gujarat"
-        };
+                v -> validateInput()
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(
-                        this,
-                        android.R.layout.simple_dropdown_item_1line,
-                        states
-                );
-
-        binding.actState.setAdapter(adapter);
-    }
-
-    /**
-     * State -> Board Mapping
-     */
-    private void setupBoardMapping() {
-
-        boardMap.put(
-                "Maharashtra",
-                new String[]{
-                        "Mumbai Water Supply",
-                        "Pune Municipal Corporation",
-                        "Nagpur Municipal Corporation"
-                });
-
-        boardMap.put(
-                "Delhi",
-                new String[]{
-                        "Delhi Jal Board"
-                });
-
-        boardMap.put(
-                "Karnataka",
-                new String[]{
-                        "Bangalore Water Supply"
-                });
-
-        boardMap.put(
-                "Telangana",
-                new String[]{
-                        "Hyderabad Water Works"
-                });
-
-        boardMap.put(
-                "Tamil Nadu",
-                new String[]{
-                        "Chennai Metro Water"
-                });
-
-        boardMap.put(
-                "Gujarat",
-                new String[]{
-                        "Ahmedabad Municipal Corporation"
-                });
-    }
-
-    /**
-     * Filter Boards according to selected State
-     */
-    private void setupStateListener() {
-
-        binding.actState.setOnItemClickListener((parent, view, position, id) -> {
-
-            String selectedState =
-                    binding.actState.getText().toString();
-
-            String[] boards =
-                    boardMap.get(selectedState);
-
-            if (boards != null) {
-
-                ArrayAdapter<String> adapter =
-                        new ArrayAdapter<>(
-                                this,
-                                android.R.layout.simple_dropdown_item_1line,
-                                boards
-                        );
-
-                binding.actBoard.setAdapter(adapter);
-
-                binding.actBoard.setText("", false);
-            }
-
-            updateSummary();
-        });
-
-        binding.actBoard.setOnItemClickListener(
-                (parent, view, position, id) -> updateSummary()
         );
+
+        getOnBackPressedDispatcher().addCallback(
+
+                this,
+
+                new OnBackPressedCallback(true) {
+
+                    @Override
+                    public void handleOnBackPressed() {
+
+                        finish();
+
+                    }
+
+                }
+
+        );
+
     }
-    /**
-     * Live Summary Update
-     */
-    private void setupSummaryWatcher() {
+    // =====================================================
+// Update Payment Summary
+// =====================================================
 
-        TextWatcher watcher = new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                updateSummary();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-
-        binding.etConsumerNumber.addTextChangedListener(watcher);
-        binding.etAmount.addTextChangedListener(watcher);
-    }
-
-    /**
-     * Update Payment Summary Card
-     */
     private void updateSummary() {
 
-        String consumer =
-                binding.etConsumerNumber.getText().toString().trim();
+        String consumer = "";
 
-        String board =
-                binding.actBoard.getText().toString().trim();
+        if (binding.etConsumerNumber.getText() != null) {
 
-        String state =
-                binding.actState.getText().toString().trim();
+            consumer =
+                    binding.etConsumerNumber
+                            .getText()
+                            .toString()
+                            .trim();
 
-        String amount =
-                binding.etAmount.getText().toString().trim();
+        }
+
+        String selectedBoard =
+                binding.actBoard
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String selectedState =
+                binding.actState
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String amountText = "";
+
+        if (binding.etAmount.getText() != null) {
+
+            amountText =
+                    binding.etAmount
+                            .getText()
+                            .toString()
+                            .trim();
+
+        }
 
         binding.tvConsumer.setText(
-                consumer.isEmpty() ? "-" : consumer
+
+                consumer.isEmpty()
+                        ? "-"
+                        : consumer
+
         );
 
         binding.tvBoard.setText(
-                board.isEmpty() ? "-" : board
+
+                selectedBoard.isEmpty()
+                        ? "-"
+                        : selectedBoard
+
         );
 
         binding.tvState.setText(
-                state.isEmpty() ? "-" : state
+
+                selectedState.isEmpty()
+                        ? "-"
+                        : selectedState
+
         );
 
-        if (amount.isEmpty()) {
-            binding.tvAmount.setText("₹0");
-        } else {
-            binding.tvAmount.setText("₹" + amount);
-        }
+        binding.tvAmount.setText(
+
+                amountText.isEmpty()
+                        ? "₹0.00"
+                        : "₹" + amountText
+
+        );
+
     }
 
-    /**
-     * Validate User Input
-     */
+// =====================================================
+// Validate Input
+// =====================================================
+
     private void validateInput() {
-
-        consumerNumber =
-                binding.etConsumerNumber.getText().toString().trim();
-
-        board =
-                binding.actBoard.getText().toString().trim();
-
-        state =
-                binding.actState.getText().toString().trim();
-
-        String amountText =
-                binding.etAmount.getText().toString().trim();
 
         binding.layoutConsumerNumber.setError(null);
         binding.layoutBoard.setError(null);
         binding.layoutState.setError(null);
         binding.layoutAmount.setError(null);
 
+        consumerNumber = "";
+
+        if (binding.etConsumerNumber.getText() != null) {
+
+            consumerNumber =
+                    binding.etConsumerNumber
+                            .getText()
+                            .toString()
+                            .trim();
+
+        }
+
+        board =
+                binding.actBoard
+                        .getText()
+                        .toString()
+                        .trim();
+
+        state =
+                binding.actState
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String amountString = "";
+
+        if (binding.etAmount.getText() != null) {
+
+            amountString =
+                    binding.etAmount
+                            .getText()
+                            .toString()
+                            .trim();
+
+        }
+
+        // Consumer Number
+
         if (TextUtils.isEmpty(consumerNumber)) {
 
             binding.layoutConsumerNumber
                     .setError("Enter Consumer Number");
 
+            binding.etConsumerNumber.requestFocus();
+
             return;
+
         }
 
         if (consumerNumber.length() < 8) {
 
             binding.layoutConsumerNumber
-                    .setError("Consumer Number must be at least 8 digits");
+                    .setError("Invalid Consumer Number");
+
+            binding.etConsumerNumber.requestFocus();
 
             return;
+
         }
+
+        // State
 
         if (TextUtils.isEmpty(state)) {
 
             binding.layoutState
                     .setError("Select State");
 
+            binding.actState.requestFocus();
+
             return;
+
         }
+
+        // Board
 
         if (TextUtils.isEmpty(board)) {
 
             binding.layoutBoard
                     .setError("Select Water Board");
 
+            binding.actBoard.requestFocus();
+
             return;
+
         }
 
-        if (TextUtils.isEmpty(amountText)) {
+        // Amount
+
+        if (TextUtils.isEmpty(amountString)) {
 
             binding.layoutAmount
                     .setError("Enter Bill Amount");
 
+            binding.etAmount.requestFocus();
+
             return;
+
         }
 
         try {
 
-            amount = new BigDecimal(amountText);
+            amount = new BigDecimal(amountString);
 
         } catch (Exception e) {
 
             binding.layoutAmount
                     .setError("Invalid Amount");
 
+            binding.etAmount.requestFocus();
+
             return;
+
         }
 
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
 
             binding.layoutAmount
-                    .setError("Amount should be greater than zero");
+                    .setError("Amount must be greater than zero");
+
+            binding.etAmount.requestFocus();
 
             return;
+
         }
 
         showConfirmationDialog();
-    }
 
-    /**
-     * Confirmation Dialog
-     */
+    }
+    // =====================================================
+// Confirmation Dialog
+// =====================================================
+
     private void showConfirmationDialog() {
 
         String message =
-                "Please verify the payment details.\n\n"
-                        + "Consumer Number : " + consumerNumber
-                        + "\nState : " + state
-                        + "\nWater Board : " + board
-                        + "\nAmount : ₹" + amount
-                        + "\n\nDo you want to continue?";
+
+                "Consumer Number : " + consumerNumber +
+
+                        "\n\nState : " + state +
+
+                        "\n\nWater Board : " + board +
+
+                        "\n\nBill Amount : ₹" + amount +
+
+                        "\n\nProceed with payment?";
 
         new AlertDialog.Builder(this)
+
                 .setTitle("Confirm Water Bill Payment")
+
                 .setMessage(message)
-                .setPositiveButton("Proceed", (dialog, which) -> {
 
-                    Intent intent =
-                            new Intent(
+                .setNegativeButton(
+                        "Cancel",
+                        null
+                )
+
+                .setPositiveButton(
+                        "Continue",
+                        (dialog, which) -> {
+
+                            new PaymentSecurityHelper(
+
                                     WaterBillActivity.this,
-                                    VerifyTransactionPinActivity.class
-                            );
 
-                    pinLauncher.launch(intent);
+                                    pinLauncher,
 
-                })
-                .setNegativeButton("Cancel", null)
+                                    new PaymentCallback() {
+
+                                        @Override
+                                        public void onSuccess() {
+
+                                            performPayment();
+
+                                        }
+
+                                    }
+
+                            ).verifyPayment();
+
+                        }
+
+                )
+
                 .show();
-    }
-    /**
-     * Call Water Bill Payment API
-     */
-    private void payWaterBill() {
 
-        WaterBillRequest request = new WaterBillRequest(
-                consumerNumber,
-                board,
-                state,
+    }
+    // =====================================================
+// Perform Water Bill Payment
+// =====================================================
+
+    private void performPayment() {
+
+        binding.btnPayBill.setEnabled(false);
+
+        WaterBillRequest request =
+                new WaterBillRequest();
+
+        request.setConsumerNumber(
+                consumerNumber
+        );
+
+        request.setBoard(
+                board
+        );
+
+        request.setState(
+                state
+        );
+
+        request.setAmount(
                 amount
         );
 
-        repository.payWaterBill(request)
-                .enqueue(new Callback<WaterBillResponse>() {
+        repository
+                .payWaterBill(request)
 
-                    @Override
-                    public void onResponse(
-                            Call<WaterBillResponse> call,
-                            Response<WaterBillResponse> response) {
+                .enqueue(
 
-                        if (response.isSuccessful()
-                                && response.body() != null
-                                && response.body().isSuccess()) {
+                        new Callback<WaterBillResponse>() {
 
-                            showSuccessDialog(
-                                    response.body().getPaymentId()
-                            );
+                            @Override
+                            public void onResponse(
 
-                        } else {
+                                    Call<WaterBillResponse> call,
 
-                            String message = "Payment Failed";
+                                    Response<WaterBillResponse> response) {
 
-                            if (response.body() != null
-                                    && response.body().getMessage() != null) {
+                                binding.btnPayBill.setEnabled(true);
 
-                                message = response.body().getMessage();
+                                if (!response.isSuccessful()) {
+
+                                    Toast.makeText(
+
+                                            WaterBillActivity.this,
+
+                                            "HTTP Error : "
+                                                    + response.code(),
+
+                                            Toast.LENGTH_LONG
+
+                                    ).show();
+
+                                    return;
+
+                                }
+
+                                if (response.body() == null) {
+
+                                    Toast.makeText(
+
+                                            WaterBillActivity.this,
+
+                                            "Empty server response.",
+
+                                            Toast.LENGTH_LONG
+
+                                    ).show();
+
+                                    return;
+
+                                }
+
+                                WaterBillResponse billResponse =
+                                        response.body();
+
+                                if (billResponse.isSuccess()) {
+
+                                    showSuccessDialog(
+                                            billResponse
+                                    );
+
+                                } else {
+
+                                    Toast.makeText(
+
+                                            WaterBillActivity.this,
+
+                                            billResponse.getMessage(),
+
+                                            Toast.LENGTH_LONG
+
+                                    ).show();
+
+                                }
+
                             }
 
-                            Toast.makeText(
-                                    WaterBillActivity.this,
-                                    message,
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            @Override
+                            public void onFailure(
+
+                                    Call<WaterBillResponse> call,
+
+                                    Throwable t) {
+
+                                binding.btnPayBill.setEnabled(true);
+
+                                Toast.makeText(
+
+                                        WaterBillActivity.this,
+
+                                        "Network Error\n"
+                                                + t.getMessage(),
+
+                                        Toast.LENGTH_LONG
+
+                                ).show();
+
+                            }
+
                         }
+
+                );
+
+    }
+    // =====================================================
+// Payment Success Dialog
+// =====================================================
+
+    private void showSuccessDialog(
+            WaterBillResponse response
+    ) {
+
+        String paymentId = "";
+
+        if (response.getPaymentId() != null) {
+
+            paymentId = response.getPaymentId();
+
+        }
+
+        String message =
+
+                "✅ Water Bill Paid Successfully"
+
+                        + "\n\nConsumer Number : "
+                        + consumerNumber
+
+                        + "\n\nWater Board : "
+                        + board
+
+                        + "\n\nState : "
+                        + state
+
+                        + "\n\nAmount Paid : ₹"
+                        + amount
+
+                        + "\n\nPayment ID : "
+                        + paymentId
+
+                        + "\n\nStatus : SUCCESS";
+
+        new AlertDialog.Builder(this)
+
+                .setTitle("Payment Successful")
+
+                .setMessage(message)
+
+                .setCancelable(false)
+
+                .setPositiveButton(
+
+                        "Done",
+
+                        (dialog, which) -> {
+
+                            setResult(RESULT_OK);
+
+                            finish();
+
+                        }
+
+                )
+
+                .show();
+
+    }
+
+// =====================================================
+// Clear Errors
+// =====================================================
+
+    private void clearErrors() {
+
+        binding.layoutConsumerNumber.setError(null);
+
+        binding.layoutBoard.setError(null);
+
+        binding.layoutState.setError(null);
+
+        binding.layoutAmount.setError(null);
+
+    }
+
+// =====================================================
+// Toolbar Back
+// =====================================================
+
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        finish();
+
+        return true;
+
+    }
+    // =====================================================
+// Setup States
+// =====================================================
+
+    private void setupStates() {
+
+        String[] states = {
+
+                "Andhra Pradesh",
+                "Assam",
+                "Bihar",
+                "Chhattisgarh",
+                "Delhi",
+                "Goa",
+                "Gujarat",
+                "Haryana",
+                "Himachal Pradesh",
+                "Jharkhand",
+                "Karnataka",
+                "Kerala",
+                "Madhya Pradesh",
+                "Maharashtra",
+                "Odisha",
+                "Punjab",
+                "Rajasthan",
+                "Tamil Nadu",
+                "Telangana",
+                "Uttar Pradesh",
+                "West Bengal"
+
+        };
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+
+                        this,
+
+                        android.R.layout.simple_dropdown_item_1line,
+
+                        states
+
+                );
+
+        binding.actState.setAdapter(adapter);
+
+    }
+    // =====================================================
+// Setup Water Board Mapping
+// =====================================================
+
+    private void setupBoardMapping() {
+
+        boardMap.put(
+
+                "Maharashtra",
+
+                new String[]{
+
+                        "Maharashtra Jeevan Pradhikaran",
+                        "Pune Water Supply",
+                        "Nagpur Water Works",
+                        "Nashik Municipal Water"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Delhi",
+
+                new String[]{
+
+                        "Delhi Jal Board"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Gujarat",
+
+                new String[]{
+
+                        "Ahmedabad Water Supply",
+                        "Surat Municipal Water",
+                        "GWSSB"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Karnataka",
+
+                new String[]{
+
+                        "BWSSB",
+                        "Mangalore Water Supply"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Tamil Nadu",
+
+                new String[]{
+
+                        "Chennai Metro Water",
+                        "TWAD Board"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Telangana",
+
+                new String[]{
+
+                        "Hyderabad Metropolitan Water"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Uttar Pradesh",
+
+                new String[]{
+
+                        "Jal Nigam",
+                        "Noida Water Supply"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "West Bengal",
+
+                new String[]{
+
+                        "Kolkata Water Supply"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Madhya Pradesh",
+
+                new String[]{
+
+                        "Bhopal Water Supply",
+                        "Indore Water Supply"
+
+                }
+
+        );
+
+        boardMap.put(
+
+                "Rajasthan",
+
+                new String[]{
+
+                        "PHED Rajasthan"
+
+                }
+
+        );
+
+    }
+    // =====================================================
+// Setup State Listener
+// =====================================================
+
+    private void setupStateListener() {
+
+        binding.actState.setOnItemClickListener(
+
+                (parent, view, position, id) -> {
+
+                    String selectedState =
+                            binding.actState
+                                    .getText()
+                                    .toString()
+                                    .trim();
+
+                    String[] boards =
+                            boardMap.get(selectedState);
+
+                    if (boards == null) {
+
+                        boards = new String[0];
+
+                    }
+
+                    ArrayAdapter<String> boardAdapter =
+                            new ArrayAdapter<>(
+
+                                    this,
+
+                                    android.R.layout.simple_dropdown_item_1line,
+
+                                    boards
+
+                            );
+
+                    binding.actBoard.setAdapter(boardAdapter);
+
+                    binding.actBoard.setText("", false);
+
+                    updateSummary();
+
+                }
+
+        );
+
+        binding.actBoard.setOnItemClickListener(
+
+                (parent, view, position, id) ->
+
+                        updateSummary()
+
+        );
+
+    }
+    // =====================================================
+// Setup Summary Watcher
+// =====================================================
+
+    private void setupSummaryWatcher() {
+
+        binding.etConsumerNumber.addTextChangedListener(
+                new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s,
+                                                  int start,
+                                                  int count,
+                                                  int after) {
                     }
 
                     @Override
-                    public void onFailure(
-                            Call<WaterBillResponse> call,
-                            Throwable t) {
+                    public void onTextChanged(CharSequence s,
+                                              int start,
+                                              int before,
+                                              int count) {
 
-                        Toast.makeText(
-                                WaterBillActivity.this,
-                                "Network Error\n" + t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
+                        updateSummary();
+
                     }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+
                 });
+
+        binding.etAmount.addTextChangedListener(
+                new TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s,
+                                                  int start,
+                                                  int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s,
+                                              int start,
+                                              int before,
+                                              int count) {
+
+                        updateSummary();
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+
+                });
+
     }
-
-    /**
-     * Payment Success Dialog
-     */
-    private void showSuccessDialog(String paymentId) {
-
-        String message =
-                "Water Bill Paid Successfully.\n\n"
-                        + "Consumer Number : " + consumerNumber
-                        + "\nState : " + state
-                        + "\nBoard : " + board
-                        + "\nAmount : ₹" + amount
-                        + "\n\nPayment ID : " + paymentId;
-
-        new AlertDialog.Builder(this)
-                .setTitle("Payment Successful")
-                .setMessage(message)
-                .setCancelable(false)
-                .setPositiveButton("Done", (dialog, which) -> {
-
-                    dialog.dismiss();
-
-                    finish();
-
-                })
-                .show();
-    }
-
 }

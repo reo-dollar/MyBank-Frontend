@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.rohit.mybank.constants.APIConstants;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -20,6 +22,7 @@ public final class RetrofitClient {
     public static Retrofit getClient(Context context) {
 
         if (retrofit == null) {
+
             synchronized (RetrofitClient.class) {
 
                 if (retrofit == null) {
@@ -32,19 +35,36 @@ public final class RetrofitClient {
                     );
 
                     OkHttpClient client = new OkHttpClient.Builder()
+
+                            // Add JWT to requests
                             .addInterceptor(new AuthInterceptor(context))
+
+                            // Logging
                             .addInterceptor(loggingInterceptor)
+
+                            // Timeouts
+                            .connectTimeout(30, TimeUnit.SECONDS)
+                            .readTimeout(30, TimeUnit.SECONDS)
+                            .writeTimeout(30, TimeUnit.SECONDS)
+
                             .build();
 
                     retrofit = new Retrofit.Builder()
                             .baseUrl(APIConstants.BASE_URL)
                             .client(client)
-                            .addConverterFactory(GsonConverterFactory.create())
+                            .addConverterFactory(
+                                    GsonConverterFactory.create()
+                            )
                             .build();
+
                 }
+
             }
+
         }
 
         return retrofit;
+
     }
+
 }

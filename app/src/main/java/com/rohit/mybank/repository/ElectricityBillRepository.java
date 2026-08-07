@@ -14,14 +14,19 @@ public class ElectricityBillRepository {
     private final ApiService apiService;
 
     public ElectricityBillRepository(Context context) {
+
         apiService = RetrofitClient
                 .getClient(context)
                 .create(ApiService.class);
+
     }
 
-    public Call<ElectricityBillResponse> payElectricityBill(
-            ElectricityBillRequest request) {
+    public Call<ElectricityBillResponse> payBill(
+            ElectricityBillRequest request
+    ) {
 
         return apiService.payElectricityBill(request);
+
     }
+
 }
