@@ -47,6 +47,30 @@
             android:name=".activities.dashboard.DashboardActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.auth.ResetPasswordActivity"
+            android:exported="true">
+
+            <intent-filter>
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="mybank"
+                    android:host="reset-password" />
+
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".activities.auth.ForgotPasswordActivity"
+            android:exported="false" />
+
         <!-- KYC Activities -->
         <activity
             android:name=".activities.kyc.PersonalDetailsActivity"

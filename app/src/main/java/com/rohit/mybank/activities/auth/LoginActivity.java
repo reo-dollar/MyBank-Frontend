@@ -28,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button btnLogin;
     private TextView tvRegister;
+    private TextView tvForgotPassword;
 
     private AuthRepository repository;
     private SessionManager sessionManager;
@@ -42,7 +43,10 @@ public class LoginActivity extends AppCompatActivity {
         repository = new AuthRepository(this);
         sessionManager = new SessionManager(this);
 
+        // ==========================================
         // Auto Login
+        // ==========================================
+
         if (sessionManager.isLoggedIn()) {
 
             startActivity(new Intent(
@@ -54,13 +58,36 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        // ==========================================
+        // Login Button
+        // ==========================================
+
         btnLogin.setOnClickListener(v -> login());
+
+        // ==========================================
+        // Register
+        // ==========================================
 
         tvRegister.setOnClickListener(v -> {
 
             Intent intent = new Intent(
                     LoginActivity.this,
                     PersonalDetailsActivity.class
+            );
+
+            startActivity(intent);
+
+        });
+
+        // ==========================================
+        // Forgot Password
+        // ==========================================
+
+        tvForgotPassword.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    LoginActivity.this,
+                    ForgotPasswordActivity.class
             );
 
             startActivity(intent);
@@ -75,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
+        tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
     }
 
@@ -82,6 +110,10 @@ public class LoginActivity extends AppCompatActivity {
 
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+
+        // ==========================================
+        // Username Validation
+        // ==========================================
 
         if (username.isEmpty()) {
 
@@ -91,6 +123,10 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
+        // ==========================================
+        // Password Validation
+        // ==========================================
+
         if (password.isEmpty()) {
 
             etPassword.setError("Password is required");
@@ -99,95 +135,105 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
+        // Disable button while request is running
         btnLogin.setEnabled(false);
 
-        LoginRequest request = new LoginRequest(username, password);
+        LoginRequest request = new LoginRequest(
+                username,
+                password
+        );
 
-        repository.login(request).enqueue(new Callback<LoginResponse>() {
+        repository.login(request).enqueue(
+                new Callback<LoginResponse>() {
 
-            @Override
-            public void onResponse(Call<LoginResponse> call,
-                                   Response<LoginResponse> response) {
+                    @Override
+                    public void onResponse(
+                            Call<LoginResponse> call,
+                            Response<LoginResponse> response) {
 
-                btnLogin.setEnabled(true);
+                        btnLogin.setEnabled(true);
 
-                if (response.isSuccessful() && response.body() != null) {
+                        if (response.isSuccessful()
+                                && response.body() != null) {
 
-                    LoginResponse loginResponse = response.body();
+                            LoginResponse loginResponse =
+                                    response.body();
 
-                    // ===========================
-                    // Save Access Token
-                    // ===========================
+                            // ==========================================
+                            // Save Access Token
+                            // ==========================================
 
-                    sessionManager.saveToken(
-                            loginResponse.getAccessToken()
-                    );
+                            sessionManager.saveToken(
+                                    loginResponse.getAccessToken()
+                            );
 
-                    // ===========================
-                    // Save Refresh Token
-                    // ===========================
+                            // ==========================================
+                            // Save Refresh Token
+                            // ==========================================
 
-                    sessionManager.saveRefreshToken(
-                            loginResponse.getRefreshToken()
-                    );
+                            sessionManager.saveRefreshToken(
+                                    loginResponse.getRefreshToken()
+                            );
 
-                    // ===========================
-                    // Save Username
-                    // ===========================
+                            // ==========================================
+                            // Save Username
+                            // ==========================================
 
-                    sessionManager.saveUsername(username);
+                            sessionManager.saveUsername(username);
 
-                    Toast.makeText(
-                            LoginActivity.this,
-                            "Login Successful",
-                            Toast.LENGTH_SHORT
-                    ).show();
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    "Login Successful",
+                                    Toast.LENGTH_SHORT
+                            ).show();
 
-                    Intent intent = new Intent(
-                            LoginActivity.this,
-                            DashboardActivity.class
-                    );
+                            // ==========================================
+                            // Open Dashboard
+                            // ==========================================
 
-                    intent.setFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK
-                                    | Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    );
+                            Intent intent = new Intent(
+                                    LoginActivity.this,
+                                    DashboardActivity.class
+                            );
 
-                    startActivity(intent);
+                            intent.setFlags(
+                                    Intent.FLAG_ACTIVITY_NEW_TASK
+                                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            );
 
-                    finish();
+                            startActivity(intent);
 
-                } else {
+                            finish();
 
-                    Toast.makeText(
-                            LoginActivity.this,
-                            "Invalid username or password.",
-                            Toast.LENGTH_SHORT
-                    ).show();
+                        } else {
 
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    "Invalid username or password.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<LoginResponse> call,
+                            Throwable t) {
+
+                        btnLogin.setEnabled(true);
+
+                        t.printStackTrace();
+
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Unable to connect to server.\n\n"
+                                        + t.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+
+                    }
                 }
-
-            }
-
-            @Override
-            public void onFailure(Call<LoginResponse> call,
-                                  Throwable t) {
-
-                btnLogin.setEnabled(true);
-
-                t.printStackTrace();
-
-                Toast.makeText(
-                        LoginActivity.this,
-                        "Unable to connect to server.\n\n"
-                                + t.getMessage(),
-                        Toast.LENGTH_LONG
-                ).show();
-
-            }
-
-        });
-
+        );
     }
-
 }

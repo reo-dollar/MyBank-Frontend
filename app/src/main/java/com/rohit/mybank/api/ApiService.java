@@ -51,6 +51,8 @@ import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentReq
 import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentResponse;
 import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDRequest;
 import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDResponse;
+import com.rohit.mybank.model.auth.ForgotPasswordRequest;
+import com.rohit.mybank.model.auth.ResetPasswordRequest;
 
 import java.util.List;
 
@@ -82,6 +84,20 @@ public interface ApiService {
     @POST("auth/register")
     Call<RegisterResponse> register(
             @Body RegisterRequest request
+    );
+
+    // ==========================
+// Forgot Password
+// ==========================
+
+    @POST("auth/forgot-password")
+    Call<ResponseBody> forgotPassword(
+            @Body ForgotPasswordRequest request
+    );
+
+    @POST("auth/reset-password")
+    Call<ResponseBody> resetPassword(
+            @Body ResetPasswordRequest request
     );
 
     // ==========================

@@ -6,15 +6,18 @@ public final class APIConstants {
         // Prevent instantiation
     }
 
-    // Android Emulator
+    // Android Emulator - local PC
     public static final String EMULATOR_URL =
             "http://10.0.2.2:8080/";
 
-    // Physical Phone (Same Wi-Fi)
+    // Physical Phone - same Wi-Fi as PC
     public static final String PHONE_URL =
             "http://192.168.0.202:8080/";
 
-    // Change only this line when switching devices
-    public static final String BASE_URL = PHONE_URL;
+    // ngrok - accessible from different networks
+    public static final String NGROK_URL =
+            "https://trio-jacket-frostily.ngrok-free.dev/";
 
+    // Current server
+    public static final String BASE_URL = NGROK_URL;
 }

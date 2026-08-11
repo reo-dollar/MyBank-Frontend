@@ -27,44 +27,109 @@ public final class RetrofitClient {
 
                 if (retrofit == null) {
 
+                    /*
+                     * Logging
+                     *
+                     * Use BASIC instead of BODY.
+                     *
+                     * BODY logging can expose:
+                     * - passwords
+                     * - JWT access tokens
+                     * - refresh tokens
+                     * - account information
+                     * - transaction information
+                     */
                     HttpLoggingInterceptor loggingInterceptor =
                             new HttpLoggingInterceptor();
 
                     loggingInterceptor.setLevel(
-                            HttpLoggingInterceptor.Level.BODY
+                            HttpLoggingInterceptor.Level.BASIC
                     );
 
-                    OkHttpClient client = new OkHttpClient.Builder()
+                    /*
+                     * OkHttp Client
+                     */
+                    OkHttpClient client =
+                            new OkHttpClient.Builder()
 
-                            // Add JWT to requests
-                            .addInterceptor(new AuthInterceptor(context))
+                                    /*
+                                     * Add JWT Authorization header
+                                     */
+                                    .addInterceptor(
+                                            new AuthInterceptor(context)
+                                    )
 
-                            // Logging
-                            .addInterceptor(loggingInterceptor)
+                                    /*
+                                     * ngrok Free Browser Warning
+                                     *
+                                     * This allows programmatic API requests
+                                     * from Retrofit to bypass ngrok's
+                                     * browser warning/interstitial.
+                                     */
+                                    .addInterceptor(chain -> {
 
-                            // Timeouts
-                            .connectTimeout(30, TimeUnit.SECONDS)
-                            .readTimeout(30, TimeUnit.SECONDS)
-                            .writeTimeout(30, TimeUnit.SECONDS)
+                                        okhttp3.Request originalRequest =
+                                                chain.request();
 
-                            .build();
+                                        okhttp3.Request request =
+                                                originalRequest.newBuilder()
+                                                        .header(
+                                                                "ngrok-skip-browser-warning",
+                                                                "1"
+                                                        )
+                                                        .build();
 
-                    retrofit = new Retrofit.Builder()
-                            .baseUrl(APIConstants.BASE_URL)
-                            .client(client)
-                            .addConverterFactory(
-                                    GsonConverterFactory.create()
-                            )
-                            .build();
+                                        return chain.proceed(request);
+                                    })
 
+                                    /*
+                                     * HTTP logging
+                                     */
+                                    .addInterceptor(
+                                            loggingInterceptor
+                                    )
+
+                                    /*
+                                     * Connection timeout
+                                     */
+                                    .connectTimeout(
+                                            30,
+                                            TimeUnit.SECONDS
+                                    )
+
+                                    /*
+                                     * Server response timeout
+                                     */
+                                    .readTimeout(
+                                            30,
+                                            TimeUnit.SECONDS
+                                    )
+
+                                    /*
+                                     * Request upload timeout
+                                     */
+                                    .writeTimeout(
+                                            30,
+                                            TimeUnit.SECONDS
+                                    )
+
+                                    .build();
+
+                    /*
+                     * Retrofit
+                     */
+                    retrofit =
+                            new Retrofit.Builder()
+                                    .baseUrl(APIConstants.BASE_URL)
+                                    .client(client)
+                                    .addConverterFactory(
+                                            GsonConverterFactory.create()
+                                    )
+                                    .build();
                 }
-
             }
-
         }
 
         return retrofit;
-
     }
-
 }

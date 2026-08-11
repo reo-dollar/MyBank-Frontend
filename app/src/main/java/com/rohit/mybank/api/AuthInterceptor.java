@@ -17,7 +17,6 @@ public class AuthInterceptor implements Interceptor {
     public AuthInterceptor(Context context) {
 
         sessionManager = new SessionManager(context);
-
     }
 
     @Override
@@ -25,32 +24,48 @@ public class AuthInterceptor implements Interceptor {
 
         Request originalRequest = chain.request();
 
-        // Do not attach Authorization header for login or refresh requests
         String path = originalRequest.url().encodedPath();
 
+        /*
+         * Public authentication endpoints.
+         *
+         * These endpoints must NOT receive an Authorization header
+         * because the user is not authenticated yet or is refreshing
+         * the authentication session.
+         */
         if (path.endsWith("/auth/login")
                 || path.endsWith("/auth/register")
                 || path.endsWith("/auth/refresh")) {
 
             return chain.proceed(originalRequest);
-
         }
 
+        /*
+         * Get the currently stored JWT access token.
+         */
         String accessToken = sessionManager.getToken();
 
-        // If user is not logged in, continue without Authorization header
-        if (accessToken == null || accessToken.trim().isEmpty()) {
+        /*
+         * If the user is not authenticated, continue without
+         * an Authorization header.
+         */
+        if (accessToken == null
+                || accessToken.trim().isEmpty()) {
 
             return chain.proceed(originalRequest);
-
         }
 
-        Request authenticatedRequest = originalRequest.newBuilder()
-                .header("Authorization", "Bearer " + accessToken)
-                .build();
+        /*
+         * Add JWT Authorization header.
+         */
+        Request authenticatedRequest =
+                originalRequest.newBuilder()
+                        .header(
+                                "Authorization",
+                                "Bearer " + accessToken
+                        )
+                        .build();
 
         return chain.proceed(authenticatedRequest);
-
     }
-
 }
