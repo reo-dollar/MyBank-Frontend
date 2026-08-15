@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- Customer card background -->
+    <solid android:color="#F4ECFA" />
+
+    <!-- Rounded corners -->
+    <corners android:radius="20dp" />
+
+    <!-- Subtle border -->
+    <stroke
+        android:width="1dp"
+        android:color="#E1D7E8" />
+
+</shape>

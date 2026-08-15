@@ -4,15 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.rohit.mybank.R;
+import com.rohit.mybank.activities.auth.AuthenticationActivity;
 import com.rohit.mybank.activities.auth.LoginActivity;
-import com.rohit.mybank.activities.dashboard.DashboardActivity;
 import com.rohit.mybank.session.SessionManager;
-import com.rohit.mybank.utils.BiometricHelper;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -20,89 +18,92 @@ public class SplashActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
 
+    // ==========================================================
+    // Activity Lifecycle
+    // ==========================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_splash);
 
         sessionManager = new SessionManager(this);
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        new Handler(Looper.getMainLooper()).postDelayed(
+                this::checkSession,
+                SPLASH_TIME
+        );
+    }
 
-            // User is not logged in
-            if (!sessionManager.isLoggedIn()) {
+    // ==========================================================
+    // Check Session
+    // ==========================================================
 
-                startActivity(new Intent(
-                        SplashActivity.this,
-                        LoginActivity.class));
+    private void checkSession() {
 
-                finish();
-                return;
-            }
+        // ======================================================
+        // User is NOT logged in
+        // ======================================================
 
-            // Logged in but fingerprint disabled
-            if (!sessionManager.isFingerprintEnabled()) {
+        if (!sessionManager.isLoggedIn()) {
 
-                startActivity(new Intent(
-                        SplashActivity.this,
-                        DashboardActivity.class));
+            goToLogin();
 
-                finish();
-                return;
-            }
+            return;
+        }
 
-            // Fingerprint enabled
-            if (!BiometricHelper.isBiometricAvailable(this)) {
+        // ======================================================
+        // User is already logged in
+        //
+        // IMPORTANT:
+        // Never open Dashboard directly.
+        //
+        // Authentication is required before entering MyBank.
+        // ======================================================
 
-                Toast.makeText(
-                        this,
-                        BiometricHelper.getBiometricStatus(this),
-                        Toast.LENGTH_LONG
-                ).show();
+        goToAuthentication();
+    }
 
-                startActivity(new Intent(
-                        SplashActivity.this,
-                        LoginActivity.class));
+    // ==========================================================
+    // Go To Authentication
+    // ==========================================================
 
-                finish();
-                return;
-            }
+    private void goToAuthentication() {
 
-            // Show fingerprint dialog
-            BiometricHelper.authenticate(
-                    this,
-                    new BiometricHelper.AuthenticationListener() {
+        Intent intent = new Intent(
+                SplashActivity.this,
+                AuthenticationActivity.class
+        );
 
-                        @Override
-                        public void onAuthenticationSuccess() {
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
 
-                            startActivity(new Intent(
-                                    SplashActivity.this,
-                                    DashboardActivity.class));
+        startActivity(intent);
 
-                            finish();
+        finish();
+    }
 
-                        }
+    // ==========================================================
+    // Go To Login
+    // ==========================================================
 
-                        @Override
-                        public void onAuthenticationFailed(String message) {
+    private void goToLogin() {
 
-                            Toast.makeText(
-                                    SplashActivity.this,
-                                    message,
-                                    Toast.LENGTH_SHORT
-                            ).show();
+        Intent intent = new Intent(
+                SplashActivity.this,
+                LoginActivity.class
+        );
 
-                            startActivity(new Intent(
-                                    SplashActivity.this,
-                                    LoginActivity.class));
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
 
-                            finish();
+        startActivity(intent);
 
-                        }
-                    });
-
-        }, SPLASH_TIME);
-
+        finish();
     }
 }

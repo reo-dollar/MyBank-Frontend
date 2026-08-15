@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginBottom="14dp"
+
+    android:clickable="true"
+    android:focusable="true"
+
+    app:cardCornerRadius="18dp"
+    app:cardElevation="3dp"
+    app:rippleColor="#1A2563EB"
+    app:strokeColor="#E5E7EB"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:padding="18dp">
+
+        <!-- ===================================================== -->
+        <!-- CUSTOMER NAME -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerFullName"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Arman Mahendra Gupta"
+
+            android:textColor="#111827"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <!-- ===================================================== -->
+        <!-- USERNAME -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerUsername"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+
+            android:text="@armangupta"
+
+            android:textColor="#2563EB"
+            android:textSize="14sp" />
+
+        <!-- ===================================================== -->
+        <!-- CUSTOMER ID -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerId"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="14dp"
+
+            android:text="Customer ID: CUS000005"
+
+            android:textColor="#4B5563"
+            android:textSize="14sp" />
+
+        <!-- ===================================================== -->
+        <!-- EMAIL -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerEmail"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="7dp"
+
+            android:text="email@example.com"
+
+            android:textColor="#4B5563"
+            android:textSize="14sp" />
+
+        <!-- ===================================================== -->
+        <!-- MOBILE -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerMobile"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="7dp"
+
+            android:text="9876543210"
+
+            android:textColor="#4B5563"
+            android:textSize="14sp" />
+
+        <!-- ===================================================== -->
+        <!-- ROLE -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerRole"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="7dp"
+
+            android:text="Role: USER"
+
+            android:textColor="#4B5563"
+            android:textSize="14sp" />
+
+        <!-- ===================================================== -->
+        <!-- STATUS -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerStatus"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="10dp"
+
+            android:text="● ACTIVE"
+
+            android:textColor="#16A34A"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- ===================================================== -->
+        <!-- VIEW DETAILS -->
+        <!-- ===================================================== -->
+
+        <TextView
+            android:id="@+id/tvCustomerViewDetails"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="14dp"
+
+            android:text="Tap to view details →"
+
+            android:textColor="#2563EB"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

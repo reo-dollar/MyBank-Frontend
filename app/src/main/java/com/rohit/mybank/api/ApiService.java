@@ -53,9 +53,12 @@ import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDRequest;
 import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDResponse;
 import com.rohit.mybank.model.auth.ForgotPasswordRequest;
 import com.rohit.mybank.model.auth.ResetPasswordRequest;
-
+import com.rohit.mybank.model.admin.AdminDashboardResponse;
+import com.rohit.mybank.model.admin.AdminUserResponse;
+import com.rohit.mybank.model.admin.AdminCustomerResponse;
+import com.rohit.mybank.model.admin.AdminAccountResponse;
+import com.rohit.mybank.model.admin.AdminTransactionPageResponse;
 import java.util.List;
-
 import okhttp3.ResponseBody;
 
 import retrofit2.Call;
@@ -115,6 +118,108 @@ public interface ApiService {
 
     @GET("accounts/me")
     Call<DashboardResponse> getMyAccount();
+
+
+    @GET("admin/dashboard")
+    Call<AdminDashboardResponse> getAdminDashboard();
+
+    // ==========================================================
+    // ADMIN USER MANAGEMENT
+    // ==========================================================
+
+    @GET("admin/users")
+    Call<List<AdminUserResponse>> getAdminUsers();
+
+    // ==========================================================
+    // ADMIN USER DETAILS
+    // ==========================================================
+
+    @GET("admin/users/{username}")
+    Call<AdminUserResponse> getAdminUser(
+            @Path("username") String username
+    );
+
+    // ==========================================================
+    // ENABLE USER
+    // ==========================================================
+
+    @PUT("admin/users/{username}/enable")
+    Call<AdminUserResponse> enableAdminUser(
+            @Path("username") String username
+    );
+
+    // ==========================================================
+    // DISABLE USER
+    // ==========================================================
+
+    @PUT("admin/users/{username}/disable")
+    Call<AdminUserResponse> disableAdminUser(
+            @Path("username") String username
+    );
+
+    // ==========================================================
+    // LOCK USER
+    // ==========================================================
+
+    @PUT("admin/users/{username}/lock")
+    Call<AdminUserResponse> lockAdminUser(
+            @Path("username") String username
+    );
+
+    // ==========================================================
+    // UNLOCK USER
+    // ==========================================================
+
+    @PUT("admin/users/{username}/unlock")
+    Call<AdminUserResponse> unlockAdminUser(
+            @Path("username") String username
+    );
+
+    // ==========================================================
+// ADMIN CUSTOMER MANAGEMENT
+// ==========================================================
+
+    @GET("admin/customers")
+    Call<List<AdminCustomerResponse>> getAdminCustomers();
+
+    @GET("admin/customers/search")
+    Call<List<AdminCustomerResponse>> searchAdminCustomers(
+            @Query("query") String query
+    );
+
+    @GET("admin/customers/{customerId}")
+    Call<AdminCustomerResponse> getAdminCustomer(
+            @Path("customerId") String customerId
+    );
+
+    // =========================================================
+// ADMIN ACCOUNT MANAGEMENT
+// =========================================================
+
+    @GET("admin/accounts")
+    Call<List<AdminAccountResponse>> getAdminAccounts();
+
+    @GET("admin/accounts/search")
+    Call<List<AdminAccountResponse>> searchAdminAccounts(
+            @Query("query") String query
+    );
+
+    @GET("admin/accounts/{accNo}")
+    Call<AdminAccountResponse> getAdminAccount(
+            @Path("accNo") String accNo
+    );
+
+    // ==========================================================
+// ADMIN ALL TRANSACTIONS
+// ==========================================================
+
+    @GET("admin/transactions")
+    Call<AdminTransactionPageResponse> getAdminTransactions(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("sort") String sort
+    );
+
 
     // ==========================
     // Deposit

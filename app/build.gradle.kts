@@ -82,5 +82,7 @@ dependencies {
 
 // Android Security Crypto
     implementation("androidx.security:security-crypto:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-process:2.11.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
 
 }

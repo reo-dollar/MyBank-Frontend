@@ -32,4 +32,15 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
+    <color name="admin_primary">#2563EB</color>
+    <color name="admin_customer">#0F766E</color>
+    <color name="admin_account">#4F46E5</color>
+    <color name="admin_transaction">#C2410C</color>
+    <color name="admin_logout">#DC2626</color>
+
+    <color name="admin_text_primary">#111827</color>
+    <color name="admin_text_secondary">#64748B</color>
+    <color name="admin_background">#F4F7FB</color>
+    <color name="admin_card">#FFFFFF</color>
+
 </resources>

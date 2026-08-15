@@ -2,14 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ====================================================== -->
     <!-- Permissions -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- ====================================================== -->
 
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <!-- Biometric authentication -->
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <!-- ====================================================== -->
+    <!-- Application -->
+    <!-- ====================================================== -->
 
     <application
+        android:name=".MyBankApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -20,20 +28,59 @@
         android:theme="@style/Theme.MyBank"
         android:usesCleartextTraffic="true">
 
+        <!-- ================================================== -->
         <!-- Splash -->
+        <!-- ================================================== -->
+
         <activity
             android:name=".activities.splash.SplashActivity"
             android:exported="true">
 
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
 
         </activity>
 
+        <!-- ================================================== -->
         <!-- Authentication -->
+        <!-- ================================================== -->
+
+        <activity
+            android:name=".activities.admin.AdminDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.AdminCustomerManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.AdminCustomerDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.AdminUserManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.AdminAccountTransactionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.AdminAccountManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.AdminAccountDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.AdminTransactionsActivity"
+            android:exported="false" />
+
         <activity
             android:name=".activities.auth.LoginActivity"
             android:exported="false" />
@@ -42,10 +89,17 @@
             android:name=".activities.auth.RegisterActivity"
             android:exported="false" />
 
-        <!-- Dashboard -->
         <activity
-            android:name=".activities.dashboard.DashboardActivity"
+            android:name=".activities.auth.AuthenticationActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.auth.ForgotPasswordActivity"
+            android:exported="false" />
+
+        <!-- ================================================== -->
+        <!-- Reset Password Deep Link -->
+        <!-- ================================================== -->
 
         <activity
             android:name=".activities.auth.ResetPasswordActivity"
@@ -67,11 +121,18 @@
 
         </activity>
 
+        <!-- ================================================== -->
+        <!-- Dashboard -->
+        <!-- ================================================== -->
+
         <activity
-            android:name=".activities.auth.ForgotPasswordActivity"
+            android:name=".activities.dashboard.DashboardActivity"
             android:exported="false" />
 
-        <!-- KYC Activities -->
+        <!-- ================================================== -->
+        <!-- KYC -->
+        <!-- ================================================== -->
+
         <activity
             android:name=".activities.kyc.PersonalDetailsActivity"
             android:exported="false" />
@@ -96,7 +157,10 @@
             android:name=".activities.kyc.ReviewActivity"
             android:exported="false" />
 
+        <!-- ================================================== -->
         <!-- Banking -->
+        <!-- ================================================== -->
+
         <activity
             android:name=".activities.banking.CreateAccountActivity"
             android:exported="false" />
@@ -117,17 +181,13 @@
             android:name=".activities.banking.TransactionHistoryActivity"
             android:exported="false" />
 
+        <!-- ================================================== -->
         <!-- Profile -->
+        <!-- ================================================== -->
+
         <activity
             android:name=".activities.profile.ProfileActivity"
             android:exported="false" />
-
-        <activity
-            android:name=".activities.payments.PaymentsActivity"
-            android:parentActivityName=".activities.dashboard.DashboardActivity"/>
-
-        <activity
-            android:name=".activities.qr.QRScannerActivity"/>
 
         <activity
             android:name=".activities.profile.EditProfileActivity"
@@ -137,15 +197,18 @@
             android:name=".activities.profile.ChangePasswordActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".activities.pin.SetTransactionPinActivity"
-            android:exported="false"/>
+        <!-- ================================================== -->
+        <!-- Payments -->
+        <!-- ================================================== -->
 
         <activity
-            android:name=".activities.payments.MobileRechargeActivity"/>
+            android:name=".activities.payments.PaymentsActivity"
+            android:parentActivityName=".activities.dashboard.DashboardActivity"
+            android:exported="false" />
 
         <activity
-            android:name=".activities.pin.VerifyTransactionPinActivity"/>
+            android:name=".activities.payments.MobileRechargeActivity"
+            android:exported="false" />
 
         <activity
             android:name=".activities.payments.ElectricityBillActivity"
@@ -153,53 +216,99 @@
 
         <activity
             android:name=".activities.payments.WaterBillActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".activities.payments.GasBillActivity"
-            android:exported="false"/>
+            android:exported="false" />
 
         <activity
             android:name=".activities.payments.DthRechargeActivity"
             android:exported="false" />
 
         <activity
-            android:name=".activities.payments.BroadbandRechargeActivity"/>
+            android:name=".activities.payments.BroadbandRechargeActivity"
+            android:exported="false" />
 
         <activity
-            android:name=".activities.payments.FastagRechargeActivity"/>
-
-
-        <activity
-            android:name=".activities.payments.InsurancePaymentActivity"/>
+            android:name=".activities.payments.FastagRechargeActivity"
+            android:exported="false" />
 
         <activity
-            android:name=".activities.payments.FixedDepositActivity"/>
+            android:name=".activities.payments.InsurancePaymentActivity"
+            android:exported="false" />
 
-        <activity android:name=".activities.payments.recurringdeposit.RDDashboardActivity"/>
+        <activity
+            android:name=".activities.payments.FixedDepositActivity"
+            android:exported="false" />
 
-        <activity android:name=".activities.payments.recurringdeposit.RDCalculatorActivity"/>
+        <!-- ================================================== -->
+        <!-- QR -->
+        <!-- ================================================== -->
 
-        <activity android:name=".activities.payments.recurringdeposit.OpenRDActivity"/>
+        <activity
+            android:name=".activities.qr.QRScannerActivity"
+            android:exported="false" />
 
-        <activity android:name=".activities.payments.recurringdeposit.RDListActivity"/>
+        <!-- ================================================== -->
+        <!-- Transaction PIN -->
+        <!-- ================================================== -->
 
-        <activity android:name=".activities.payments.recurringdeposit.RDDetailsActivity"/>
+        <activity
+            android:name=".activities.pin.SetTransactionPinActivity"
+            android:exported="false" />
 
-        <activity android:name=".activities.payments.recurringdeposit.PayRDInstallmentActivity"/>
+        <activity
+            android:name=".activities.pin.VerifyTransactionPinActivity"
+            android:exported="false" />
 
-        <activity android:name=".activities.payments.recurringdeposit.RDHistoryActivity"/>
+        <!-- ================================================== -->
+        <!-- Recurring Deposit -->
+        <!-- ================================================== -->
 
-        <activity android:name=".activities.payments.recurringdeposit.MaturedRDActivity"/>
+        <activity
+            android:name=".activities.payments.recurringdeposit.RDDashboardActivity"
+            android:exported="false" />
 
-        <activity android:name=".activities.payments.recurringdeposit.PrematureCloseRDActivity"/>
+        <activity
+            android:name=".activities.payments.recurringdeposit.RDCalculatorActivity"
+            android:exported="false" />
 
-        <!-- Main -->
+        <activity
+            android:name=".activities.payments.recurringdeposit.OpenRDActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.recurringdeposit.RDListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.recurringdeposit.RDDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.recurringdeposit.PayRDInstallmentActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.recurringdeposit.RDHistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.recurringdeposit.MaturedRDActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.payments.recurringdeposit.PrematureCloseRDActivity"
+            android:exported="false" />
+
+        <!-- ================================================== -->
+        <!-- Main Activity -->
+        <!-- ================================================== -->
+
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
-
 
     </application>
 
