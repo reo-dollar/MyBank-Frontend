@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:fillViewport="true"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:padding="20dp">
+
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+
+                android:background="?attr/selectableItemBackgroundBorderless"
+
+                android:contentDescription="Back"
+
+                android:src="@android:drawable/ic_menu_revert" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+
+                android:text="Loan Calculator"
+
+                android:textColor="#172033"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ================================================= -->
+        <!-- DESCRIPTION -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="20dp"
+
+            android:text="Calculate your estimated monthly EMI, total interest and total repayment amount."
+
+            android:textColor="#667085"
+            android:textSize="15sp" />
+
+
+        <!-- ================================================= -->
+        <!-- CALCULATOR CARD -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="20dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+                android:padding="20dp">
+
+
+                <!-- ================================================= -->
+                <!-- LOAN AMOUNT -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="14dp"
+
+                    android:hint="Loan Amount">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLoanAmount"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:inputType="numberDecimal"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- ================================================= -->
+                <!-- INTEREST RATE -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="14dp"
+
+                    android:hint="Annual Interest Rate (%)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etInterestRate"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:inputType="numberDecimal"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- ================================================= -->
+                <!-- TENURE -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="20dp"
+
+                    android:hint="Tenure (Months)">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTenure"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:inputType="number"
+                        android:maxLines="1" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- ================================================= -->
+                <!-- CALCULATE EMI -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCalculate"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+
+                    android:text="Calculate EMI"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+
+                    app:cornerRadius="14dp" />
+
+
+                <!-- ================================================= -->
+                <!-- VIEW MY LOANS -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMyLoans"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+
+                    android:layout_marginTop="10dp"
+
+                    android:text="View My Loans"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+
+                    app:cornerRadius="12dp" />
+
+
+                <!-- ================================================= -->
+                <!-- LOADING -->
+                <!-- ================================================= -->
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_gravity="center"
+
+                    android:layout_marginTop="16dp"
+
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- RESULT CARD -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/resultCard"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:visibility="gone"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+                android:padding="20dp">
+
+
+                <!-- ================================================= -->
+                <!-- RESULT TITLE -->
+                <!-- ================================================= -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="18dp"
+
+                    android:text="Loan Estimate"
+
+                    android:textColor="#172033"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- EMI -->
+                <!-- ================================================= -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="Monthly EMI"
+
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/tvEmiAmount"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="18dp"
+
+                    android:text="₹0.00"
+
+                    android:textColor="#172033"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- TOTAL INTEREST -->
+                <!-- ================================================= -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="Total Interest"
+
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/tvTotalInterest"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="18dp"
+
+                    android:text="₹0.00"
+
+                    android:textColor="#172033"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- TOTAL PAYABLE -->
+                <!-- ================================================= -->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="Total Payable"
+
+                    android:textColor="#667085"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/tvTotalPayable"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="20dp"
+
+                    android:text="₹0.00"
+
+                    android:textColor="#172033"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- APPLY FOR LOAN -->
+                <!-- ================================================= -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnApplyLoan"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+
+                    android:text="Apply for Loan"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ================================================= -->
+        <!-- BOTTOM SPACING -->
+        <!-- ================================================= -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

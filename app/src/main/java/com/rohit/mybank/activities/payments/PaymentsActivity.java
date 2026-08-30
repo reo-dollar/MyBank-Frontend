@@ -7,11 +7,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.card.MaterialCardView;
 import com.rohit.mybank.R;
+import com.rohit.mybank.activities.loan.LoanCalculatorActivity;
 import com.rohit.mybank.activities.payments.recurringdeposit.RDDashboardActivity;
 
 public class PaymentsActivity extends AppCompatActivity {
 
-    // Bills Payment
+    // =========================================================
+    // BILLS PAYMENT
+    // =========================================================
+
     private MaterialCardView cardMobileRecharge;
     private MaterialCardView cardElectricity;
     private MaterialCardView cardWater;
@@ -21,154 +25,291 @@ public class PaymentsActivity extends AppCompatActivity {
     private MaterialCardView cardFastag;
     private MaterialCardView cardInsurance;
 
-    // Finance
+
+    // =========================================================
+    // FINANCE
+    // =========================================================
+
     private MaterialCardView cardFixedDeposit;
     private MaterialCardView cardRecurringDeposit;
     private MaterialCardView cardLoans;
 
+
+    // =========================================================
+    // ON CREATE
+    // =========================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payments);
+
+        setContentView(
+                R.layout.activity_payments
+        );
+
+
+        // =====================================================
+        // INITIALIZE VIEWS
+        // =====================================================
 
         initializeViews();
 
-        // ==========================================
-        // Mobile Recharge
-        // ==========================================
 
-        cardMobileRecharge.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        MobileRechargeActivity.class)));
+        // =====================================================
+        // MOBILE RECHARGE
+        // =====================================================
 
-        // ==========================================
-        // Electricity
-        // ==========================================
+        cardMobileRecharge.setOnClickListener(v -> {
 
-        cardElectricity.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        ElectricityBillActivity.class)));
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            MobileRechargeActivity.class
+                    );
 
-        // ==========================================
-        // Water
-        // ==========================================
+            startActivity(intent);
+        });
 
-        cardWater.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        WaterBillActivity.class)));
 
-        // ==========================================
-        // Gas
-        // ==========================================
+        // =====================================================
+        // ELECTRICITY
+        // =====================================================
 
-        cardGasCylinder.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        GasBillActivity.class)));
+        cardElectricity.setOnClickListener(v -> {
 
-        // ==========================================
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            ElectricityBillActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+
+        // =====================================================
+        // WATER
+        // =====================================================
+
+        cardWater.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            WaterBillActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+
+        // =====================================================
+        // GAS
+        // =====================================================
+
+        cardGasCylinder.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            GasBillActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+
+        // =====================================================
         // DTH
-        // ==========================================
+        // =====================================================
 
-        cardDth.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        DthRechargeActivity.class)));
+        cardDth.setOnClickListener(v -> {
 
-        // ==========================================
-        // Broadband
-        // ==========================================
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            DthRechargeActivity.class
+                    );
 
-        cardBroadband.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        BroadbandRechargeActivity.class)));
+            startActivity(intent);
+        });
 
-        // ==========================================
-        // FASTag
-        // ==========================================
 
-        cardFastag.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        FastagRechargeActivity.class)));
+        // =====================================================
+        // BROADBAND
+        // =====================================================
 
-        // ==========================================
-        // Insurance
-        // ==========================================
+        cardBroadband.setOnClickListener(v -> {
 
-        cardInsurance.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        InsurancePaymentActivity.class)));
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            BroadbandRechargeActivity.class
+                    );
 
-        // ==========================================
-        // Fixed Deposit
-        // ==========================================
+            startActivity(intent);
+        });
 
-        cardFixedDeposit.setOnClickListener(v ->
-                startActivity(new Intent(
-                        PaymentsActivity.this,
-                        FixedDepositActivity.class)));
-        // ==========================================
-        // Recurring Deposit
-        // ==========================================
+
+        // =====================================================
+        // FASTAG
+        // =====================================================
+
+        cardFastag.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            FastagRechargeActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+
+        // =====================================================
+        // INSURANCE
+        // =====================================================
+
+        cardInsurance.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            InsurancePaymentActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+
+        // =====================================================
+        // FIXED DEPOSIT
+        // =====================================================
+
+        cardFixedDeposit.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            FixedDepositActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+
+        // =====================================================
+        // RECURRING DEPOSIT
+        // =====================================================
 
         cardRecurringDeposit.setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    PaymentsActivity.this,
-                    RDDashboardActivity.class
-            );
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            RDDashboardActivity.class
+                    );
 
             startActivity(intent);
-
         });
 
-        // ==========================================
-        // Loan Calculator
-        // ==========================================
+
+        // =====================================================
+        // LOANS
+        // =====================================================
 
         cardLoans.setOnClickListener(v -> {
 
-            // Coming Soon
-            // Replace with LoanActivity later
+            Intent intent =
+                    new Intent(
+                            PaymentsActivity.this,
+                            LoanCalculatorActivity.class
+                    );
 
+            startActivity(intent);
         });
-
     }
+
+
+    // =========================================================
+    // INITIALIZE VIEWS
+    // =========================================================
 
     private void initializeViews() {
 
-        // Bills
+        // =====================================================
+        // BILLS
+        // =====================================================
 
-        cardMobileRecharge = findViewById(R.id.cardMobileRecharge);
+        cardMobileRecharge =
+                findViewById(
+                        R.id.cardMobileRecharge
+                );
 
-        cardElectricity = findViewById(R.id.cardElectricity);
 
-        cardWater = findViewById(R.id.cardWater);
+        cardElectricity =
+                findViewById(
+                        R.id.cardElectricity
+                );
 
-        cardGasCylinder = findViewById(R.id.cardGas);
 
-        cardDth = findViewById(R.id.cardDth);
+        cardWater =
+                findViewById(
+                        R.id.cardWater
+                );
 
-        cardBroadband = findViewById(R.id.cardBroadband);
 
-        cardFastag = findViewById(R.id.cardFastag);
+        cardGasCylinder =
+                findViewById(
+                        R.id.cardGas
+                );
 
-        cardInsurance = findViewById(R.id.cardInsurance);
 
-        // Finance
+        cardDth =
+                findViewById(
+                        R.id.cardDth
+                );
 
-        cardFixedDeposit = findViewById(R.id.cardFixedDeposit);
 
-        cardRecurringDeposit = findViewById(R.id.cardRecurringDeposit);
+        cardBroadband =
+                findViewById(
+                        R.id.cardBroadband
+                );
 
-        cardLoans = findViewById(R.id.cardLoans);
 
+        cardFastag =
+                findViewById(
+                        R.id.cardFastag
+                );
+
+
+        cardInsurance =
+                findViewById(
+                        R.id.cardInsurance
+                );
+
+
+        // =====================================================
+        // FINANCE
+        // =====================================================
+
+        cardFixedDeposit =
+                findViewById(
+                        R.id.cardFixedDeposit
+                );
+
+
+        cardRecurringDeposit =
+                findViewById(
+                        R.id.cardRecurringDeposit
+                );
+
+
+        cardLoans =
+                findViewById(
+                        R.id.cardLoans
+                );
     }
-
 }

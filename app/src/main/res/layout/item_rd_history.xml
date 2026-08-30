@@ -5,9 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,37 +19,67 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvTransactionId"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="TXN001"/>
+        <!-- Transaction Type -->
 
         <TextView
-            android:id="@+id/tvPaymentDate"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvHistoryTransactionType"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="01 Aug 2026"/>
+            android:text="RD INSTALLMENT"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Amount -->
 
         <TextView
-            android:id="@+id/tvAmount"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvHistoryAmount"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="₹5000"/>
+            android:layout_marginTop="6dp"
+            android:text="₹5,000.00"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Date -->
 
         <TextView
-            android:id="@+id/tvPaymentMode"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvHistoryDate"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="UPI"/>
+            android:layout_marginTop="8dp"
+            android:text="16 Aug 2026, 03:30 PM"
+            android:textSize="13sp" />
+
+        <!-- Payment Mode -->
 
         <TextView
-            android:id="@+id/tvStatus"
-            android:layout_width="wrap_content"
+            android:id="@+id/tvHistoryPaymentMode"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="ACCOUNT DEBIT"
+            android:textSize="13sp" />
+
+        <!-- Status -->
+
+        <TextView
+            android:id="@+id/tvHistoryStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:text="SUCCESS"
-            android:textStyle="bold"/>
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <!-- Remarks -->
+
+        <TextView
+            android:id="@+id/tvHistoryRemarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Recurring Deposit Installment"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

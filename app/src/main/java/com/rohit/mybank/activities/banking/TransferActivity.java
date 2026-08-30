@@ -29,7 +29,16 @@ import retrofit2.Response;
 
 public class TransferActivity extends AppCompatActivity {
 
+    // =========================================================
+    // CONSTANTS
+    // =========================================================
+
     private static final double MAX_TRANSFER = 100000.00;
+
+
+    // =========================================================
+    // VIEWS
+    // =========================================================
 
     private TextView tvFromAccount;
     private TextView tvBalance;
@@ -41,100 +50,221 @@ public class TransferActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
+
+    // =========================================================
+    // REPOSITORIES
+    // =========================================================
+
     private DashboardRepository dashboardRepository;
     private TransferRepository transferRepository;
 
+
+    // =========================================================
+    // ACCOUNT
+    // =========================================================
+
     private String fromAccount = "";
+
+
+    // =========================================================
+    // ACTIVITY CREATE
+    // =========================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_transfer);
 
         initializeViews();
 
-        dashboardRepository = new DashboardRepository(this);
-        transferRepository = new TransferRepository(this);
+        dashboardRepository =
+                new DashboardRepository(this);
+
+        transferRepository =
+                new TransferRepository(this);
 
         loadAccount();
 
-        btnTransfer.setOnClickListener(v -> transferMoney());
+        btnTransfer.setOnClickListener(
+                v -> transferMoney()
+        );
     }
+
+
+    // =========================================================
+    // INITIALIZE VIEWS
+    // =========================================================
 
     private void initializeViews() {
 
-        tvFromAccount = findViewById(R.id.tvFromAccount);
-        tvBalance = findViewById(R.id.tvBalance);
+        tvFromAccount =
+                findViewById(R.id.tvFromAccount);
 
-        etReceiverAccount = findViewById(R.id.etReceiverAccount);
-        etAmount = findViewById(R.id.etAmount);
+        tvBalance =
+                findViewById(R.id.tvBalance);
 
-        btnTransfer = findViewById(R.id.btnTransfer);
+        etReceiverAccount =
+                findViewById(R.id.etReceiverAccount);
 
-        progressBar = findViewById(R.id.progressBar);
+        etAmount =
+                findViewById(R.id.etAmount);
+
+        btnTransfer =
+                findViewById(R.id.btnTransfer);
+
+        progressBar =
+                findViewById(R.id.progressBar);
     }
+
+
+    // =========================================================
+    // LOAD LOGGED-IN USER ACCOUNT
+    // =========================================================
 
     private void loadAccount() {
 
-        dashboardRepository.getMyAccount().enqueue(new Callback<DashboardResponse>() {
+        dashboardRepository
+                .getMyAccount()
+                .enqueue(
+                        new Callback<DashboardResponse>() {
 
-            @Override
-            public void onResponse(Call<DashboardResponse> call,
-                                   Response<DashboardResponse> response) {
+                            @Override
+                            public void onResponse(
+                                    Call<DashboardResponse> call,
+                                    Response<DashboardResponse> response
+                            ) {
 
-                if (response.isSuccessful() && response.body() != null) {
+                                if (response.isSuccessful()
+                                        && response.body() != null) {
 
-                    DashboardResponse dashboard = response.body();
+                                    DashboardResponse dashboard =
+                                            response.body();
 
-                    fromAccount = dashboard.getAccNo();
+                                    // ---------------------------------
+                                    // ACCOUNT NUMBER
+                                    // ---------------------------------
 
-                    tvFromAccount.setText(fromAccount);
+                                    fromAccount =
+                                            dashboard.getAccNo();
 
-                    tvBalance.setText(
-                            CurrencyUtil.format(
-                                    dashboard.getBalance()
-                            )
-                    );
+                                    tvFromAccount.setText(
+                                            fromAccount
+                                    );
 
-                } else {
+                                    // ---------------------------------
+                                    // BALANCE
+                                    // ---------------------------------
 
-                    Toast.makeText(
-                            TransferActivity.this,
-                            "Unable to load account details.",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
+                                    tvBalance.setText(
+                                            CurrencyUtil.format(
+                                                    dashboard.getBalance()
+                                            )
+                                    );
 
-            }
+                                } else {
 
-            @Override
-            public void onFailure(Call<DashboardResponse> call,
-                                  Throwable t) {
+                                    Toast.makeText(
+                                            TransferActivity.this,
+                                            "Unable to load account details.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                            }
 
-                Toast.makeText(
-                        TransferActivity.this,
-                        "Network Error : " + t.getMessage(),
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-        });
 
+                            @Override
+                            public void onFailure(
+                                    Call<DashboardResponse> call,
+                                    Throwable t
+                            ) {
+
+                                Toast.makeText(
+                                        TransferActivity.this,
+                                        "Network Error : "
+                                                + t.getMessage(),
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                            }
+                        }
+                );
     }
+
+
+    // =========================================================
+    // START TRANSFER
+    // =========================================================
 
     private void transferMoney() {
 
-        String receiverAccount =
-                etReceiverAccount.getText().toString().trim();
+        // =====================================================
+        // RECEIVER ACCOUNT
+        // =====================================================
 
-        String amountText =
-                etAmount.getText().toString().trim();
+        String receiverAccount = "";
+
+        if (etReceiverAccount.getText() != null) {
+
+            receiverAccount =
+                    etReceiverAccount
+                            .getText()
+                            .toString()
+                            .trim();
+        }
+
+
+        // =====================================================
+        // AMOUNT
+        // =====================================================
+
+        String amountText = "";
+
+        if (etAmount.getText() != null) {
+
+            amountText =
+                    etAmount
+                            .getText()
+                            .toString()
+                            .trim();
+        }
+
+
+        // =====================================================
+        // RECEIVER VALIDATION
+        // =====================================================
 
         if (TextUtils.isEmpty(receiverAccount)) {
 
-            etReceiverAccount.setError("Enter receiver account number");
+            etReceiverAccount.setError(
+                    "Enter receiver account number"
+            );
+
             etReceiverAccount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // RECEIVER ACCOUNT FORMAT
+        // =====================================================
+
+        if (!receiverAccount.matches("\\d{12}")) {
+
+            etReceiverAccount.setError(
+                    "Account number must be exactly 12 digits"
+            );
+
+            etReceiverAccount.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // OWN ACCOUNT CHECK
+        // =====================================================
 
         if (receiverAccount.equals(fromAccount)) {
 
@@ -143,35 +273,86 @@ public class TransferActivity extends AppCompatActivity {
             );
 
             etReceiverAccount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // AMOUNT REQUIRED
+        // =====================================================
 
         if (TextUtils.isEmpty(amountText)) {
 
-            etAmount.setError("Enter transfer amount");
+            etAmount.setError(
+                    "Enter transfer amount"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // PARSE AMOUNT
+        // =====================================================
 
         double amount;
 
         try {
 
-            amount = Double.parseDouble(amountText);
+            amount =
+                    Double.parseDouble(amountText);
 
         } catch (NumberFormatException e) {
 
-            etAmount.setError("Invalid amount");
+            etAmount.setError(
+                    "Invalid amount"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // CHECK FINITE VALUE
+        // =====================================================
+
+        if (Double.isNaN(amount)
+                || Double.isInfinite(amount)) {
+
+            etAmount.setError(
+                    "Invalid amount"
+            );
+
+            etAmount.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // POSITIVE AMOUNT
+        // =====================================================
 
         if (amount <= 0) {
 
-            etAmount.setError("Amount must be greater than ₹0");
+            etAmount.setError(
+                    "Amount must be greater than ₹0"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // MAXIMUM TRANSFER
+        // =====================================================
 
         if (amount > MAX_TRANSFER) {
 
@@ -180,149 +361,309 @@ public class TransferActivity extends AppCompatActivity {
             );
 
             etAmount.requestFocus();
+
             return;
         }
 
-        double finalAmount = amount;
-        String finalReceiver = receiverAccount;
 
-        PinVerificationDialog.show(
+        // =====================================================
+        // FINAL VARIABLES
+        // =====================================================
+
+        final double finalAmount =
+                amount;
+
+        final String finalReceiver =
+                receiverAccount;
+
+
+        // =========================================================
+// TRANSACTION PIN VERIFICATION
+// =========================================================
+
+        PinVerificationDialog.showForTransactionPin(
                 TransferActivity.this,
-                new PinVerificationDialog.OnPinVerifiedListener() {
+
+                new PinVerificationDialog
+                        .OnPinVerifiedWithPinListener() {
 
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(
+                            String transactionPin
+                    ) {
+
+                        // =================================================
+                        // PIN VERIFIED
+                        // =================================================
+
+                        if (TextUtils.isEmpty(transactionPin)) {
+
+                            Toast.makeText(
+                                    TransferActivity.this,
+                                    "Transaction PIN verification failed.",
+                                    Toast.LENGTH_LONG
+                            ).show();
+
+                            return;
+                        }
+
+                        // =================================================
+                        // PERFORM TRANSFER
+                        // =================================================
 
                         performTransfer(
                                 finalReceiver,
-                                finalAmount
+                                finalAmount,
+                                transactionPin
                         );
-
                     }
 
                     @Override
                     public void onFailure() {
 
-                        Toast.makeText(
-                                TransferActivity.this,
-                                "Invalid Transaction PIN",
-                                Toast.LENGTH_SHORT
-                        ).show();
-
+                        // PIN verification failed.
+                        // PinVerificationDialog handles the error message.
                     }
-
-                });
-
+                }
+        );
     }
+
+
+    // =========================================================
+    // PERFORM TRANSFER
+    // =========================================================
 
     private void performTransfer(
             String receiverAccount,
-            double amount) {
+            double amount,
+            String transactionPin
+    ) {
 
-        TransferRequest request = new TransferRequest();
+        // =====================================================
+        // CREATE REQUEST
+        // =====================================================
 
-        request.setFromAcc(fromAccount);
-        request.setToAcc(receiverAccount);
-        request.setAmount(amount);
+        TransferRequest request =
+                new TransferRequest();
 
-        progressBar.setVisibility(View.VISIBLE);
-        btnTransfer.setEnabled(false);
+        request.setFromAcc(
+                fromAccount
+        );
 
-        transferRepository.transfer(request)
-                .enqueue(new Callback<TransferResponse>() {
+        request.setToAcc(
+                receiverAccount
+        );
 
-                    @Override
-                    public void onResponse(
-                            Call<TransferResponse> call,
-                            Response<TransferResponse> response) {
+        request.setAmount(
+                amount
+        );
 
-                        progressBar.setVisibility(View.GONE);
-                        btnTransfer.setEnabled(true);
+        // IMPORTANT:
+        // Send the verified transaction PIN
+        // to the backend.
 
-                        if (response.isSuccessful()
-                                && response.body() != null) {
+        request.setTransactionPin(
+                transactionPin
+        );
 
-                            TransferResponse transfer =
-                                    response.body();
 
-                            if (transfer.getFromAccount() != null) {
+        // =====================================================
+        // SHOW LOADING
+        // =====================================================
 
-                                tvBalance.setText(
-                                        CurrencyUtil.format(
-                                                transfer.getFromAccount().getBalance()
-                                        )
+        progressBar.setVisibility(
+                View.VISIBLE
+        );
+
+        btnTransfer.setEnabled(
+                false
+        );
+
+
+        // =====================================================
+        // API CALL
+        // =====================================================
+
+        transferRepository
+                .transfer(request)
+                .enqueue(
+                        new Callback<TransferResponse>() {
+
+                            @Override
+                            public void onResponse(
+                                    Call<TransferResponse> call,
+                                    Response<TransferResponse> response
+                            ) {
+
+                                progressBar.setVisibility(
+                                        View.GONE
                                 );
 
-                            }
+                                btnTransfer.setEnabled(
+                                        true
+                                );
 
-                            etReceiverAccount.setText("");
-                            etAmount.setText("");
 
-                            Toast.makeText(
-                                    TransferActivity.this,
-                                    CurrencyUtil.format(amount)
-                                            + " transferred successfully.",
-                                    Toast.LENGTH_LONG
-                            ).show();
+                                // =================================
+                                // SUCCESS
+                                // =================================
 
-                            Intent intent = new Intent(
-                                    TransferActivity.this,
-                                    DashboardActivity.class
-                            );
+                                if (response.isSuccessful()
+                                        && response.body() != null) {
 
-                            intent.addFlags(
-                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                            | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                            );
+                                    TransferResponse transfer =
+                                            response.body();
 
-                            startActivity(intent);
-                            finish();
 
-                        } else {
+                                    // -----------------------------
+                                    // UPDATE BALANCE
+                                    // -----------------------------
 
-                            String error = "Transfer failed.";
+                                    if (transfer.getFromAccount() != null) {
 
-                            try {
+                                        tvBalance.setText(
+                                                CurrencyUtil.format(
+                                                        transfer
+                                                                .getFromAccount()
+                                                                .getBalance()
+                                                )
+                                        );
+                                    }
 
-                                if (response.errorBody() != null) {
 
-                                    error = response.errorBody().string();
+                                    // -----------------------------
+                                    // CLEAR INPUTS
+                                    // -----------------------------
 
+                                    etReceiverAccount.setText("");
+
+                                    etAmount.setText("");
+
+
+                                    // -----------------------------
+                                    // SUCCESS MESSAGE
+                                    // -----------------------------
+
+                                    Toast.makeText(
+                                            TransferActivity.this,
+                                            CurrencyUtil.format(amount)
+                                                    + " transferred successfully.",
+                                            Toast.LENGTH_LONG
+                                    ).show();
+
+
+                                    // -----------------------------
+                                    // RETURN TO DASHBOARD
+                                    // -----------------------------
+
+                                    Intent intent =
+                                            new Intent(
+                                                    TransferActivity.this,
+                                                    DashboardActivity.class
+                                            );
+
+                                    intent.addFlags(
+                                            Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    );
+
+                                    startActivity(intent);
+
+                                    finish();
+
+                                    return;
                                 }
 
-                            } catch (Exception e) {
 
-                                error = e.getMessage();
+                                // =================================
+                                // SERVER ERROR
+                                // =================================
 
+                                String error =
+                                        "Transfer failed.";
+
+                                try {
+
+                                    if (response.errorBody()
+                                            != null) {
+
+                                        error =
+                                                response.errorBody()
+                                                        .string();
+                                    }
+
+                                } catch (Exception e) {
+
+                                    if (e.getMessage() != null
+                                            && !e.getMessage()
+                                            .isEmpty()) {
+
+                                        error =
+                                                e.getMessage();
+                                    }
+                                }
+
+
+                                Toast.makeText(
+                                        TransferActivity.this,
+                                        error,
+                                        Toast.LENGTH_LONG
+                                ).show();
                             }
 
-                            Toast.makeText(
-                                    TransferActivity.this,
-                                    error,
-                                    Toast.LENGTH_LONG
-                            ).show();
 
+                            // =====================================
+                            // NETWORK FAILURE
+                            // =====================================
+
+                            @Override
+                            public void onFailure(
+                                    Call<TransferResponse> call,
+                                    Throwable t
+                            ) {
+
+                                progressBar.setVisibility(
+                                        View.GONE
+                                );
+
+                                btnTransfer.setEnabled(
+                                        true
+                                );
+
+
+                                Toast.makeText(
+                                        TransferActivity.this,
+                                        "Network Error : "
+                                                + t.getMessage(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
                         }
+                );
+    }
 
-                    }
 
-                    @Override
-                    public void onFailure(
-                            Call<TransferResponse> call,
-                            Throwable t) {
+    // =========================================================
+    // ACTIVITY DESTROY
+    // =========================================================
 
-                        progressBar.setVisibility(View.GONE);
-                        btnTransfer.setEnabled(true);
+    @Override
+    protected void onDestroy() {
 
-                        Toast.makeText(
-                                TransferActivity.this,
-                                "Network Error : " + t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
+        super.onDestroy();
 
-                    }
+        if (progressBar != null) {
 
-                });
+            progressBar.setVisibility(
+                    View.GONE
+            );
+        }
 
+        if (btnTransfer != null) {
+
+            btnTransfer.setEnabled(
+                    true
+            );
+        }
     }
 }

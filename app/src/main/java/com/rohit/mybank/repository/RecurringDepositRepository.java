@@ -7,9 +7,6 @@ import com.rohit.mybank.api.RetrofitClient;
 import com.rohit.mybank.model.recurringdeposit.CreateRecurringDepositRequest;
 import com.rohit.mybank.model.recurringdeposit.CreateRecurringDepositResponse;
 import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentRequest;
-import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentResponse;
-import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDRequest;
-import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDResponse;
 import com.rohit.mybank.model.recurringdeposit.RDCalculatorRequest;
 import com.rohit.mybank.model.recurringdeposit.RDCalculatorResponse;
 import com.rohit.mybank.model.recurringdeposit.RDHistoryResponse;
@@ -31,7 +28,7 @@ public class RecurringDepositRepository {
     }
 
     // ===========================================
-    // RD Calculator
+    // RD CALCULATOR
     // ===========================================
 
     public Call<RDCalculatorResponse> calculateRecurringDeposit(
@@ -41,7 +38,7 @@ public class RecurringDepositRepository {
     }
 
     // ===========================================
-    // Open RD
+    // OPEN / CREATE RD
     // ===========================================
 
     public Call<CreateRecurringDepositResponse> createRecurringDeposit(
@@ -51,7 +48,7 @@ public class RecurringDepositRepository {
     }
 
     // ===========================================
-    // My RD List
+    // MY RD LIST
     // ===========================================
 
     public Call<List<RDResponse>> getMyRecurringDeposits() {
@@ -60,17 +57,19 @@ public class RecurringDepositRepository {
     }
 
     // ===========================================
-    // RD Details
+    // RD DETAILS
     // ===========================================
 
     public Call<RDResponse> getRecurringDepositDetails(
             String rdNumber) {
 
-        return apiService.getRecurringDepositDetails(rdNumber);
+        return apiService.getRecurringDepositDetails(
+                rdNumber
+        );
     }
 
     // ===========================================
-    // Matured RD List
+    // MATURED RD LIST
     // ===========================================
 
     public Call<List<RDResponse>> getMaturedRecurringDeposits() {
@@ -79,32 +78,50 @@ public class RecurringDepositRepository {
     }
 
     // ===========================================
-    // RD History
+    // RD HISTORY
     // ===========================================
 
     public Call<List<RDHistoryResponse>> getRecurringDepositHistory(
             String rdNumber) {
 
-        return apiService.getRecurringDepositHistory(rdNumber);
+        return apiService.getRecurringDepositHistory(
+                rdNumber
+        );
     }
 
     // ===========================================
-    // Pay RD Installment
+    // PAY RD INSTALLMENT
     // ===========================================
 
-    public Call<PayRecurringDepositInstallmentResponse> payRecurringDepositInstallment(
+    public Call<RDResponse> payRecurringDepositInstallment(
             PayRecurringDepositInstallmentRequest request) {
 
-        return apiService.payRecurringDepositInstallment(request);
+        return apiService.payRecurringDepositInstallment(
+                request
+        );
     }
 
     // ===========================================
-    // Premature Close RD
+    // CLOSE MATURED RD
     // ===========================================
 
-    public Call<PrematureCloseRDResponse> prematureCloseRecurringDeposit(
-            PrematureCloseRDRequest request) {
+    public Call<RDResponse> closeRecurringDeposit(
+            String rdNumber) {
 
-        return apiService.prematureCloseRecurringDeposit(request);
+        return apiService.closeRecurringDeposit(
+                rdNumber
+        );
+    }
+
+    // ===========================================
+    // PREMATURE CLOSE RD
+    // ===========================================
+
+    public Call<RDResponse> prematureCloseRecurringDeposit(
+            String rdNumber) {
+
+        return apiService.prematureCloseRecurringDeposit(
+                rdNumber
+        );
     }
 }

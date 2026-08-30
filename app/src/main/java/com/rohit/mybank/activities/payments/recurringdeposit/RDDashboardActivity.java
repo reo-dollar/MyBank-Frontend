@@ -2,7 +2,6 @@ package com.rohit.mybank.activities.payments.recurringdeposit;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +9,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.rohit.mybank.R;
 
 public class RDDashboardActivity extends AppCompatActivity {
+
+    // =========================================================
+    // CARDS
+    // =========================================================
 
     private MaterialCardView cardOpenRD;
     private MaterialCardView cardCalculator;
@@ -19,101 +22,190 @@ public class RDDashboardActivity extends AppCompatActivity {
     private MaterialCardView cardMatured;
     private MaterialCardView cardPrematureClose;
 
+    // =========================================================
+    // ON CREATE
+    // =========================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rd_dashboard);
+
+        setContentView(
+                R.layout.activity_rd_dashboard
+        );
 
         initializeViews();
 
         setupClickListeners();
     }
 
+    // =========================================================
+    // INITIALIZE VIEWS
+    // =========================================================
+
     private void initializeViews() {
 
-        cardOpenRD = findViewById(R.id.cardOpenRD);
+        cardOpenRD =
+                findViewById(R.id.cardOpenRD);
 
-        cardCalculator = findViewById(R.id.cardCalculator);
+        cardCalculator =
+                findViewById(R.id.cardCalculator);
 
-        cardMyRD = findViewById(R.id.cardMyRD);
+        cardMyRD =
+                findViewById(R.id.cardMyRD);
 
-        cardPayInstallment = findViewById(R.id.cardPayInstallment);
+        cardPayInstallment =
+                findViewById(R.id.cardPayInstallment);
 
-        cardHistory = findViewById(R.id.cardHistory);
+        cardHistory =
+                findViewById(R.id.cardHistory);
 
-        cardMatured = findViewById(R.id.cardMatured);
+        cardMatured =
+                findViewById(R.id.cardMatured);
 
-        cardPrematureClose = findViewById(R.id.cardPrematureClose);
+        cardPrematureClose =
+                findViewById(R.id.cardPrematureClose);
     }
+
+    // =========================================================
+    // CLICK LISTENERS
+    // =========================================================
 
     private void setupClickListeners() {
 
-        // ===========================
-        // Open New RD
-        // ===========================
+        // =====================================================
+        // OPEN NEW RD
+        // =====================================================
 
-        cardOpenRD.setOnClickListener(v ->
-                startActivity(new Intent(
-                        RDDashboardActivity.this,
-                        OpenRDActivity.class)));
+        cardOpenRD.setOnClickListener(v -> {
 
-        // ===========================
-        // RD Calculator
-        // ===========================
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            OpenRDActivity.class
+                    );
 
-        cardCalculator.setOnClickListener(v ->
-                startActivity(new Intent(
-                        RDDashboardActivity.this,
-                        RDCalculatorActivity.class)));
+            startActivity(intent);
+        });
 
-        // ===========================
-        // My RD
-        // ===========================
+        // =====================================================
+        // RD CALCULATOR
+        // =====================================================
 
-        cardMyRD.setOnClickListener(v ->
-                startActivity(new Intent(
-                        RDDashboardActivity.this,
-                        RDListActivity.class)));
+        cardCalculator.setOnClickListener(v -> {
 
-        // ===========================
-        // Pay Installment
-        // ===========================
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            RDCalculatorActivity.class
+                    );
 
-        cardPayInstallment.setOnClickListener(v ->
-                startActivity(new Intent(
-                        RDDashboardActivity.this,
-                        RDListActivity.class)));
+            startActivity(intent);
+        });
 
-        // ===========================
-        // RD History
-        // ===========================
+        // =====================================================
+        // MY RD
+        // =====================================================
 
-        cardHistory.setOnClickListener(v ->
+        cardMyRD.setOnClickListener(v -> {
 
-                Toast.makeText(
-                        RDDashboardActivity.this,
-                        "Open an RD from 'My RD' to view its installment history.",
-                        Toast.LENGTH_LONG
-                ).show()
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            RDListActivity.class
+                    );
 
-        );
+            startActivity(intent);
+        });
 
-        // ===========================
-        // Matured RD
-        // ===========================
+        // =====================================================
+        // PAY INSTALLMENT
+        // =====================================================
 
-        cardMatured.setOnClickListener(v ->
-                startActivity(new Intent(
-                        RDDashboardActivity.this,
-                        MaturedRDActivity.class)));
+        cardPayInstallment.setOnClickListener(v -> {
 
-        // ===========================
-        // Premature Closure
-        // ===========================
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            RDListActivity.class
+                    );
 
-        cardPrematureClose.setOnClickListener(v ->
-                startActivity(new Intent(
-                        RDDashboardActivity.this,
-                        RDListActivity.class)));
+            /*
+             * Tells RDListActivity that the user came
+             * here to pay an installment.
+             */
+            intent.putExtra(
+                    "ACTION",
+                    "PAY_INSTALLMENT"
+            );
+
+            startActivity(intent);
+        });
+
+        // =====================================================
+        // RD HISTORY
+        // =====================================================
+
+        cardHistory.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            RDListActivity.class
+                    );
+
+            /*
+             * RDHistoryActivity requires an RD_NUMBER.
+             *
+             * Therefore we first open the user's RD list.
+             * The user selects an RD there, then its history
+             * can be opened using that RD number.
+             */
+            intent.putExtra(
+                    "ACTION",
+                    "HISTORY"
+            );
+
+            startActivity(intent);
+        });
+
+        // =====================================================
+        // MATURED RD
+        // =====================================================
+
+        cardMatured.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            MaturedRDActivity.class
+                    );
+
+            startActivity(intent);
+        });
+
+        // =====================================================
+        // PREMATURE CLOSURE
+        // =====================================================
+
+        cardPrematureClose.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            RDDashboardActivity.this,
+                            RDListActivity.class
+                    );
+
+            /*
+             * Tells RDListActivity that the user came
+             * here for premature closure.
+             */
+            intent.putExtra(
+                    "ACTION",
+                    "PREMATURE_CLOSE"
+            );
+
+            startActivity(intent);
+        });
     }
 }

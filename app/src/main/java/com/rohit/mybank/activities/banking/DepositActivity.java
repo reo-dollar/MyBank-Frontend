@@ -14,6 +14,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.rohit.mybank.R;
 import com.rohit.mybank.activities.dashboard.DashboardActivity;
+import com.rohit.mybank.dialog.PinVerificationDialog;
 import com.rohit.mybank.model.dashboard.DashboardResponse;
 import com.rohit.mybank.model.deposit.DepositRequest;
 import com.rohit.mybank.model.deposit.DepositResponse;
@@ -25,11 +26,50 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+/**
+ * =========================================================
+ * DEPOSIT ACTIVITY
+ * =========================================================
+ *
+ * Deposit flow:
+ *
+ * 1. Load account
+ * 2. User enters amount
+ * 3. Validate amount
+ * 4. Open Transaction PIN dialog
+ * 5. User enters 6-digit PIN
+ * 6. Backend verifies PIN
+ * 7. Verified PIN is returned
+ * 8. Deposit request contains:
+ *
+ *       accNo
+ *       amount
+ *       transactionPin
+ *
+ * 9. Backend processes deposit
+ * 10. Balance is updated
+ * 11. Return to dashboard
+ *
+ * =========================================================
+ */
 public class DepositActivity extends AppCompatActivity {
 
-    private static final double MAX_DEPOSIT = 1_000_000.00;
+
+    // =========================================================
+    // CONSTANTS
+    // =========================================================
+
+    private static final double MAX_DEPOSIT =
+            1_000_000.00;
+
+
+    // =========================================================
+    // VIEWS
+    // =========================================================
 
     private TextView tvAccountNumber;
+
     private TextView tvBalance;
 
     private TextInputEditText etAmount;
@@ -38,210 +78,730 @@ public class DepositActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
+
+    // =========================================================
+    // REPOSITORIES
+    // =========================================================
+
     private DashboardRepository dashboardRepository;
+
     private DepositRepository depositRepository;
+
+
+    // =========================================================
+    // ACCOUNT
+    // =========================================================
 
     private String accountNumber = "";
 
+
+    // =========================================================
+    // ON CREATE
+    // =========================================================
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_deposit);
+    protected void onCreate(
+            Bundle savedInstanceState
+    ) {
+
+        super.onCreate(
+                savedInstanceState
+        );
+
+
+        // =====================================================
+        // LAYOUT
+        // =====================================================
+
+        setContentView(
+                R.layout.activity_deposit
+        );
+
+
+        // =====================================================
+        // INITIALIZE VIEWS
+        // =====================================================
 
         initializeViews();
 
-        dashboardRepository = new DashboardRepository(this);
-        depositRepository = new DepositRepository(this);
+
+        // =====================================================
+        // REPOSITORIES
+        // =====================================================
+
+        dashboardRepository =
+                new DashboardRepository(this);
+
+        depositRepository =
+                new DepositRepository(this);
+
+
+        // =====================================================
+        // LOAD ACCOUNT
+        // =====================================================
 
         loadAccount();
 
-        btnDeposit.setOnClickListener(v -> depositMoney());
+
+        // =====================================================
+        // DEPOSIT BUTTON
+        // =====================================================
+
+        btnDeposit.setOnClickListener(
+                v -> depositMoney()
+        );
     }
+
+
+    // =========================================================
+    // INITIALIZE VIEWS
+    // =========================================================
 
     private void initializeViews() {
 
-        tvAccountNumber = findViewById(R.id.tvAccountNumber);
-        tvBalance = findViewById(R.id.tvBalance);
+        tvAccountNumber =
+                findViewById(
+                        R.id.tvAccountNumber
+                );
 
-        etAmount = findViewById(R.id.etAmount);
 
-        btnDeposit = findViewById(R.id.btnDeposit);
+        tvBalance =
+                findViewById(
+                        R.id.tvBalance
+                );
 
-        progressBar = findViewById(R.id.progressBar);
+
+        etAmount =
+                findViewById(
+                        R.id.etAmount
+                );
+
+
+        btnDeposit =
+                findViewById(
+                        R.id.btnDeposit
+                );
+
+
+        progressBar =
+                findViewById(
+                        R.id.progressBar
+                );
     }
+
+
+    // =========================================================
+    // LOAD ACCOUNT
+    // =========================================================
 
     private void loadAccount() {
 
-        dashboardRepository.getMyAccount().enqueue(new Callback<DashboardResponse>() {
+        dashboardRepository
+                .getMyAccount()
+                .enqueue(
+                        new Callback<DashboardResponse>() {
 
-            @Override
-            public void onResponse(Call<DashboardResponse> call,
-                                   Response<DashboardResponse> response) {
+                            @Override
+                            public void onResponse(
+                                    Call<DashboardResponse> call,
+                                    Response<DashboardResponse> response
+                            ) {
 
-                if (response.isSuccessful() && response.body() != null) {
+                                if (
+                                        response.isSuccessful()
+                                                &&
+                                                response.body() != null
+                                ) {
 
-                    DashboardResponse dashboard = response.body();
+                                    DashboardResponse dashboard =
+                                            response.body();
 
-                    accountNumber = dashboard.getAccNo();
 
-                    tvAccountNumber.setText(accountNumber);
+                                    // =============================
+                                    // ACCOUNT NUMBER
+                                    // =============================
 
-                    tvBalance.setText(
-                            CurrencyUtil.format(
-                                    dashboard.getBalance()
-                            )
-                    );
+                                    accountNumber =
+                                            dashboard.getAccNo();
 
-                } else {
 
-                    Toast.makeText(
-                            DepositActivity.this,
-                            "Unable to load account details.",
-                            Toast.LENGTH_SHORT
-                    ).show();
-                }
-            }
+                                    if (
+                                            accountNumber == null
+                                                    ||
+                                                    accountNumber.trim().isEmpty()
+                                    ) {
 
-            @Override
-            public void onFailure(Call<DashboardResponse> call,
-                                  Throwable t) {
+                                        accountNumber = "";
+                                    }
 
-                Toast.makeText(
-                        DepositActivity.this,
-                        "Network Error : " + t.getMessage(),
-                        Toast.LENGTH_SHORT
-                ).show();
-            }
-        });
 
+                                    tvAccountNumber.setText(
+                                            accountNumber
+                                    );
+
+
+                                    // =============================
+                                    // BALANCE
+                                    // =============================
+
+                                    tvBalance.setText(
+                                            CurrencyUtil.format(
+                                                    dashboard.getBalance()
+                                            )
+                                    );
+
+                                } else {
+
+                                    Toast.makeText(
+                                            DepositActivity.this,
+                                            "Unable to load account details.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                            }
+
+
+                            @Override
+                            public void onFailure(
+                                    Call<DashboardResponse> call,
+                                    Throwable t
+                            ) {
+
+                                Toast.makeText(
+                                        DepositActivity.this,
+                                        "Network Error : "
+                                                + getSafeMessage(t),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                );
     }
+
+
+    // =========================================================
+    // DEPOSIT MONEY
+    // =========================================================
 
     private void depositMoney() {
 
-        String amountText = etAmount.getText().toString().trim();
+
+        // =====================================================
+        // READ AMOUNT
+        // =====================================================
+
+        String amountText = "";
+
+        if (etAmount.getText() != null) {
+
+            amountText =
+                    etAmount.getText()
+                            .toString()
+                            .trim();
+        }
+
+
+        // =====================================================
+        // EMPTY AMOUNT
+        // =====================================================
 
         if (TextUtils.isEmpty(amountText)) {
 
-            etAmount.setError("Please enter deposit amount");
+            etAmount.setError(
+                    "Please enter deposit amount"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // PARSE AMOUNT
+        // =====================================================
 
         double amount;
 
         try {
 
-            amount = Double.parseDouble(amountText);
+            amount =
+                    Double.parseDouble(
+                            amountText
+                    );
 
         } catch (NumberFormatException e) {
 
-            etAmount.setError("Invalid amount");
+            etAmount.setError(
+                    "Invalid amount"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // POSITIVE AMOUNT
+        // =====================================================
 
         if (amount <= 0) {
 
-            etAmount.setError("Amount must be greater than ₹0");
+            etAmount.setError(
+                    "Amount must be greater than ₹0"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
+
+
+        // =====================================================
+        // MAXIMUM DEPOSIT
+        // =====================================================
 
         if (amount > MAX_DEPOSIT) {
 
-            etAmount.setError("Maximum deposit limit is ₹10,00,000");
+            etAmount.setError(
+                    "Maximum deposit limit is ₹10,00,000"
+            );
+
             etAmount.requestFocus();
+
             return;
         }
 
-        DepositRequest request = new DepositRequest();
-        request.setAccNo(accountNumber);
-        request.setAmount(amount);
 
-        progressBar.setVisibility(View.VISIBLE);
-        btnDeposit.setEnabled(false);
+        // =====================================================
+        // ACCOUNT CHECK
+        // =====================================================
 
-        depositRepository.deposit(request).enqueue(new Callback<DepositResponse>() {
+        if (TextUtils.isEmpty(accountNumber)) {
 
-            @Override
-            public void onResponse(Call<DepositResponse> call,
-                                   Response<DepositResponse> response) {
+            Toast.makeText(
+                    this,
+                    "Account information is not loaded yet.",
+                    Toast.LENGTH_LONG
+            ).show();
 
-                progressBar.setVisibility(View.GONE);
-                btnDeposit.setEnabled(true);
+            return;
+        }
 
-                if (response.isSuccessful() && response.body() != null) {
 
-                    DepositResponse deposit = response.body();
+        // =====================================================
+        // FINAL AMOUNT
+        // =====================================================
 
-                    tvBalance.setText(
-                            CurrencyUtil.format(
-                                    deposit.getBalance()
-                            )
-                    );
+        final double finalAmount =
+                amount;
 
-                    etAmount.setText("");
 
-                    Toast.makeText(
-                            DepositActivity.this,
-                            CurrencyUtil.format(amount) + " deposited successfully.",
-                            Toast.LENGTH_LONG
-                    ).show();
+        // =====================================================
+        // TRANSACTION PIN
+        // =====================================================
+        //
+        // IMPORTANT:
+        //
+        // Do NOT call performDeposit() directly.
+        //
+        // First:
+        //
+        //       Transaction PIN verification
+        //
+        // Then:
+        //
+        //       performDeposit()
+        //
+        // =====================================================
 
-                    Intent intent = new Intent(
-                            DepositActivity.this,
-                            DashboardActivity.class
-                    );
+        PinVerificationDialog.showForTransactionPin(
+                DepositActivity.this,
 
-                    intent.addFlags(
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    );
+                new PinVerificationDialog
+                        .OnPinVerifiedWithPinListener() {
 
-                    startActivity(intent);
-                    finish();
+                    @Override
+                    public void onSuccess(
+                            String transactionPin
+                    ) {
 
-                } else {
+                        // =====================================
+                        // PIN VERIFIED
+                        // =====================================
 
-                    String errorMessage = "Deposit failed.";
+                        if (
+                                TextUtils.isEmpty(
+                                        transactionPin
+                                )
+                        ) {
 
-                    try {
+                            Toast.makeText(
+                                    DepositActivity.this,
+                                    "Transaction PIN verification failed.",
+                                    Toast.LENGTH_LONG
+                            ).show();
 
-                        if (response.errorBody() != null) {
-                            errorMessage = response.errorBody().string();
+                            return;
                         }
 
-                    } catch (Exception e) {
 
-                        errorMessage = e.getMessage();
+                        // =====================================
+                        // PERFORM DEPOSIT
+                        // =====================================
+
+                        performDeposit(
+                                finalAmount,
+                                transactionPin
+                        );
                     }
 
-                    Toast.makeText(
-                            DepositActivity.this,
-                            errorMessage,
-                            Toast.LENGTH_LONG
-                    ).show();
 
+                    @Override
+                    public void onFailure() {
+
+                        /*
+                         * Invalid PIN or network error.
+                         *
+                         * PinVerificationDialog already
+                         * displays the relevant error.
+                         */
+                    }
                 }
-
-            }
-
-            @Override
-            public void onFailure(Call<DepositResponse> call,
-                                  Throwable t) {
-
-                progressBar.setVisibility(View.GONE);
-                btnDeposit.setEnabled(true);
-
-                Toast.makeText(
-                        DepositActivity.this,
-                        "Network Error : " + t.getMessage(),
-                        Toast.LENGTH_LONG
-                ).show();
-            }
-
-        });
-
+        );
     }
 
+
+    // =========================================================
+    // PERFORM DEPOSIT
+    // =========================================================
+
+    private void performDeposit(
+            double amount,
+            String transactionPin
+    ) {
+
+
+        // =====================================================
+        // PIN VALIDATION
+        // =====================================================
+
+        if (
+                TextUtils.isEmpty(
+                        transactionPin
+                )
+        ) {
+
+            Toast.makeText(
+                    this,
+                    "Transaction PIN is required.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        // =====================================================
+        // ACCOUNT VALIDATION
+        // =====================================================
+
+        if (
+                TextUtils.isEmpty(
+                        accountNumber
+                )
+        ) {
+
+            Toast.makeText(
+                    this,
+                    "Account number is unavailable.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        // =====================================================
+        // CREATE REQUEST
+        // =====================================================
+
+        DepositRequest request =
+                new DepositRequest();
+
+
+        request.setAccNo(
+                accountNumber
+        );
+
+
+        request.setAmount(
+                amount
+        );
+
+
+        request.setTransactionPin(
+                transactionPin
+        );
+
+
+        // =====================================================
+        // SHOW PROGRESS
+        // =====================================================
+
+        progressBar.setVisibility(
+                View.VISIBLE
+        );
+
+
+        btnDeposit.setEnabled(
+                false
+        );
+
+
+        // =====================================================
+        // BACKEND REQUEST
+        // =====================================================
+
+        depositRepository
+                .deposit(request)
+                .enqueue(
+                        new Callback<DepositResponse>() {
+
+                            @Override
+                            public void onResponse(
+                                    Call<DepositResponse> call,
+                                    Response<DepositResponse> response
+                            ) {
+
+                                // =============================
+                                // HIDE PROGRESS
+                                // =============================
+
+                                progressBar.setVisibility(
+                                        View.GONE
+                                );
+
+
+                                btnDeposit.setEnabled(
+                                        true
+                                );
+
+
+                                // =============================
+                                // SUCCESS
+                                // =============================
+
+                                if (
+                                        response.isSuccessful()
+                                                &&
+                                                response.body() != null
+                                ) {
+
+                                    DepositResponse deposit =
+                                            response.body();
+
+
+                                    // =============================
+                                    // UPDATE BALANCE
+                                    // =============================
+
+                                    tvBalance.setText(
+                                            CurrencyUtil.format(
+                                                    deposit.getBalance()
+                                            )
+                                    );
+
+
+                                    // =============================
+                                    // CLEAR AMOUNT
+                                    // =============================
+
+                                    etAmount.setText("");
+
+
+                                    // =============================
+                                    // SUCCESS MESSAGE
+                                    // =============================
+
+                                    Toast.makeText(
+                                            DepositActivity.this,
+
+                                            CurrencyUtil.format(
+                                                    amount
+                                            )
+                                                    +
+                                                    " deposited successfully.",
+
+                                            Toast.LENGTH_LONG
+                                    ).show();
+
+
+                                    // =============================
+                                    // DASHBOARD
+                                    // =============================
+
+                                    Intent intent =
+                                            new Intent(
+                                                    DepositActivity.this,
+                                                    DashboardActivity.class
+                                            );
+
+
+                                    intent.addFlags(
+                                            Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                                    |
+                                                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+                                    );
+
+
+                                    startActivity(
+                                            intent
+                                    );
+
+
+                                    finish();
+
+                                    return;
+                                }
+
+
+                                // =============================
+                                // SERVER ERROR
+                                // =============================
+
+                                String errorMessage =
+                                        getResponseError(
+                                                response
+                                        );
+
+
+                                Toast.makeText(
+                                        DepositActivity.this,
+
+                                        "Deposit Failed\n\n"
+                                                +
+                                                "HTTP "
+                                                +
+                                                response.code()
+                                                +
+                                                "\n\n"
+                                                +
+                                                errorMessage,
+
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+
+
+                            @Override
+                            public void onFailure(
+                                    Call<DepositResponse> call,
+                                    Throwable t
+                            ) {
+
+                                progressBar.setVisibility(
+                                        View.GONE
+                                );
+
+
+                                btnDeposit.setEnabled(
+                                        true
+                                );
+
+
+                                Toast.makeText(
+                                        DepositActivity.this,
+
+                                        "Network Error : "
+                                                +
+                                                getSafeMessage(t),
+
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                );
+    }
+
+
+    // =========================================================
+    // RESPONSE ERROR
+    // =========================================================
+
+    private String getResponseError(
+            Response<?> response
+    ) {
+
+        String errorMessage =
+                "Deposit failed.";
+
+
+        try {
+
+            if (
+                    response.errorBody() != null
+            ) {
+
+                String serverError =
+                        response.errorBody()
+                                .string();
+
+
+                if (
+                        !TextUtils.isEmpty(
+                                serverError
+                        )
+                ) {
+
+                    errorMessage =
+                            serverError;
+                }
+            }
+
+        } catch (Exception e) {
+
+            if (
+                    !TextUtils.isEmpty(
+                            e.getMessage()
+                    )
+            ) {
+
+                errorMessage =
+                        e.getMessage();
+            }
+        }
+
+
+        return errorMessage;
+    }
+
+
+    // =========================================================
+    // SAFE THROWABLE MESSAGE
+    // =========================================================
+
+    private String getSafeMessage(
+            Throwable throwable
+    ) {
+
+        if (throwable == null) {
+
+            return "Unknown error";
+        }
+
+
+        if (
+                TextUtils.isEmpty(
+                        throwable.getMessage()
+                )
+        ) {
+
+            return "Unknown error";
+        }
+
+
+        return throwable.getMessage();
+    }
 }

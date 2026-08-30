@@ -10,19 +10,46 @@ import com.rohit.mybank.R;
 
 public class RDHistoryViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView tvTransactionId;
-    public TextView tvPaymentDate;
-    public TextView tvAmount;
-    public TextView tvPaymentMode;
-    public TextView tvStatus;
+    TextView tvHistoryTransactionType;
+    TextView tvHistoryAmount;
+    TextView tvHistoryDate;
+    TextView tvHistoryPaymentMode;
+    TextView tvHistoryStatus;
+    TextView tvHistoryRemarks;
 
-    public RDHistoryViewHolder(@NonNull View itemView) {
+    public RDHistoryViewHolder(
+            @NonNull View itemView) {
+
         super(itemView);
 
-        tvTransactionId = itemView.findViewById(R.id.tvTransactionId);
-        tvPaymentDate = itemView.findViewById(R.id.tvPaymentDate);
-        tvAmount = itemView.findViewById(R.id.tvAmount);
-        tvPaymentMode = itemView.findViewById(R.id.tvPaymentMode);
-        tvStatus = itemView.findViewById(R.id.tvStatus);
+        tvHistoryTransactionType =
+                itemView.findViewById(
+                        R.id.tvHistoryTransactionType
+                );
+
+        tvHistoryAmount =
+                itemView.findViewById(
+                        R.id.tvHistoryAmount
+                );
+
+        tvHistoryDate =
+                itemView.findViewById(
+                        R.id.tvHistoryDate
+                );
+
+        tvHistoryPaymentMode =
+                itemView.findViewById(
+                        R.id.tvHistoryPaymentMode
+                );
+
+        tvHistoryStatus =
+                itemView.findViewById(
+                        R.id.tvHistoryStatus
+                );
+
+        tvHistoryRemarks =
+                itemView.findViewById(
+                        R.id.tvHistoryRemarks
+                );
     }
 }

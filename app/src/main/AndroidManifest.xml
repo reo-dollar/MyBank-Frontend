@@ -80,6 +80,29 @@
         <activity
             android:name=".activities.admin.AdminTransactionsActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.loan.LoanCalculatorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.loan.LoanApplicationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.loan.MyLoansActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.loan.LoanDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.loan.LoanEMIScheduleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.loan.LoanEMIPaymentHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.admin.AdminLoanManagementActivity"
+            android:exported="false" />
+
 
         <activity
             android:name=".activities.auth.LoginActivity"
@@ -300,6 +323,27 @@
 
         <activity
             android:name=".activities.payments.recurringdeposit.PrematureCloseRDActivity"
+            android:exported="false" />
+
+
+        <!---Cards-->
+        <activity
+            android:name=".activities.cards.CardsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.cards.DebitCardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.cards.CreditCardApplicationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.admin.CreditCardApplicationAdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.cards.CardDetailsActivity"
             android:exported="false" />
 
         <!-- ================================================== -->

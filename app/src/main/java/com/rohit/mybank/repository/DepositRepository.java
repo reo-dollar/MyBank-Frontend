@@ -13,17 +13,32 @@ public class DepositRepository {
 
     private final ApiService apiService;
 
-    public DepositRepository(Context context) {
 
-        apiService = RetrofitClient
-                .getClient(context)
-                .create(ApiService.class);
+    // =========================================================
+    // CONSTRUCTOR
+    // =========================================================
 
+    public DepositRepository(
+            Context context
+    ) {
+
+        apiService =
+                RetrofitClient
+                        .getClient(context)
+                        .create(ApiService.class);
     }
 
-    public Call<DepositResponse> deposit(DepositRequest request) {
 
-        return apiService.deposit(request);
+    // =========================================================
+    // DEPOSIT
+    // =========================================================
 
+    public Call<DepositResponse> deposit(
+            DepositRequest request
+    ) {
+
+        return apiService.deposit(
+                request
+        );
     }
 }

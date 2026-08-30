@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginBottom="16dp"
+
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+        android:padding="18dp">
+
+
+        <!-- ================================================= -->
+        <!-- LOAN NUMBER -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="Loan Number"
+            android:textSize="12sp"/>
+
+
+        <TextView
+            android:id="@+id/tvLoanNumber"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="4dp"
+
+            android:textStyle="bold"
+            android:textSize="18sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- LOAN TYPE -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvLoanType"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="12dp"
+
+            android:textSize="14sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- ACCOUNT -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvAccountNumber"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="6dp"
+
+            android:textSize="14sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- AMOUNT -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvAmount"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="14dp"
+
+            android:textStyle="bold"
+            android:textSize="20sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- INTEREST -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvInterest"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="6dp"
+
+            android:textSize="14sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- TENURE -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvTenure"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="6dp"
+
+            android:textSize="14sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- STATUS -->
+        <!-- ================================================= -->
+
+        <TextView
+            android:id="@+id/tvStatus"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="12dp"
+
+            android:textStyle="bold"
+            android:textSize="14sp"/>
+
+
+        <!-- ================================================= -->
+        <!-- APPROVE -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApprove"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="16dp"
+
+            android:text="APPROVE LOAN"/>
+
+
+        <!-- ================================================= -->
+        <!-- REJECT -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReject"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="8dp"
+
+            android:text="REJECT LOAN"
+
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+
+        <!-- ================================================= -->
+        <!-- DISBURSE -->
+        <!-- ================================================= -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDisburse"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="16dp"
+
+            android:text="DISBURSE LOAN"
+
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

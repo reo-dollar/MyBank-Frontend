@@ -2,6 +2,7 @@ package com.rohit.mybank.activities.payments.recurringdeposit;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -9,8 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.rohit.mybank.R;
-import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDRequest;
-import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDResponse;
+import com.rohit.mybank.model.recurringdeposit.RDResponse;
 import com.rohit.mybank.repository.RecurringDepositRepository;
 
 import retrofit2.Call;
@@ -19,140 +19,451 @@ import retrofit2.Response;
 
 public class PrematureCloseRDActivity extends AppCompatActivity {
 
-    private TextView tvRDNumber;
+    // ============================================================
+    // Views
+    // ============================================================
 
+    private TextView tvRDNumber;
     private MaterialButton btnCloseRD;
+
+    // ============================================================
+    // Repository
+    // ============================================================
 
     private RecurringDepositRepository repository;
 
+    // ============================================================
+    // Data
+    // ============================================================
+
     private String rdNumber;
+
+    // ============================================================
+    // Lifecycle
+    // ============================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_premature_close_rd);
 
-        repository = new RecurringDepositRepository(this);
+        setContentView(
+                R.layout.activity_premature_close_rd
+        );
+
+        initializeRepository();
 
         initializeViews();
 
-        loadIntent();
+        loadRDNumber();
 
         setupListeners();
 
+        validateRDNumber();
     }
+
+    // ============================================================
+    // Initialize Repository
+    // ============================================================
+
+    private void initializeRepository() {
+
+        repository =
+                new RecurringDepositRepository(this);
+    }
+
+    // ============================================================
+    // Initialize Views
+    // ============================================================
 
     private void initializeViews() {
 
-        tvRDNumber = findViewById(R.id.tvRDNumber);
+        tvRDNumber =
+                findViewById(R.id.tvRDNumber);
 
-        btnCloseRD = findViewById(R.id.btnCloseRD);
-
+        btnCloseRD =
+                findViewById(R.id.btnCloseRD);
     }
 
-    private void loadIntent() {
+    // ============================================================
+    // Load RD Number From Intent
+    // ============================================================
 
-        if (getIntent() != null) {
+    private void loadRDNumber() {
 
-            rdNumber = getIntent().getStringExtra("RD_NUMBER");
-
-            if (rdNumber != null) {
-
-                tvRDNumber.setText(rdNumber);
-
-            }
-
+        if (getIntent() == null) {
+            return;
         }
 
+        rdNumber =
+                getIntent().getStringExtra(
+                        "RD_NUMBER"
+                );
+
+        if (!TextUtils.isEmpty(rdNumber)) {
+
+            rdNumber =
+                    rdNumber.trim();
+
+            tvRDNumber.setText(
+                    rdNumber
+            );
+        }
     }
+
+    // ============================================================
+    // Validate RD Number
+    // ============================================================
+
+    private void validateRDNumber() {
+
+        if (TextUtils.isEmpty(rdNumber)) {
+
+            btnCloseRD.setEnabled(false);
+
+            Toast.makeText(
+                    this,
+                    "RD Number not received.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            finish();
+        }
+    }
+
+    // ============================================================
+    // Setup Listeners
+    // ============================================================
 
     private void setupListeners() {
 
-        btnCloseRD.setOnClickListener(v -> {
-
-            new AlertDialog.Builder(this)
-                    .setTitle("Premature Close")
-                    .setMessage("Are you sure you want to close this Recurring Deposit?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-
-                        closeRecurringDeposit();
-
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-
-        });
-
+        btnCloseRD.setOnClickListener(
+                v -> showConfirmationDialog()
+        );
     }
+
+    // ============================================================
+    // Confirmation Dialog
+    // ============================================================
+
+    private void showConfirmationDialog() {
+
+        if (TextUtils.isEmpty(rdNumber)) {
+
+            Toast.makeText(
+                    this,
+                    "Invalid RD Number.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+
+                .setTitle(
+                        "Premature Close RD"
+                )
+
+                .setMessage(
+                        "Are you sure you want to close RD "
+                                + rdNumber
+                                + " before maturity?"
+                                + "\n\n"
+                                + "The RD will be permanently "
+                                + "closed prematurely."
+                )
+
+                .setPositiveButton(
+                        "Yes, Close RD",
+                        (dialog, which) ->
+                                closeRecurringDeposit()
+                )
+
+                .setNegativeButton(
+                        "Cancel",
+                        null
+                )
+
+                .setCancelable(true)
+
+                .show();
+    }
+
+    // ============================================================
+    // Premature Close RD
+    // ============================================================
 
     private void closeRecurringDeposit() {
 
-        PrematureCloseRDRequest request =
-                new PrematureCloseRDRequest();
+        if (TextUtils.isEmpty(rdNumber)) {
 
-        request.setRdNumber(rdNumber);
+            Toast.makeText(
+                    this,
+                    "Invalid RD Number.",
+                    Toast.LENGTH_LONG
+            ).show();
 
+            return;
+        }
+
+        // Prevent duplicate requests
         btnCloseRD.setEnabled(false);
 
+        /*
+         * IMPORTANT
+         *
+         * Backend endpoint:
+         *
+         * POST
+         * /payments/recurring-deposit/
+         * premature-close/{rdNumber}
+         *
+         * Example:
+         *
+         * POST
+         * /payments/recurring-deposit/
+         * premature-close/RD2026000002
+         *
+         * No JSON request body is required.
+         */
+
         repository
-                .prematureCloseRecurringDeposit(request)
-                .enqueue(new Callback<PrematureCloseRDResponse>() {
+                .prematureCloseRecurringDeposit(
+                        rdNumber
+                )
+                .enqueue(
+                        new Callback<RDResponse>() {
 
-                    @Override
-                    public void onResponse(
-                            Call<PrematureCloseRDResponse> call,
-                            Response<PrematureCloseRDResponse> response) {
+                            @Override
+                            public void onResponse(
+                                    Call<RDResponse> call,
+                                    Response<RDResponse> response) {
 
-                        btnCloseRD.setEnabled(true);
+                                btnCloseRD.setEnabled(true);
 
-                        if (response.isSuccessful()
-                                && response.body() != null) {
+                                if (response.isSuccessful()
+                                        && response.body() != null) {
 
-                            PrematureCloseRDResponse result =
-                                    response.body();
+                                    RDResponse result =
+                                            response.body();
 
-                            new AlertDialog.Builder(
-                                    PrematureCloseRDActivity.this)
-                                    .setTitle("Recurring Deposit Closed")
-                                    .setMessage(
-                                            "Settlement Amount : ₹"
-                                                    + result.getSettlementAmount()
-                                                    + "\n\n"
-                                                    + result.getMessage()
-                                    )
-                                    .setPositiveButton("OK",
-                                            (d, w) -> finish())
-                                    .show();
+                                    showSuccessDialog(
+                                            result
+                                    );
 
-                        } else {
+                                } else {
 
-                            Toast.makeText(
-                                    PrematureCloseRDActivity.this,
-                                    "Unable to Close RD",
-                                    Toast.LENGTH_LONG
-                            ).show();
+                                    showServerError(
+                                            response
+                                    );
+                                }
+                            }
 
+                            @Override
+                            public void onFailure(
+                                    Call<RDResponse> call,
+                                    Throwable t) {
+
+                                btnCloseRD.setEnabled(true);
+
+                                showNetworkError(t);
+                            }
                         }
-
-                    }
-
-                    @Override
-                    public void onFailure(
-                            Call<PrematureCloseRDResponse> call,
-                            Throwable t) {
-
-                        btnCloseRD.setEnabled(true);
-
-                        Toast.makeText(
-                                PrematureCloseRDActivity.this,
-                                t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                    }
-
-                });
-
+                );
     }
 
+    // ============================================================
+    // Success Dialog
+    // ============================================================
+
+    private void showSuccessDialog(
+            RDResponse result) {
+
+        StringBuilder message =
+                new StringBuilder();
+
+        message.append(
+                "Recurring Deposit closed successfully."
+        );
+
+        message.append("\n\n");
+
+        message.append(
+                "RD Number : "
+        );
+
+        message.append(
+                safeText(
+                        result.getRdNumber()
+                )
+        );
+
+        message.append("\n");
+
+        message.append(
+                "Account Number : "
+        );
+
+        message.append(
+                safeText(
+                        result.getAccountNumber()
+                )
+        );
+
+        message.append("\n\n");
+
+        message.append(
+                "Total Deposit : ₹"
+        );
+
+        message.append(
+                safeText(
+                        result.getTotalDeposit()
+                )
+        );
+
+        message.append("\n");
+
+        message.append(
+                "Maturity Amount : ₹"
+        );
+
+        message.append(
+                safeText(
+                        result.getMaturityAmount()
+                )
+        );
+
+        message.append("\n\n");
+
+        message.append(
+                "Status : "
+        );
+
+        message.append(
+                safeText(
+                        result.getStatus()
+                )
+        );
+
+        new AlertDialog.Builder(
+                PrematureCloseRDActivity.this
+        )
+
+                .setTitle(
+                        "RD Closed Successfully"
+                )
+
+                .setMessage(
+                        message.toString()
+                )
+
+                .setPositiveButton(
+                        "OK",
+                        (dialog, which) -> {
+
+                            setResult(
+                                    RESULT_OK
+                            );
+
+                            finish();
+                        }
+                )
+
+                .setCancelable(false)
+
+                .show();
+    }
+
+    // ============================================================
+    // Server Error
+    // ============================================================
+
+    private void showServerError(
+            Response<RDResponse> response) {
+
+        String errorMessage =
+                "Unable to close RD.";
+
+        int statusCode =
+                response.code();
+
+        try {
+
+            if (response.errorBody() != null) {
+
+                String serverError =
+                        response.errorBody().string();
+
+                if (!TextUtils.isEmpty(
+                        serverError)) {
+
+                    errorMessage =
+                            serverError.trim();
+                }
+            }
+
+        } catch (Exception e) {
+
+            if (!TextUtils.isEmpty(
+                    e.getMessage())) {
+
+                errorMessage =
+                        e.getMessage();
+            }
+        }
+
+        String finalMessage =
+                "HTTP "
+                        + statusCode
+                        + "\n\n"
+                        + errorMessage;
+
+        Toast.makeText(
+                PrematureCloseRDActivity.this,
+                finalMessage,
+                Toast.LENGTH_LONG
+        ).show();
+    }
+
+    // ============================================================
+    // Network Error
+    // ============================================================
+
+    private void showNetworkError(
+            Throwable throwable) {
+
+        String errorMessage =
+                "Network error occurred.";
+
+        if (throwable != null
+                && !TextUtils.isEmpty(
+                throwable.getMessage())) {
+
+            errorMessage =
+                    throwable.getMessage();
+        }
+
+        Toast.makeText(
+                PrematureCloseRDActivity.this,
+                "Network Error\n\n"
+                        + errorMessage,
+                Toast.LENGTH_LONG
+        ).show();
+    }
+
+    // ============================================================
+    // Safe Text
+    // ============================================================
+
+    private String safeText(
+            Object value) {
+
+        if (value == null) {
+
+            return "-";
+        }
+
+        return String.valueOf(value);
+    }
 }

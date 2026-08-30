@@ -2,6 +2,7 @@ package com.rohit.mybank.activities.payments.recurringdeposit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,7 +12,6 @@ import com.google.android.material.button.MaterialButton;
 import com.rohit.mybank.R;
 import com.rohit.mybank.dialog.PinVerificationDialog;
 import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentRequest;
-import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentResponse;
 import com.rohit.mybank.model.recurringdeposit.RDResponse;
 import com.rohit.mybank.repository.RecurringDepositRepository;
 
@@ -19,7 +19,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class RDDetailsActivity extends AppCompatActivity {
+
+    // =========================================================
+    // TEXT VIEWS
+    // =========================================================
 
     private TextView tvRDNumber;
     private TextView tvAccountNumber;
@@ -34,37 +39,94 @@ public class RDDetailsActivity extends AppCompatActivity {
     private TextView tvNextInstallment;
     private TextView tvStatus;
 
+
+    // =========================================================
+    // BUTTONS
+    // =========================================================
+
     private MaterialButton btnPayInstallment;
     private MaterialButton btnHistory;
     private MaterialButton btnPrematureClose;
 
+
+    // =========================================================
+    // REPOSITORY
+    // =========================================================
+
     private RecurringDepositRepository repository;
+
+
+    // =========================================================
+    // RD DATA
+    // =========================================================
 
     private String rdNumber;
 
     private RDResponse currentRD;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rd_details);
 
-        repository = new RecurringDepositRepository(this);
+    // =========================================================
+    // ACTIVITY
+    // =========================================================
+
+    @Override
+    protected void onCreate(
+            Bundle savedInstanceState
+    ) {
+
+        super.onCreate(
+                savedInstanceState
+        );
+
+
+        setContentView(
+                R.layout.activity_rd_details
+        );
+
+
+        // =====================================================
+        // REPOSITORY
+        // =====================================================
+
+        repository =
+                new RecurringDepositRepository(
+                        this
+                );
+
+
+        // =====================================================
+        // INITIALIZE UI
+        // =====================================================
 
         initializeViews();
 
+
+        // =====================================================
+        // READ INTENT
+        // =====================================================
+
         readIntent();
+
+
+        // =====================================================
+        // CLICK LISTENERS
+        // =====================================================
 
         setupClickListeners();
 
-        if (rdNumber != null && !rdNumber.isEmpty()) {
+
+        // =====================================================
+        // LOAD RD
+        // =====================================================
+
+        if (!TextUtils.isEmpty(rdNumber)) {
 
             loadDetails();
 
         } else {
 
             Toast.makeText(
-                    this,
+                    RDDetailsActivity.this,
                     "Invalid RD Number",
                     Toast.LENGTH_LONG
             ).show();
@@ -73,387 +135,1045 @@ public class RDDetailsActivity extends AppCompatActivity {
         }
     }
 
+
+    // =========================================================
+    // INITIALIZE VIEWS
+    // =========================================================
+
     private void initializeViews() {
 
-        tvRDNumber = findViewById(R.id.tvRDNumber);
-        tvAccountNumber = findViewById(R.id.tvAccountNumber);
-        tvCustomerName = findViewById(R.id.tvCustomerName);
-        tvMonthlyInstallment = findViewById(R.id.tvMonthlyInstallment);
-        tvInterestRate = findViewById(R.id.tvInterestRate);
-        tvTenure = findViewById(R.id.tvTenure);
-        tvTotalDeposit = findViewById(R.id.tvTotalDeposit);
-        tvMaturityAmount = findViewById(R.id.tvMaturityAmount);
-        tvPaidInstallments = findViewById(R.id.tvPaidInstallments);
-        tvRemainingInstallments = findViewById(R.id.tvRemainingInstallments);
-        tvNextInstallment = findViewById(R.id.tvNextInstallment);
-        tvStatus = findViewById(R.id.tvStatus);
+        tvRDNumber =
+                findViewById(
+                        R.id.tvRDNumber
+                );
 
-        btnPayInstallment = findViewById(R.id.btnPayInstallment);
-        btnHistory = findViewById(R.id.btnHistory);
-        btnPrematureClose = findViewById(R.id.btnPrematureClose);
+
+        tvAccountNumber =
+                findViewById(
+                        R.id.tvAccountNumber
+                );
+
+
+        tvCustomerName =
+                findViewById(
+                        R.id.tvCustomerName
+                );
+
+
+        tvMonthlyInstallment =
+                findViewById(
+                        R.id.tvMonthlyInstallment
+                );
+
+
+        tvInterestRate =
+                findViewById(
+                        R.id.tvInterestRate
+                );
+
+
+        tvTenure =
+                findViewById(
+                        R.id.tvTenure
+                );
+
+
+        tvTotalDeposit =
+                findViewById(
+                        R.id.tvTotalDeposit
+                );
+
+
+        tvMaturityAmount =
+                findViewById(
+                        R.id.tvMaturityAmount
+                );
+
+
+        tvPaidInstallments =
+                findViewById(
+                        R.id.tvPaidInstallments
+                );
+
+
+        tvRemainingInstallments =
+                findViewById(
+                        R.id.tvRemainingInstallments
+                );
+
+
+        tvNextInstallment =
+                findViewById(
+                        R.id.tvNextInstallment
+                );
+
+
+        tvStatus =
+                findViewById(
+                        R.id.tvStatus
+                );
+
+
+        btnPayInstallment =
+                findViewById(
+                        R.id.btnPayInstallment
+                );
+
+
+        btnHistory =
+                findViewById(
+                        R.id.btnHistory
+                );
+
+
+        btnPrematureClose =
+                findViewById(
+                        R.id.btnPrematureClose
+                );
     }
+
+
+    // =========================================================
+    // READ INTENT
+    // =========================================================
 
     private void readIntent() {
 
-        Intent intent = getIntent();
+        Intent intent =
+                getIntent();
+
 
         if (intent != null) {
 
-            rdNumber = intent.getStringExtra("RD_NUMBER");
-
+            rdNumber =
+                    intent.getStringExtra(
+                            "RD_NUMBER"
+                    );
         }
     }
 
+
+    // =========================================================
+    // CLICK LISTENERS
+    // =========================================================
+
     private void setupClickListeners() {
 
-        // =====================================
-        // Pay Installment
-        // =====================================
 
-        btnPayInstallment.setOnClickListener(v -> {
+        // =====================================================
+        // PAY INSTALLMENT
+        // =====================================================
 
-            if (currentRD == null) {
+        btnPayInstallment.setOnClickListener(
+                v -> {
 
-                Toast.makeText(
-                        RDDetailsActivity.this,
-                        "Unable to load RD details.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                    // ---------------------------------------------
+                    // CHECK RD
+                    // ---------------------------------------------
 
-                return;
-            }
+                    if (currentRD == null) {
 
-            PinVerificationDialog.show(
-                    RDDetailsActivity.this,
-                    new PinVerificationDialog.OnPinVerifiedListener() {
+                        Toast.makeText(
+                                RDDetailsActivity.this,
+                                "Unable to load RD details.",
+                                Toast.LENGTH_SHORT
+                        ).show();
 
-                        @Override
-                        public void onSuccess() {
+                        return;
+                    }
 
-                            performPayInstallment();
 
-                        }
+                    // ---------------------------------------------
+                    // GET RD NUMBER
+                    // ---------------------------------------------
 
-                        @Override
-                        public void onFailure() {
+                    String currentRDNumber =
+                            currentRD.getRdNumber();
 
-                            Toast.makeText(
+
+                    if (TextUtils.isEmpty(
+                            currentRDNumber
+                    )) {
+
+                        Toast.makeText(
+                                RDDetailsActivity.this,
+                                "Invalid RD information.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        return;
+                    }
+
+
+                    // =================================================
+                    // TRANSACTION PIN
+                    // =================================================
+                    //
+                    // IMPORTANT:
+                    //
+                    // DO NOT call the payment API here.
+                    //
+                    // First verify Transaction PIN.
+                    //
+                    // Only after successful verification:
+                    //
+                    // performPayInstallment(transactionPin)
+                    //
+                    // =================================================
+
+                    PinVerificationDialog.showForTransactionPin(
+
+                            RDDetailsActivity.this,
+
+                            new PinVerificationDialog
+                                    .OnPinVerifiedWithPinListener() {
+
+                                @Override
+                                public void onSuccess(
+                                        String transactionPin
+                                ) {
+
+                                    // ---------------------------------
+                                    // VALIDATE RETURNED PIN
+                                    // ---------------------------------
+
+                                    if (TextUtils.isEmpty(
+                                            transactionPin
+                                    )) {
+
+                                        Toast.makeText(
+                                                RDDetailsActivity.this,
+                                                "Transaction PIN verification failed.",
+                                                Toast.LENGTH_LONG
+                                        ).show();
+
+                                        return;
+                                    }
+
+
+                                    // ---------------------------------
+                                    // PIN VERIFIED
+                                    // ---------------------------------
+
+                                    performPayInstallment(
+                                            transactionPin
+                                    );
+                                }
+
+
+                                @Override
+                                public void onFailure() {
+
+                                    Toast.makeText(
+                                            RDDetailsActivity.this,
+                                            "Invalid Transaction PIN.",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                }
+                            }
+                    );
+                }
+        );
+
+
+        // =====================================================
+        // RD HISTORY
+        // =====================================================
+
+        btnHistory.setOnClickListener(
+                v -> {
+
+                    if (currentRD == null) {
+
+                        Toast.makeText(
+                                RDDetailsActivity.this,
+                                "RD details not loaded.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        return;
+                    }
+
+
+                    String currentRDNumber =
+                            currentRD.getRdNumber();
+
+
+                    if (TextUtils.isEmpty(
+                            currentRDNumber
+                    )) {
+
+                        Toast.makeText(
+                                RDDetailsActivity.this,
+                                "Invalid RD information.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        return;
+                    }
+
+
+                    Intent intent =
+                            new Intent(
                                     RDDetailsActivity.this,
-                                    "Invalid Transaction PIN",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                                    RDHistoryActivity.class
+                            );
 
-                        }
 
-                    });
+                    intent.putExtra(
+                            "RD_NUMBER",
+                            currentRDNumber
+                    );
 
-        });
 
-        // =====================================
-        // Installment History
-        // =====================================
+                    startActivity(
+                            intent
+                    );
+                }
+        );
 
-        btnHistory.setOnClickListener(v -> {
 
-            if (currentRD == null) {
+        // =====================================================
+        // PREMATURE CLOSE
+        // =====================================================
 
-                Toast.makeText(
-                        RDDetailsActivity.this,
-                        "RD details not loaded.",
-                        Toast.LENGTH_SHORT
-                ).show();
+        btnPrematureClose.setOnClickListener(
+                v -> {
 
-                return;
-            }
+                    if (currentRD == null) {
 
-            Intent intent = new Intent(
-                    RDDetailsActivity.this,
-                    RDHistoryActivity.class
-            );
+                        Toast.makeText(
+                                RDDetailsActivity.this,
+                                "RD details not loaded.",
+                                Toast.LENGTH_SHORT
+                        ).show();
 
-            intent.putExtra(
-                    "RD_NUMBER",
-                    currentRD.getRdNumber()
-            );
+                        return;
+                    }
 
-            startActivity(intent);
 
-        });
+                    String currentRDNumber =
+                            currentRD.getRdNumber();
 
-        // =====================================
-        // Premature Close
-        // =====================================
 
-        btnPrematureClose.setOnClickListener(v -> {
+                    if (TextUtils.isEmpty(
+                            currentRDNumber
+                    )) {
 
-            if (currentRD == null) {
+                        Toast.makeText(
+                                RDDetailsActivity.this,
+                                "Invalid RD information.",
+                                Toast.LENGTH_SHORT
+                        ).show();
 
-                Toast.makeText(
-                        RDDetailsActivity.this,
-                        "RD details not loaded.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                        return;
+                    }
 
-                return;
-            }
 
-            Intent intent = new Intent(
-                    RDDetailsActivity.this,
-                    PrematureCloseRDActivity.class
-            );
+                    Intent intent =
+                            new Intent(
+                                    RDDetailsActivity.this,
+                                    PrematureCloseRDActivity.class
+                            );
 
-            intent.putExtra(
-                    "RD_NUMBER",
-                    currentRD.getRdNumber()
-            );
 
-            startActivity(intent);
+                    intent.putExtra(
+                            "RD_NUMBER",
+                            currentRDNumber
+                    );
 
-        });
 
+                    startActivity(
+                            intent
+                    );
+                }
+        );
     }
 
-    private void performPayInstallment() {
 
-        btnPayInstallment.setEnabled(false);
+    // =========================================================
+    // PAY RD INSTALLMENT
+    // =========================================================
+    //
+    // THIS METHOD CAN ONLY BE REACHED AFTER
+    // TRANSACTION PIN VERIFICATION.
+    //
+    // =========================================================
+
+    private void performPayInstallment(
+            String transactionPin
+    ) {
+
+
+        // =====================================================
+        // VALIDATE RD
+        // =====================================================
+
+        if (currentRD == null
+                || TextUtils.isEmpty(
+                currentRD.getRdNumber()
+        )) {
+
+            Toast.makeText(
+                    RDDetailsActivity.this,
+                    "Invalid RD information.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        // =====================================================
+        // VALIDATE PIN
+        // =====================================================
+
+        if (TextUtils.isEmpty(
+                transactionPin
+        )) {
+
+            Toast.makeText(
+                    RDDetailsActivity.this,
+                    "Transaction PIN is required.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        // =====================================================
+        // DISABLE BUTTON
+        // =====================================================
+
+        btnPayInstallment.setEnabled(
+                false
+        );
+
+
+        // =====================================================
+        // CREATE REQUEST
+        // =====================================================
 
         PayRecurringDepositInstallmentRequest request =
                 new PayRecurringDepositInstallmentRequest();
 
-        request.setRdNumber(currentRD.getRdNumber());
 
-        request.setAmount(currentRD.getMonthlyInstallment());
+        // =====================================================
+        // RD NUMBER
+        // =====================================================
 
-        repository.payRecurringDepositInstallment(request)
-                .enqueue(new Callback<PayRecurringDepositInstallmentResponse>() {
+        request.setRdNumber(
+                currentRD.getRdNumber()
+        );
 
-                    @Override
-                    public void onResponse(
-                            Call<PayRecurringDepositInstallmentResponse> call,
-                            Response<PayRecurringDepositInstallmentResponse> response) {
 
-                        btnPayInstallment.setEnabled(true);
+        // =====================================================
+        // TRANSACTION PIN
+        // =====================================================
 
-                        if (response.isSuccessful()
-                                && response.body() != null) {
+        request.setTransactionPin(
+                transactionPin
+        );
 
-                            Toast.makeText(
-                                    RDDetailsActivity.this,
-                                    response.body().getMessage(),
-                                    Toast.LENGTH_LONG
-                            ).show();
 
-                            // Refresh RD Details
-                            loadDetails();
+        // =====================================================
+        // API CALL
+        // =====================================================
 
-                        } else {
+        repository
+                .payRecurringDepositInstallment(
+                        request
+                )
+                .enqueue(
+                        new Callback<RDResponse>() {
 
-                            String error = "";
+                            @Override
+                            public void onResponse(
+                                    Call<RDResponse> call,
+                                    Response<RDResponse> response
+                            ) {
 
-                            try {
+                                // ---------------------------------
+                                // ENABLE BUTTON
+                                // ---------------------------------
 
-                                if (response.errorBody() != null) {
+                                btnPayInstallment.setEnabled(
+                                        true
+                                );
 
-                                    error = response.errorBody().string();
 
+                                // =================================
+                                // SUCCESS
+                                // =================================
+
+                                if (response.isSuccessful()
+                                        && response.body() != null) {
+
+                                    RDResponse updatedRD =
+                                            response.body();
+
+
+                                    // ---------------------------------
+                                    // UPDATE CURRENT RD
+                                    // ---------------------------------
+
+                                    currentRD =
+                                            updatedRD;
+
+
+                                    // ---------------------------------
+                                    // SUCCESS MESSAGE
+                                    // ---------------------------------
+
+                                    String message =
+                                            "RD installment paid successfully."
+                                                    + "\n\n"
+                                                    + "Paid Installments: "
+                                                    + safeInteger(
+                                                    updatedRD
+                                                            .getPaidInstallments()
+                                            )
+                                                    + "\n"
+                                                    + "Remaining Installments: "
+                                                    + safeInteger(
+                                                    updatedRD
+                                                            .getRemainingInstallments()
+                                            );
+
+
+                                    Toast.makeText(
+                                            RDDetailsActivity.this,
+                                            message,
+                                            Toast.LENGTH_LONG
+                                    ).show();
+
+
+                                    // ---------------------------------
+                                    // REFRESH UI
+                                    // ---------------------------------
+
+                                    populateData(
+                                            updatedRD
+                                    );
+
+                                    return;
                                 }
 
-                            } catch (Exception e) {
 
-                                error = e.getMessage();
+                                // =================================
+                                // API ERROR
+                                // =================================
 
+                                showPaymentError(
+                                        response
+                                );
                             }
 
-                            Toast.makeText(
-                                    RDDetailsActivity.this,
-                                    "Payment Failed\n\nHTTP "
-                                            + response.code()
-                                            + "\n\n"
-                                            + error,
-                                    Toast.LENGTH_LONG
-                            ).show();
 
+                            @Override
+                            public void onFailure(
+                                    Call<RDResponse> call,
+                                    Throwable t
+                            ) {
+
+                                btnPayInstallment.setEnabled(
+                                        true
+                                );
+
+
+                                Toast.makeText(
+                                        RDDetailsActivity.this,
+                                        "Network Error\n\n"
+                                                + (
+                                                t != null
+                                                        ? t.getMessage()
+                                                        : "Unknown error"
+                                        ),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
                         }
-
-                    }
-
-                    @Override
-                    public void onFailure(
-                            Call<PayRecurringDepositInstallmentResponse> call,
-                            Throwable t) {
-
-                        btnPayInstallment.setEnabled(true);
-
-                        Toast.makeText(
-                                RDDetailsActivity.this,
-                                "Network Error\n\n"
-                                        + t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                    }
-
-                });
-
+                );
     }
+
+
+    // =========================================================
+    // PAYMENT ERROR
+    // =========================================================
+
+    private void showPaymentError(
+            Response<RDResponse> response
+    ) {
+
+        String error =
+                "Unable to pay RD installment.";
+
+
+        try {
+
+            if (response.errorBody() != null) {
+
+                String serverError =
+                        response.errorBody()
+                                .string();
+
+
+                if (!TextUtils.isEmpty(
+                        serverError
+                )) {
+
+                    error =
+                            serverError;
+                }
+            }
+
+        } catch (Exception ignored) {
+
+            // Keep default error.
+        }
+
+
+        Toast.makeText(
+                RDDetailsActivity.this,
+
+                "Payment Failed\n\n"
+                        + "HTTP "
+                        + response.code()
+                        + "\n\n"
+                        + error,
+
+                Toast.LENGTH_LONG
+
+        ).show();
+    }
+
+
+    // =========================================================
+    // LOAD RD DETAILS
+    // =========================================================
 
     private void loadDetails() {
 
-        repository.getRecurringDepositDetails(rdNumber)
-                .enqueue(new Callback<RDResponse>() {
+        repository
+                .getRecurringDepositDetails(
+                        rdNumber
+                )
+                .enqueue(
+                        new Callback<RDResponse>() {
 
-                    @Override
-                    public void onResponse(
-                            Call<RDResponse> call,
-                            Response<RDResponse> response) {
+                            @Override
+                            public void onResponse(
+                                    Call<RDResponse> call,
+                                    Response<RDResponse> response
+                            ) {
 
-                        if (response.isSuccessful()
-                                && response.body() != null) {
+                                // =============================
+                                // SUCCESS
+                                // =============================
 
-                            populateData(response.body());
+                                if (response.isSuccessful()
+                                        && response.body() != null) {
 
-                        } else {
+                                    populateData(
+                                            response.body()
+                                    );
 
-                            String error = "";
-
-                            try {
-
-                                if (response.errorBody() != null) {
-
-                                    error = response.errorBody().string();
-
+                                    return;
                                 }
 
-                            } catch (Exception e) {
 
-                                error = e.getMessage();
+                                // =============================
+                                // ERROR
+                                // =============================
 
+                                String error =
+                                        "Unable to load RD details.";
+
+
+                                try {
+
+                                    if (response.errorBody()
+                                            != null) {
+
+                                        String serverError =
+                                                response.errorBody()
+                                                        .string();
+
+
+                                        if (!TextUtils.isEmpty(
+                                                serverError
+                                        )) {
+
+                                            error =
+                                                    serverError;
+                                        }
+                                    }
+
+                                } catch (Exception ignored) {
+
+                                    // Keep default error.
+                                }
+
+
+                                Toast.makeText(
+                                        RDDetailsActivity.this,
+
+                                        "Unable to load RD Details\n\n"
+                                                + "HTTP "
+                                                + response.code()
+                                                + "\n\n"
+                                                + error,
+
+                                        Toast.LENGTH_LONG
+
+                                ).show();
                             }
 
-                            Toast.makeText(
-                                    RDDetailsActivity.this,
-                                    "Unable to load RD Details\n\nHTTP "
-                                            + response.code()
-                                            + "\n\n"
-                                            + error,
-                                    Toast.LENGTH_LONG
-                            ).show();
 
+                            @Override
+                            public void onFailure(
+                                    Call<RDResponse> call,
+                                    Throwable t
+                            ) {
+
+                                Toast.makeText(
+                                        RDDetailsActivity.this,
+
+                                        "Network Error\n\n"
+                                                + (
+                                                t != null
+                                                        ? t.getMessage()
+                                                        : "Unknown error"
+                                        ),
+
+                                        Toast.LENGTH_LONG
+
+                                ).show();
+                            }
                         }
-
-                    }
-
-                    @Override
-                    public void onFailure(
-                            Call<RDResponse> call,
-                            Throwable t) {
-
-                        Toast.makeText(
-                                RDDetailsActivity.this,
-                                "Network Error\n\n"
-                                        + t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-
-                    }
-
-                });
-
+                );
     }
 
-    private void populateData(RDResponse rd) {
 
-        currentRD = rd;
+    // =========================================================
+    // POPULATE RD DATA
+    // =========================================================
 
-        tvRDNumber.setText(rd.getRdNumber());
+    private void populateData(
+            RDResponse rd
+    ) {
 
-        tvAccountNumber.setText(rd.getAccountNumber());
+        if (rd == null) {
+            return;
+        }
 
-        tvCustomerName.setText(rd.getCustomerName());
+
+        // =====================================================
+        // STORE CURRENT RD
+        // =====================================================
+
+        currentRD =
+                rd;
+
+
+        // =====================================================
+        // BASIC INFORMATION
+        // =====================================================
+
+        tvRDNumber.setText(
+                safeText(
+                        rd.getRdNumber()
+                )
+        );
+
+
+        tvAccountNumber.setText(
+                safeText(
+                        rd.getAccountNumber()
+                )
+        );
+
+
+        tvCustomerName.setText(
+                safeText(
+                        rd.getCustomerName()
+                )
+        );
+
+
+        // =====================================================
+        // MONTHLY INSTALLMENT
+        // =====================================================
 
         tvMonthlyInstallment.setText(
-                "₹ " + rd.getMonthlyInstallment());
+                "₹ "
+                        + safeText(
+                        rd.getMonthlyInstallment()
+                )
+        );
+
+
+        // =====================================================
+        // INTEREST RATE
+        // =====================================================
 
         tvInterestRate.setText(
-                rd.getInterestRate() + " %");
+                safeText(
+                        rd.getInterestRate()
+                )
+                        + " %"
+        );
+
+
+        // =====================================================
+        // TENURE
+        // =====================================================
 
         tvTenure.setText(
-                rd.getTenureMonths() + " Months");
+                safeText(
+                        rd.getTenureMonths()
+                )
+                        + " Months"
+        );
+
+
+        // =====================================================
+        // TOTAL DEPOSIT
+        // =====================================================
 
         tvTotalDeposit.setText(
-                "₹ " + rd.getTotalDeposit());
+                "₹ "
+                        + safeText(
+                        rd.getTotalDeposit()
+                )
+        );
+
+
+        // =====================================================
+        // MATURITY AMOUNT
+        // =====================================================
 
         tvMaturityAmount.setText(
-                "₹ " + rd.getMaturityAmount());
+                "₹ "
+                        + safeText(
+                        rd.getMaturityAmount()
+                )
+        );
+
+
+        // =====================================================
+        // PAID INSTALLMENTS
+        // =====================================================
 
         tvPaidInstallments.setText(
-                String.valueOf(rd.getPaidInstallments()));
+                safeText(
+                        rd.getPaidInstallments()
+                )
+        );
+
+
+        // =====================================================
+        // REMAINING INSTALLMENTS
+        // =====================================================
 
         tvRemainingInstallments.setText(
-                String.valueOf(rd.getRemainingInstallments()));
+                safeText(
+                        rd.getRemainingInstallments()
+                )
+        );
 
-        // ============================
-        // Next Installment
-        // ============================
 
-        if (rd.getRemainingInstallments() <= 0
-                || rd.getNextInstallmentDate() == null) {
+        // =====================================================
+        // NEXT INSTALLMENT
+        // =====================================================
 
-            tvNextInstallment.setText("Completed");
+        Integer remaining =
+                rd.getRemainingInstallments();
+
+
+        if (remaining != null
+                && remaining <= 0) {
+
+            tvNextInstallment.setText(
+                    "Completed"
+            );
+
+        } else if (
+                TextUtils.isEmpty(
+                        rd.getNextInstallmentDate()
+                )
+        ) {
+
+            tvNextInstallment.setText(
+                    "Not Available"
+            );
 
         } else {
 
             tvNextInstallment.setText(
-                    String.valueOf(
-                            rd.getNextInstallmentDate()));
-
+                    rd.getNextInstallmentDate()
+            );
         }
 
-        // ============================
-        // Status
-        // ============================
+
+        // =====================================================
+        // STATUS
+        // =====================================================
 
         tvStatus.setText(
-                String.valueOf(rd.getStatus()));
+                safeText(
+                        rd.getStatus()
+                )
+        );
 
-        // ============================
-        // Button State
-        // ============================
+
+        // =====================================================
+        // BUTTON STATE
+        // =====================================================
+
+        updateButtonState(
+                rd
+        );
+    }
+
+
+    // =========================================================
+    // UPDATE BUTTON STATE
+    // =========================================================
+
+    private void updateButtonState(
+            RDResponse rd
+    ) {
+
+        if (rd == null) {
+            return;
+        }
+
+
+        Integer remaining =
+                rd.getRemainingInstallments();
+
+
+        String status =
+                String.valueOf(
+                        rd.getStatus()
+                );
+
+
+        // =====================================================
+        // CHECK COMPLETED
+        // =====================================================
 
         boolean completed =
-                rd.getRemainingInstallments() <= 0
-                        || "MATURED".equalsIgnoreCase(
-                        String.valueOf(rd.getStatus()))
-                        || "PREMATURE_CLOSED".equalsIgnoreCase(
-                        String.valueOf(rd.getStatus()))
-                        || "CLOSED".equalsIgnoreCase(
-                        String.valueOf(rd.getStatus()));
+                (remaining != null
+                        && remaining <= 0)
+
+                        || "MATURED"
+                        .equalsIgnoreCase(
+                                status
+                        )
+
+                        || "PREMATURE_CLOSED"
+                        .equalsIgnoreCase(
+                                status
+                        )
+
+                        || "CLOSED"
+                        .equalsIgnoreCase(
+                                status
+                        );
+
+
+        // =====================================================
+        // PAY INSTALLMENT
+        // =====================================================
 
         if (completed) {
 
-            btnPayInstallment.setEnabled(false);
+            btnPayInstallment.setEnabled(
+                    false
+            );
 
             btnPayInstallment.setText(
-                    "No Installment Due");
-
-            btnPrematureClose.setEnabled(false);
-
-            btnPrematureClose.setText(
-                    "RD Closed");
+                    "No Installment Due"
+            );
 
         } else {
 
-            btnPayInstallment.setEnabled(true);
+            btnPayInstallment.setEnabled(
+                    true
+            );
 
             btnPayInstallment.setText(
-                    "Pay Installment");
-
-            btnPrematureClose.setEnabled(true);
-
-            btnPrematureClose.setText(
-                    "Premature Close");
-
+                    "Pay Installment"
+            );
         }
 
+
+        // =====================================================
+        // PREMATURE CLOSE
+        // =====================================================
+
+        if (completed) {
+
+            btnPrematureClose.setEnabled(
+                    false
+            );
+
+            btnPrematureClose.setText(
+                    "RD Closed"
+            );
+
+        } else {
+
+            btnPrematureClose.setEnabled(
+                    true
+            );
+
+            btnPrematureClose.setText(
+                    "Premature Close"
+            );
+        }
+    }
+
+
+    // =========================================================
+    // SAFE TEXT
+    // =========================================================
+
+    private String safeText(
+            Object value
+    ) {
+
+        if (value == null) {
+
+            return "-";
+        }
+
+
+        return String.valueOf(
+                value
+        );
+    }
+
+
+    // =========================================================
+    // SAFE INTEGER
+    // =========================================================
+
+    private String safeInteger(
+            Integer value
+    ) {
+
+        if (value == null) {
+
+            return "0";
+        }
+
+
+        return String.valueOf(
+                value
+        );
     }
 }

@@ -5,21 +5,26 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_24"
-        android:title="Home"/>
+        android:title="Home" />
 
     <item
         android:id="@+id/nav_payments"
         android:icon="@drawable/ic_account_balance_wallet_24"
-        android:title="Payments"/>
+        android:title="Payments" />
 
     <item
         android:id="@+id/nav_scan"
         android:icon="@drawable/ic_qr_code_scanner_24"
-        android:title="Scan"/>
+        android:title="Scan" />
 
     <item
-        android:id="@+id/nav_profile"
+        android:id="@+id/nav_cards"
+        android:icon="@drawable/ic_credit_card_24"
+        android:title="Cards" />
+
+    <item
+        android:id="@+id/nav_menu"
         android:icon="@drawable/ic_menu_24"
-        android:title="Menu"/>
+        android:title="Menu" />
 
 </menu>

@@ -1,64 +1,83 @@
 package com.rohit.mybank.api;
 
+import com.rohit.mybank.model.auth.ForgotPasswordRequest;
 import com.rohit.mybank.model.auth.LoginRequest;
 import com.rohit.mybank.model.auth.LoginResponse;
 import com.rohit.mybank.model.auth.RegisterRequest;
 import com.rohit.mybank.model.auth.RegisterResponse;
+import com.rohit.mybank.model.auth.ResetPasswordRequest;
+
 import com.rohit.mybank.model.customer.KycRequest;
 import com.rohit.mybank.model.customer.KycResponse;
+
 import com.rohit.mybank.model.dashboard.DashboardResponse;
+
 import com.rohit.mybank.model.deposit.DepositRequest;
 import com.rohit.mybank.model.deposit.DepositResponse;
+
 import com.rohit.mybank.model.pin.ApiResponse;
 import com.rohit.mybank.model.pin.SetPinRequest;
 import com.rohit.mybank.model.pin.VerifyPinRequest;
 import com.rohit.mybank.model.pin.VerifyPinResponse;
+
 import com.rohit.mybank.model.profile.ChangePasswordRequest;
 import com.rohit.mybank.model.profile.ProfileResponse;
 import com.rohit.mybank.model.profile.UpdateProfileRequest;
+
 import com.rohit.mybank.model.transaction.TransactionPageResponse;
+
 import com.rohit.mybank.model.transfer.TransferRequest;
 import com.rohit.mybank.model.transfer.TransferResponse;
+
 import com.rohit.mybank.model.withdraw.WithdrawRequest;
 import com.rohit.mybank.model.withdraw.WithdrawResponse;
+
 import com.rohit.mybank.model.recharge.MobileRechargeRequest;
 import com.rohit.mybank.model.recharge.MobileRechargeResponse;
+
 import com.rohit.mybank.model.electricity.ElectricityBillRequest;
 import com.rohit.mybank.model.electricity.ElectricityBillResponse;
+
 import com.rohit.mybank.model.water.WaterBillRequest;
 import com.rohit.mybank.model.water.WaterBillResponse;
+
 import com.rohit.mybank.model.gas.GasBillRequest;
 import com.rohit.mybank.model.gas.GasBillResponse;
+
 import com.rohit.mybank.model.dth.DthRechargeRequest;
 import com.rohit.mybank.model.dth.DthRechargeResponse;
+
 import com.rohit.mybank.model.broadband.BroadbandRechargeRequest;
 import com.rohit.mybank.model.broadband.BroadbandRechargeResponse;
+
 import com.rohit.mybank.model.fastag.FastagRechargeRequest;
 import com.rohit.mybank.model.fastag.FastagRechargeResponse;
+
 import com.rohit.mybank.model.insurance.InsurancePaymentRequest;
 import com.rohit.mybank.model.insurance.InsurancePaymentResponse;
+
 import com.rohit.mybank.model.fixeddeposit.FixedDepositRequest;
 import com.rohit.mybank.model.fixeddeposit.FixedDepositResponse;
 import com.rohit.mybank.model.fixeddeposit.CreateFixedDepositRequest;
 import com.rohit.mybank.model.fixeddeposit.CreateFixedDepositResponse;
+
 import com.rohit.mybank.model.recurringdeposit.RDCalculatorRequest;
 import com.rohit.mybank.model.recurringdeposit.RDCalculatorResponse;
 import com.rohit.mybank.model.recurringdeposit.CreateRecurringDepositRequest;
 import com.rohit.mybank.model.recurringdeposit.CreateRecurringDepositResponse;
 import com.rohit.mybank.model.recurringdeposit.RDResponse;
-import com.rohit.mybank.model.recurringdeposit.RDHistoryResponse;
 import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentRequest;
-import com.rohit.mybank.model.recurringdeposit.PayRecurringDepositInstallmentResponse;
-import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDRequest;
-import com.rohit.mybank.model.recurringdeposit.PrematureCloseRDResponse;
-import com.rohit.mybank.model.auth.ForgotPasswordRequest;
-import com.rohit.mybank.model.auth.ResetPasswordRequest;
+import com.rohit.mybank.model.recurringdeposit.RDHistoryResponse;
+
 import com.rohit.mybank.model.admin.AdminDashboardResponse;
 import com.rohit.mybank.model.admin.AdminUserResponse;
 import com.rohit.mybank.model.admin.AdminCustomerResponse;
 import com.rohit.mybank.model.admin.AdminAccountResponse;
 import com.rohit.mybank.model.admin.AdminTransactionPageResponse;
+
+
 import java.util.List;
+
 import okhttp3.ResponseBody;
 
 import retrofit2.Call;
@@ -69,149 +88,226 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
+
+/**
+ * =========================================================
+ * API SERVICE
+ * =========================================================
+ *
+ * Retrofit API definitions for the MyBank Android application.
+ *
+ * All protected APIs require JWT authentication.
+ *
+ * AuthInterceptor automatically attaches the JWT token.
+ *
+ * =========================================================
+ */
 public interface ApiService {
 
-    // ==========================
-    // Login
-    // ==========================
 
+    // =========================================================
+    // AUTHENTICATION
+    // =========================================================
+
+    /**
+     * LOGIN
+     *
+     * POST /auth/login
+     */
     @POST("auth/login")
     Call<LoginResponse> login(
             @Body LoginRequest request
     );
 
-    // ==========================
-    // Register
-    // ==========================
 
+    /**
+     * REGISTER
+     *
+     * POST /auth/register
+     */
     @POST("auth/register")
     Call<RegisterResponse> register(
             @Body RegisterRequest request
     );
 
-    // ==========================
-// Forgot Password
-// ==========================
 
+    /**
+     * FORGOT PASSWORD
+     *
+     * POST /auth/forgot-password
+     */
     @POST("auth/forgot-password")
     Call<ResponseBody> forgotPassword(
             @Body ForgotPasswordRequest request
     );
 
+
+    /**
+     * RESET PASSWORD
+     *
+     * POST /auth/reset-password
+     */
     @POST("auth/reset-password")
     Call<ResponseBody> resetPassword(
             @Body ResetPasswordRequest request
     );
 
-    // ==========================
-    // KYC Registration
-    // ==========================
 
+    /**
+     * REFRESH TOKEN
+     *
+     * POST /auth/refresh?token=...
+     */
+    @POST("auth/refresh")
+    Call<LoginResponse> refreshToken(
+            @Query("token") String refreshToken
+    );
+
+
+    // =========================================================
+    // KYC
+    // =========================================================
+
+    /**
+     * KYC REGISTRATION
+     *
+     * POST /kyc/register
+     */
     @POST("kyc/register")
     Call<KycResponse> registerKyc(
             @Body KycRequest request
     );
 
-    // ==========================
-    // Dashboard
-    // ==========================
 
+    /**
+     * SET TRANSACTION PIN
+     *
+     * POST /kyc/set-pin
+     */
+    @POST("kyc/set-pin")
+    Call<ApiResponse> setTransactionPin(
+            @Body SetPinRequest request
+    );
+
+
+    /**
+     * VERIFY TRANSACTION PIN
+     *
+     * POST /kyc/verify-pin
+     */
+    @POST("kyc/verify-pin")
+    Call<VerifyPinResponse> verifyTransactionPin(
+            @Body VerifyPinRequest request
+    );
+
+
+    // =========================================================
+    // DASHBOARD
+    // =========================================================
+
+    /**
+     * GET MY ACCOUNT / DASHBOARD
+     *
+     * GET /accounts/me
+     */
     @GET("accounts/me")
     Call<DashboardResponse> getMyAccount();
 
 
+    // =========================================================
+    // ADMIN DASHBOARD
+    // =========================================================
+
+    /**
+     * GET ADMIN DASHBOARD
+     *
+     * GET /admin/dashboard
+     */
     @GET("admin/dashboard")
     Call<AdminDashboardResponse> getAdminDashboard();
 
-    // ==========================================================
+
+    // =========================================================
     // ADMIN USER MANAGEMENT
-    // ==========================================================
+    // =========================================================
 
     @GET("admin/users")
     Call<List<AdminUserResponse>> getAdminUsers();
 
-    // ==========================================================
-    // ADMIN USER DETAILS
-    // ==========================================================
 
     @GET("admin/users/{username}")
     Call<AdminUserResponse> getAdminUser(
             @Path("username") String username
     );
 
-    // ==========================================================
-    // ENABLE USER
-    // ==========================================================
 
     @PUT("admin/users/{username}/enable")
     Call<AdminUserResponse> enableAdminUser(
             @Path("username") String username
     );
 
-    // ==========================================================
-    // DISABLE USER
-    // ==========================================================
 
     @PUT("admin/users/{username}/disable")
     Call<AdminUserResponse> disableAdminUser(
             @Path("username") String username
     );
 
-    // ==========================================================
-    // LOCK USER
-    // ==========================================================
 
     @PUT("admin/users/{username}/lock")
     Call<AdminUserResponse> lockAdminUser(
             @Path("username") String username
     );
 
-    // ==========================================================
-    // UNLOCK USER
-    // ==========================================================
 
     @PUT("admin/users/{username}/unlock")
     Call<AdminUserResponse> unlockAdminUser(
             @Path("username") String username
     );
 
-    // ==========================================================
-// ADMIN CUSTOMER MANAGEMENT
-// ==========================================================
+
+    // =========================================================
+    // ADMIN CUSTOMER MANAGEMENT
+    // =========================================================
 
     @GET("admin/customers")
     Call<List<AdminCustomerResponse>> getAdminCustomers();
+
 
     @GET("admin/customers/search")
     Call<List<AdminCustomerResponse>> searchAdminCustomers(
             @Query("query") String query
     );
 
+
     @GET("admin/customers/{customerId}")
     Call<AdminCustomerResponse> getAdminCustomer(
             @Path("customerId") String customerId
     );
 
+
     // =========================================================
-// ADMIN ACCOUNT MANAGEMENT
-// =========================================================
+    // ADMIN ACCOUNT MANAGEMENT
+    // =========================================================
 
     @GET("admin/accounts")
     Call<List<AdminAccountResponse>> getAdminAccounts();
+
 
     @GET("admin/accounts/search")
     Call<List<AdminAccountResponse>> searchAdminAccounts(
             @Query("query") String query
     );
 
+
     @GET("admin/accounts/{accNo}")
     Call<AdminAccountResponse> getAdminAccount(
             @Path("accNo") String accNo
     );
 
-    // ==========================================================
-// ADMIN ALL TRANSACTIONS
-// ==========================================================
+
+    // =========================================================
+    // ADMIN TRANSACTIONS
+    // =========================================================
 
     @GET("admin/transactions")
     Call<AdminTransactionPageResponse> getAdminTransactions(
@@ -221,212 +317,275 @@ public interface ApiService {
     );
 
 
-    // ==========================
-    // Deposit
-    // ==========================
+    // =========================================================
+    // DEPOSIT
+    // =========================================================
 
     @POST("accounts/deposit")
     Call<DepositResponse> deposit(
             @Body DepositRequest request
     );
 
-    // ==========================
-    // Withdraw
-    // ==========================
+
+    // =========================================================
+    // WITHDRAW
+    // =========================================================
 
     @POST("accounts/withdraw")
     Call<WithdrawResponse> withdraw(
             @Body WithdrawRequest request
     );
 
-    // ==========================
-    // Transfer
-    // ==========================
+
+    // =========================================================
+    // TRANSFER
+    // =========================================================
 
     @POST("accounts/transfer")
     Call<TransferResponse> transfer(
             @Body TransferRequest request
     );
 
-    // ==========================
-    // Transaction History
-    // ==========================
+
+    // =========================================================
+    // TRANSACTION HISTORY
+    // =========================================================
 
     @GET("accounts/{accNo}/transactions")
     Call<TransactionPageResponse> getTransactions(
-
             @Path("accNo") String accNo,
-
             @Query("page") int page,
-
             @Query("size") int size,
-
             @Query("sort") String sort
     );
 
-    // ==========================
-    // Profile
-    // ==========================
+
+    // =========================================================
+    // PROFILE
+    // =========================================================
 
     @GET("profile")
     Call<ProfileResponse> getProfile();
+
 
     @PUT("profile")
     Call<ProfileResponse> updateProfile(
             @Body UpdateProfileRequest request
     );
 
-    // ==========================
-    // Change Password
-    // ==========================
+
+    // =========================================================
+    // CHANGE PASSWORD
+    // =========================================================
 
     @PUT("profile/change-password")
     Call<ResponseBody> changePassword(
             @Body ChangePasswordRequest request
     );
 
-    // ==========================
-    // Set Transaction PIN
-    // ==========================
 
-    @POST("kyc/set-pin")
-    Call<ApiResponse> setTransactionPin(
-            @Body SetPinRequest request
-    );
-
-    // ==========================
-    // Verify Transaction PIN
-    // ==========================
-
-    @POST("kyc/verify-pin")
-    Call<VerifyPinResponse> verifyTransactionPin(
-            @Body VerifyPinRequest request
-    );
-
-    // ==========================
-    // Mobile Recharge
-    // ==========================
+    // =========================================================
+    // MOBILE RECHARGE
+    // =========================================================
 
     @POST("payments/mobile-recharge")
     Call<MobileRechargeResponse> mobileRecharge(
             @Body MobileRechargeRequest request
     );
 
+
+    // =========================================================
+    // ELECTRICITY BILL
+    // =========================================================
+
     @POST("payments/electricity")
     Call<ElectricityBillResponse> payElectricityBill(
             @Body ElectricityBillRequest request
     );
 
+
+    // =========================================================
+    // WATER BILL
+    // =========================================================
+
     @POST("payments/water")
     Call<WaterBillResponse> payWaterBill(
             @Body WaterBillRequest request
     );
+
+
+    // =========================================================
+    // GAS
+    // =========================================================
+
     @POST("payments/gas")
     Call<GasBillResponse> bookGasCylinder(
             @Body GasBillRequest request
     );
+
+
+    // =========================================================
+    // DTH
+    // =========================================================
 
     @POST("payments/dth")
     Call<DthRechargeResponse> rechargeDth(
             @Body DthRechargeRequest request
     );
 
+
+    // =========================================================
+    // BROADBAND
+    // =========================================================
+
     @POST("payments/broadband")
     Call<BroadbandRechargeResponse> rechargeBroadband(
             @Body BroadbandRechargeRequest request
     );
+
+
+    // =========================================================
+    // FASTAG
+    // =========================================================
 
     @POST("payments/fastag")
     Call<FastagRechargeResponse> rechargeFastag(
             @Body FastagRechargeRequest request
     );
 
+
+    // =========================================================
+    // INSURANCE
+    // =========================================================
+
     @POST("payments/insurance")
     Call<InsurancePaymentResponse> payInsurance(
             @Body InsurancePaymentRequest request
     );
 
-    // ==========================
-    // Fixed Deposit
-    // ==========================
 
+    // =========================================================
+    // FIXED DEPOSIT
+    // =========================================================
+
+    /**
+     * FD CALCULATOR
+     *
+     * POST /payments/fixed-deposit
+     */
     @POST("payments/fixed-deposit")
     Call<FixedDepositResponse> calculateFixedDeposit(
             @Body FixedDepositRequest request
     );
 
-    // ==========================
-// Create Fixed Deposit
-// ==========================
 
+    /**
+     * CREATE FD
+     *
+     * POST /payments/fixed-deposit/create
+     */
     @POST("payments/fixed-deposit/create")
     Call<CreateFixedDepositResponse> createFixedDeposit(
             @Body CreateFixedDepositRequest request
     );
 
-    // ==========================================
-// Recurring Deposit
-// ==========================================
 
-// RD Calculator
+    // =========================================================
+    // RECURRING DEPOSIT
+    // =========================================================
 
+    /**
+     * RD CALCULATOR
+     *
+     * POST /payments/recurring-deposit/calculate
+     */
     @POST("payments/recurring-deposit/calculate")
     Call<RDCalculatorResponse> calculateRecurringDeposit(
             @Body RDCalculatorRequest request
     );
 
-// Open RD
 
+    /**
+     * CREATE RD
+     *
+     * POST /payments/recurring-deposit/create
+     */
     @POST("payments/recurring-deposit/create")
     Call<CreateRecurringDepositResponse> createRecurringDeposit(
             @Body CreateRecurringDepositRequest request
     );
 
-// My RD List
 
+    /**
+     * MY RD LIST
+     *
+     * GET /payments/recurring-deposit
+     */
     @GET("payments/recurring-deposit")
     Call<List<RDResponse>> getMyRecurringDeposits();
 
-// RD Details
 
+    /**
+     * RD DETAILS
+     *
+     * GET /payments/recurring-deposit/{rdNumber}
+     */
     @GET("payments/recurring-deposit/{rdNumber}")
     Call<RDResponse> getRecurringDepositDetails(
             @Path("rdNumber") String rdNumber
     );
 
-// Matured RD List
 
+    /**
+     * MATURED RD LIST
+     *
+     * GET /payments/recurring-deposit/matured
+     */
     @GET("payments/recurring-deposit/matured")
     Call<List<RDResponse>> getMaturedRecurringDeposits();
 
-// RD History
 
+    /**
+     * RD HISTORY
+     *
+     * GET /payments/recurring-deposit/history/{rdNumber}
+     */
     @GET("payments/recurring-deposit/history/{rdNumber}")
     Call<List<RDHistoryResponse>> getRecurringDepositHistory(
             @Path("rdNumber") String rdNumber
     );
 
-// Pay RD Installment
 
+    /**
+     * PAY RD INSTALLMENT
+     *
+     * POST /payments/recurring-deposit/pay-installment
+     */
     @POST("payments/recurring-deposit/pay-installment")
-    Call<PayRecurringDepositInstallmentResponse> payRecurringDepositInstallment(
+    Call<RDResponse> payRecurringDepositInstallment(
             @Body PayRecurringDepositInstallmentRequest request
     );
 
-// Premature Close RD
 
-    @POST("payments/recurring-deposit/premature-close")
-    Call<PrematureCloseRDResponse> prematureCloseRecurringDeposit(
-            @Body PrematureCloseRDRequest request
+    /**
+     * CLOSE MATURED RD
+     *
+     * POST /payments/recurring-deposit/close/{rdNumber}
+     */
+    @POST("payments/recurring-deposit/close/{rdNumber}")
+    Call<RDResponse> closeRecurringDeposit(
+            @Path("rdNumber") String rdNumber
     );
 
-    // ==========================
-// Refresh Token
-// ==========================
 
-    @POST("auth/refresh")
-    Call<LoginResponse> refreshToken(
-            @Query("token") String refreshToken
+    /**
+     * PREMATURE CLOSE RD
+     *
+     * POST /payments/recurring-deposit/premature-close/{rdNumber}
+     */
+    @POST("payments/recurring-deposit/premature-close/{rdNumber}")
+    Call<RDResponse> prematureCloseRecurringDeposit(
+            @Path("rdNumber") String rdNumber
     );
 
 

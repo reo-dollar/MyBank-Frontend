@@ -36,6 +36,14 @@ import retrofit2.Response;
  * 2. Admin Customer Management
  * 3. Admin Account Management
  * 4. Admin Transaction Management
+ * 5. Admin Loan Management
+ *
+ * Admin Loan Management will be used for:
+ *
+ * - Viewing pending loan applications
+ * - Viewing loan details
+ * - Approving loans
+ * - Rejecting loans
  */
 public class AdminDashboardActivity
         extends AppCompatActivity {
@@ -80,6 +88,13 @@ public class AdminDashboardActivity
 
     private Button btnTransactionManagement;
 
+    /**
+     * Loan management button.
+     *
+     * Opens AdminLoanManagementActivity.
+     */
+    private Button btnLoanManagement;
+
     private Button btnAdminLogout;
 
 
@@ -114,16 +129,27 @@ public class AdminDashboardActivity
         );
 
 
+        // ------------------------------------------------------
+        // INITIALIZE VIEWS
+        // ------------------------------------------------------
+
         initializeViews();
 
+
+        // ------------------------------------------------------
+        // INITIALIZE REPOSITORIES
+        // ------------------------------------------------------
 
         dashboardRepository =
                 new DashboardRepository(this);
 
-
         sessionManager =
                 new SessionManager(this);
 
+
+        // ------------------------------------------------------
+        // SETUP UI
+        // ------------------------------------------------------
 
         setupRefresh();
 
@@ -137,6 +163,12 @@ public class AdminDashboardActivity
 
         setupTransactionManagement();
 
+        setupLoanManagement();
+
+
+        // ------------------------------------------------------
+        // LOAD DASHBOARD
+        // ------------------------------------------------------
 
         loadAdminDashboard();
     }
@@ -148,17 +180,29 @@ public class AdminDashboardActivity
 
     private void initializeViews() {
 
+        // ------------------------------------------------------
+        // TITLE
+        // ------------------------------------------------------
+
         tvAdminTitle =
                 findViewById(
                         R.id.tvAdminTitle
                 );
 
 
+        // ------------------------------------------------------
+        // STATUS
+        // ------------------------------------------------------
+
         tvAdminStatus =
                 findViewById(
                         R.id.tvAdminStatus
                 );
 
+
+        // ------------------------------------------------------
+        // SYSTEM OVERVIEW
+        // ------------------------------------------------------
 
         tvTotalUsers =
                 findViewById(
@@ -184,6 +228,10 @@ public class AdminDashboardActivity
                 );
 
 
+        // ------------------------------------------------------
+        // TRANSACTION ACTIVITY
+        // ------------------------------------------------------
+
         tvTotalDeposits =
                 findViewById(
                         R.id.tvTotalDeposits
@@ -207,6 +255,10 @@ public class AdminDashboardActivity
                         R.id.tvTotalPayments
                 );
 
+
+        // ------------------------------------------------------
+        // FINANCIAL SUMMARY
+        // ------------------------------------------------------
 
         tvTotalDepositAmount =
                 findViewById(
@@ -232,11 +284,19 @@ public class AdminDashboardActivity
                 );
 
 
+        // ------------------------------------------------------
+        // PROGRESS
+        // ------------------------------------------------------
+
         progressBar =
                 findViewById(
                         R.id.progressBar
                 );
 
+
+        // ------------------------------------------------------
+        // SWIPE REFRESH
+        // ------------------------------------------------------
 
         swipeRefreshLayout =
                 findViewById(
@@ -281,6 +341,16 @@ public class AdminDashboardActivity
         btnTransactionManagement =
                 findViewById(
                         R.id.btnTransactionManagement
+                );
+
+
+        // ======================================================
+        // LOAN MANAGEMENT
+        // ======================================================
+
+        btnLoanManagement =
+                findViewById(
+                        R.id.btnLoanManagement
                 );
 
 
@@ -408,6 +478,32 @@ public class AdminDashboardActivity
                             new Intent(
                                     AdminDashboardActivity.this,
                                     AdminTransactionsActivity.class
+                            );
+
+                    startActivity(intent);
+                }
+        );
+    }
+
+
+    // ==========================================================
+    // SETUP LOAN MANAGEMENT
+    // ==========================================================
+
+    private void setupLoanManagement() {
+
+        if (btnLoanManagement == null) {
+            return;
+        }
+
+
+        btnLoanManagement.setOnClickListener(
+                v -> {
+
+                    Intent intent =
+                            new Intent(
+                                    AdminDashboardActivity.this,
+                                    AdminLoanManagementActivity.class
                             );
 
                     startActivity(intent);
@@ -644,110 +740,156 @@ public class AdminDashboardActivity
             AdminDashboardResponse dashboard) {
 
 
-        tvAdminTitle.setText(
-                "Admin Dashboard"
-        );
+        // ======================================================
+        // HEADER
+        // ======================================================
+
+        if (tvAdminTitle != null) {
+
+            tvAdminTitle.setText(
+                    "Admin Dashboard"
+            );
+        }
 
 
-        tvAdminStatus.setText(
-                "Live banking statistics"
-        );
+        if (tvAdminStatus != null) {
+
+            tvAdminStatus.setText(
+                    "Live banking statistics"
+            );
+        }
 
 
         // ======================================================
         // SYSTEM OVERVIEW
         // ======================================================
 
-        tvTotalUsers.setText(
-                String.valueOf(
-                        dashboard.getTotalUsers()
-                )
-        );
+        if (tvTotalUsers != null) {
+
+            tvTotalUsers.setText(
+                    String.valueOf(
+                            dashboard.getTotalUsers()
+                    )
+            );
+        }
 
 
-        tvTotalCustomers.setText(
-                String.valueOf(
-                        dashboard.getTotalCustomers()
-                )
-        );
+        if (tvTotalCustomers != null) {
+
+            tvTotalCustomers.setText(
+                    String.valueOf(
+                            dashboard.getTotalCustomers()
+                    )
+            );
+        }
 
 
-        tvTotalAccounts.setText(
-                String.valueOf(
-                        dashboard.getTotalAccounts()
-                )
-        );
+        if (tvTotalAccounts != null) {
+
+            tvTotalAccounts.setText(
+                    String.valueOf(
+                            dashboard.getTotalAccounts()
+                    )
+            );
+        }
 
 
-        tvTotalTransactions.setText(
-                String.valueOf(
-                        dashboard.getTotalTransactions()
-                )
-        );
+        if (tvTotalTransactions != null) {
+
+            tvTotalTransactions.setText(
+                    String.valueOf(
+                            dashboard.getTotalTransactions()
+                    )
+            );
+        }
 
 
         // ======================================================
         // TRANSACTION ACTIVITY
         // ======================================================
 
-        tvTotalDeposits.setText(
-                String.valueOf(
-                        dashboard.getTotalDeposits()
-                )
-        );
+        if (tvTotalDeposits != null) {
+
+            tvTotalDeposits.setText(
+                    String.valueOf(
+                            dashboard.getTotalDeposits()
+                    )
+            );
+        }
 
 
-        tvTotalWithdrawals.setText(
-                String.valueOf(
-                        dashboard.getTotalWithdrawals()
-                )
-        );
+        if (tvTotalWithdrawals != null) {
+
+            tvTotalWithdrawals.setText(
+                    String.valueOf(
+                            dashboard.getTotalWithdrawals()
+                    )
+            );
+        }
 
 
-        tvTotalTransfers.setText(
-                String.valueOf(
-                        dashboard.getTotalTransfers()
-                )
-        );
+        if (tvTotalTransfers != null) {
+
+            tvTotalTransfers.setText(
+                    String.valueOf(
+                            dashboard.getTotalTransfers()
+                    )
+            );
+        }
 
 
-        tvTotalPayments.setText(
-                String.valueOf(
-                        dashboard.getTotalPayments()
-                )
-        );
+        if (tvTotalPayments != null) {
+
+            tvTotalPayments.setText(
+                    String.valueOf(
+                            dashboard.getTotalPayments()
+                    )
+            );
+        }
 
 
         // ======================================================
         // FINANCIAL SUMMARY
         // ======================================================
 
-        tvTotalDepositAmount.setText(
-                formatAmount(
-                        dashboard.getTotalDepositAmount()
-                )
-        );
+        if (tvTotalDepositAmount != null) {
+
+            tvTotalDepositAmount.setText(
+                    formatAmount(
+                            dashboard.getTotalDepositAmount()
+                    )
+            );
+        }
 
 
-        tvTotalWithdrawalAmount.setText(
-                formatAmount(
-                        dashboard.getTotalWithdrawalAmount()
-                )
-        );
+        if (tvTotalWithdrawalAmount != null) {
+
+            tvTotalWithdrawalAmount.setText(
+                    formatAmount(
+                            dashboard.getTotalWithdrawalAmount()
+                    )
+            );
+        }
 
 
-        tvTotalTransferAmount.setText(
-                formatAmount(
-                        dashboard.getTotalTransferAmount()
-                )
-        );
+        if (tvTotalTransferAmount != null) {
+
+            tvTotalTransferAmount.setText(
+                    formatAmount(
+                            dashboard.getTotalTransferAmount()
+                    )
+            );
+        }
 
 
-        tvTotalPaymentAmount.setText(
-                formatAmount(
-                        dashboard.getTotalPaymentAmount()
-                )
-        );
+        if (tvTotalPaymentAmount != null) {
+
+            tvTotalPaymentAmount.setText(
+                    formatAmount(
+                            dashboard.getTotalPaymentAmount()
+                    )
+            );
+        }
     }
 
 

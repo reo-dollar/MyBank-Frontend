@@ -1,23 +1,32 @@
 package com.rohit.mybank.model.recurringdeposit;
 
-import java.math.BigDecimal;
-
 public class PayRecurringDepositInstallmentRequest {
+
+    // =========================================================
+    // RD NUMBER
+    // =========================================================
 
     private String rdNumber;
 
-    private BigDecimal amount;
+
+    // =========================================================
+    // TRANSACTION PIN
+    // =========================================================
+
+    private String transactionPin;
+
+
+    // =========================================================
+    // DEFAULT CONSTRUCTOR
+    // =========================================================
 
     public PayRecurringDepositInstallmentRequest() {
     }
 
-    public PayRecurringDepositInstallmentRequest(
-            String rdNumber,
-            BigDecimal amount) {
 
-        this.rdNumber = rdNumber;
-        this.amount = amount;
-    }
+    // =========================================================
+    // RD NUMBER
+    // =========================================================
 
     public String getRdNumber() {
         return rdNumber;
@@ -27,19 +36,16 @@ public class PayRecurringDepositInstallmentRequest {
         this.rdNumber = rdNumber;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+
+    // =========================================================
+    // TRANSACTION PIN
+    // =========================================================
+
+    public String getTransactionPin() {
+        return transactionPin;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    @Override
-    public String toString() {
-        return "PayRecurringDepositInstallmentRequest{" +
-                "rdNumber='" + rdNumber + '\'' +
-                ", amount=" + amount +
-                '}';
+    public void setTransactionPin(String transactionPin) {
+        this.transactionPin = transactionPin;
     }
 }
