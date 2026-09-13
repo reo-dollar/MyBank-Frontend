@@ -1,9 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">My Bank</string>
+    <!-- =========================================================
+         APPLICATION
+         ========================================================= -->
 
-    <string name="tagline">
-        Safe • Secure • Smart Banking
-    </string>
+    <string name="app_name">My Bank</string>
+    <string name="tagline">Secure Banking Made Simple</string>
+
+
+    <!-- =========================================================
+         COMMON
+         ========================================================= -->
+
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save">Save</string>
+    <string name="submit">Submit</string>
+    <string name="continue_text">Continue</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="retry">Retry</string>
+    <string name="close">Close</string>
+
+
+    <!-- =========================================================
+         AUTHENTICATION
+         ========================================================= -->
+
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="logout">Logout</string>
+
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_password">Reset Password</string>
+
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
+
+    <string name="enter_username">Enter username</string>
+    <string name="enter_password">Enter password</string>
+    <string name="enter_email">Enter email</string>
+    <string name="enter_phone_number">Enter phone number</string>
+
+
+    <!-- =========================================================
+         SPLASH
+         ========================================================= -->
+
+    <string name="splash_title">My Bank</string>
+    <string name="splash_subtitle">Secure Banking Made Simple</string>
+
+
+    <!-- =========================================================
+         DASHBOARD
+         ========================================================= -->
+
+    <string name="dashboard">Dashboard</string>
+    <string name="welcome">Welcome</string>
+    <string name="accounts">Accounts</string>
+    <string name="cards">Cards</string>
+    <string name="payments">Payments</string>
+    <string name="profile">Profile</string>
+    <string name="transactions">Transactions</string>
+
+
+    <!-- =========================================================
+         BANKING
+         ========================================================= -->
+
+    <string name="deposit">Deposit</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="transfer">Transfer</string>
+
+    <string name="account_number">Account Number</string>
+    <string name="balance">Balance</string>
+    <string name="amount">Amount</string>
+
+    <string name="transaction_history">Transaction History</string>
+
+
+    <!-- =========================================================
+         CARDS
+         ========================================================= -->
+
+    <string name="debit_card">Debit Card</string>
+    <string name="credit_card">Credit Card</string>
+    <string name="card_controls">Card Controls</string>
+
+
+    <!-- =========================================================
+         PROFILE
+         ========================================================= -->
+
+    <string name="edit_profile">Edit Profile</string>
+    <string name="profile_photo">Profile photo</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="save_changes">Save Changes</string>
+
+
+    <!-- =========================================================
+         PROFILE VALIDATION
+         ========================================================= -->
+
+    <string name="email_required">Email is required</string>
+    <string name="mobile_required">Mobile is required</string>
+    <string name="profile_load_failed">Unable to load profile.</string>
+    <string name="profile_update_failed">Update Failed</string>
+    <string name="profile_update_success">Profile Updated Successfully</string>
+    <string name="no_photo_selected">No photo selected</string>
+    <string name="network_error">Network Error</string>
+
+
+    <!-- =========================================================
+         SECURITY
+         ========================================================= -->
+
+    <string name="biometric_authentication">Biometric Authentication</string>
+    <string name="use_device_lock">Use Device Lock</string>
+    <string name="authenticate">Authenticate</string>
+
+
+    <!-- =========================================================
+         ACCESSIBILITY
+         ========================================================= -->
+
+    <string name="content_description_back">Back</string>
+    <string name="content_description_close">Close</string>
+    <string name="content_description_menu">Menu</string>
 
 </resources>

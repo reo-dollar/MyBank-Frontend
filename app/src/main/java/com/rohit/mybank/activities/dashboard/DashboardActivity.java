@@ -1,6 +1,7 @@
 package com.rohit.mybank.activities.dashboard;
 
 import android.content.Intent;
+import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import com.rohit.mybank.activities.banking.TransactionHistoryActivity;
 import com.rohit.mybank.activities.banking.TransferActivity;
 import com.rohit.mybank.activities.banking.WithdrawActivity;
 
+import com.rohit.mybank.activities.cards.CardsActivity;
 
 import com.rohit.mybank.activities.payments.PaymentsActivity;
 import com.rohit.mybank.activities.pin.SetTransactionPinActivity;
@@ -51,20 +53,48 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+/**
+ * ============================================================
+ * DASHBOARD ACTIVITY
+ * ============================================================
+ *
+ * Main customer dashboard.
+ *
+ * Bottom Navigation:
+ *
+ * HOME
+ * PAYMENTS
+ * SCAN
+ * CARDS
+ * MENU
+ *
+ * Cards navigation:
+ *
+ * Dashboard
+ *      ↓
+ * Cards
+ *      ↓
+ * CardsActivity
+ *      ↓
+ * GET /api/debit-cards/my
+ *
+ * ============================================================
+ */
 public class DashboardActivity extends AppCompatActivity {
 
-    // ==================================================
-    // Header Views
-    // ==================================================
+
+    // =========================================================
+    // HEADER VIEWS
+    // =========================================================
 
     private TextView tvGreeting;
     private TextView tvGreetingMessage;
     private TextView tvWelcome;
 
 
-    // ==================================================
-    // Account Information
-    // ==================================================
+    // =========================================================
+    // ACCOUNT INFORMATION
+    // =========================================================
 
     private TextView tvAccountNumber;
     private TextView tvBalance;
@@ -74,24 +104,24 @@ public class DashboardActivity extends AppCompatActivity {
     private TextView tvStatus;
 
 
-    // ==================================================
-    // Visibility Icons
-    // ==================================================
+    // =========================================================
+    // VISIBILITY ICONS
+    // =========================================================
 
     private ImageView imgToggleBalance;
     private ImageView imgToggleAccount;
 
 
-    // ==================================================
-    // Buttons
-    // ==================================================
+    // =========================================================
+    // PROFILE BUTTON
+    // =========================================================
 
     private ImageButton btnProfile;
 
 
-    // ==================================================
-    // Quick Action Cards
-    // ==================================================
+    // =========================================================
+    // QUICK ACTION CARDS
+    // =========================================================
 
     private CardView cardDeposit;
     private CardView cardWithdraw;
@@ -99,9 +129,9 @@ public class DashboardActivity extends AppCompatActivity {
     private CardView cardHistory;
 
 
-    // ==================================================
-    // Recent Transactions
-    // ==================================================
+    // =========================================================
+    // RECENT TRANSACTIONS
+    // =========================================================
 
     private RecyclerView rvRecentTransactions;
 
@@ -111,88 +141,82 @@ public class DashboardActivity extends AppCompatActivity {
             new ArrayList<>();
 
 
-    // ==================================================
-    // Bottom Navigation
-    // ==================================================
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
 
     private BottomNavigationView bottomNavigation;
 
 
-    // ==================================================
-    // Repositories
-    // ==================================================
+    // =========================================================
+    // REPOSITORIES
+    // =========================================================
 
     private DashboardRepository dashboardRepository;
-
     private TransactionRepository transactionRepository;
-
     private ProfileRepository profileRepository;
 
 
-    // ==================================================
-    // Session
-    // ==================================================
+    // =========================================================
+    // SESSION
+    // =========================================================
 
     private SessionManager sessionManager;
 
 
-    // ==================================================
-    // Visibility State
-    // ==================================================
+    // =========================================================
+    // VISIBILITY STATE
+    // =========================================================
 
     private boolean balanceVisible = false;
-
     private boolean accountVisible = false;
 
 
-    // ==================================================
-    // Actual Values
-    // ==================================================
+    // =========================================================
+    // ACTUAL VALUES
+    // =========================================================
 
     private String actualAccountNumber = "";
-
     private double actualBalance = 0.0;
 
 
-    // ==================================================
-    // Misc
-    // ==================================================
+    // =========================================================
+    // OTHER VIEWS
+    // =========================================================
 
     private TextView tvViewAll;
 
 
-    // ==================================================
+    // =========================================================
     // ON CREATE
-    // ==================================================
+    // =========================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(
-                R.layout.activity_dashboard
-        );
+        setContentView(R.layout.activity_dashboard);
 
 
-        // ==================================================
-        // Initialize Views
-        // ==================================================
+        // =====================================================
+        // INITIALIZE VIEWS
+        // =====================================================
 
         initializeViews();
 
 
-        // ==================================================
-        // Session
-        // ==================================================
+        // =====================================================
+        // SESSION
+        // =====================================================
 
         sessionManager =
                 new SessionManager(this);
 
 
-        // ==================================================
-        // Repositories
-        // ==================================================
+        // =====================================================
+        // REPOSITORIES
+        // =====================================================
 
         dashboardRepository =
                 new DashboardRepository(this);
@@ -204,9 +228,9 @@ public class DashboardActivity extends AppCompatActivity {
                 new ProfileRepository(this);
 
 
-        // ==================================================
-        // RecyclerView
-        // ==================================================
+        // =====================================================
+        // TRANSACTION ADAPTER
+        // =====================================================
 
         transactionAdapter =
                 new TransactionAdapter(
@@ -218,55 +242,44 @@ public class DashboardActivity extends AppCompatActivity {
                 new LinearLayoutManager(this)
         );
 
-        rvRecentTransactions.setHasFixedSize(
-                true
-        );
+        rvRecentTransactions.setHasFixedSize(true);
 
         rvRecentTransactions.setAdapter(
                 transactionAdapter
         );
 
 
-        // ==================================================
-        // Default Welcome
-        // ==================================================
+        // =====================================================
+        // DEFAULT WELCOME
+        // =====================================================
 
-        tvWelcome.setText(
-                "Welcome"
-        );
+        tvWelcome.setText("Welcome");
 
 
-        // ==================================================
-        // Greeting
-        // ==================================================
+        // =====================================================
+        // GREETING
+        // =====================================================
 
         setGreeting();
 
 
-        // ==================================================
-        // Visibility Buttons
-        // ==================================================
+        // =====================================================
+        // VISIBILITY BUTTONS
+        // =====================================================
 
         setupVisibilityButtons();
 
 
-        // ==================================================
-        // Bottom Navigation
-        // ==================================================
-
-        setupBottomNavigation();
-
-
-        // ==================================================
-        // Load Dashboard
-        // ==================================================
+        // =====================================================
+        // LOAD DASHBOARD
+        // =====================================================
 
         loadDashboard();
 
 
-        // ==================================================
-        // Deposit
-        // ==================================================
+        // =====================================================
+        // DEPOSIT
+        // =====================================================
 
         cardDeposit.setOnClickListener(v -> {
 
@@ -280,9 +293,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-        // ==================================================
-        // Withdraw
-        // ==================================================
+        // =====================================================
+        // WITHDRAW
+        // =====================================================
 
         cardWithdraw.setOnClickListener(v -> {
 
@@ -296,9 +309,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-        // ==================================================
-        // Transfer
-        // ==================================================
+        // =====================================================
+        // TRANSFER
+        // =====================================================
 
         cardTransfer.setOnClickListener(v -> {
 
@@ -312,9 +325,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-        // ==================================================
-        // Transaction History
-        // ==================================================
+        // =====================================================
+        // TRANSACTION HISTORY
+        // =====================================================
 
         cardHistory.setOnClickListener(v -> {
 
@@ -328,10 +341,6 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-        // ==================================================
-        // View All
-        // ==================================================
-
         tvViewAll.setOnClickListener(v -> {
 
             startActivity(
@@ -344,9 +353,9 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
 
-        // ==================================================
-        // Profile
-        // ==================================================
+        // =====================================================
+        // PROFILE BUTTON
+        // =====================================================
 
         btnProfile.setOnClickListener(v -> {
 
@@ -358,12 +367,19 @@ public class DashboardActivity extends AppCompatActivity {
             );
 
         });
+
+
+        // =====================================================
+        // BOTTOM NAVIGATION
+        // =====================================================
+
+        setupBottomNavigation();
     }
 
 
-    // ==================================================
+    // =========================================================
     // ON RESUME
-    // ==================================================
+    // =========================================================
 
     @Override
     protected void onResume() {
@@ -379,89 +395,141 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // BOTTOM NAVIGATION
-    // ==================================================
+    // =========================================================
 
     private void setupBottomNavigation() {
 
-        bottomNavigation.setOnItemSelectedListener(
-                item -> {
+        /*
+         * IMPORTANT:
+         *
+         * The listener must be installed BEFORE selecting
+         * the default item.
+         */
 
-                    int id =
-                            item.getItemId();
+        bottomNavigation.setOnItemSelectedListener(item -> {
 
-
-                    // ==================================================
-                    // HOME
-                    // ==================================================
-
-                    if (id == R.id.nav_home) {
-
-                        return true;
-                    }
+            int id = item.getItemId();
 
 
-                    // ==================================================
-                    // PAYMENTS
-                    // ==================================================
+            // =================================================
+            // HOME
+            // =================================================
 
-                    if (id == R.id.nav_payments) {
+            if (id == R.id.nav_home) {
 
-                        startActivity(
-                                new Intent(
-                                        DashboardActivity.this,
-                                        PaymentsActivity.class
-                                )
-                        );
-
-                        return true;
-                    }
+                return true;
+            }
 
 
-                    // ==================================================
-                    // SCAN
-                    // ==================================================
+            // =================================================
+            // PAYMENTS
+            // =================================================
 
-                    if (id == R.id.nav_scan) {
+            if (id == R.id.nav_payments) {
 
-                        startActivity(
-                                new Intent(
-                                        DashboardActivity.this,
-                                        QRScannerActivity.class
-                                )
-                        );
+                startActivity(
+                        new Intent(
+                                DashboardActivity.this,
+                                PaymentsActivity.class
+                        )
+                );
 
-                        return true;
-                    }
+                overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                );
 
-
-
-                    // ==================================================
-                    // MENU
-                    // ==================================================
-
-                    if (id == R.id.nav_menu) {
-
-                        startActivity(
-                                new Intent(
-                                        DashboardActivity.this,
-                                        ProfileActivity.class
-                                )
-                        );
-
-                        return true;
-                    }
+                return true;
+            }
 
 
-                    return false;
-                }
-        );
+            // =================================================
+            // SCAN
+            // =================================================
+
+            if (id == R.id.nav_scan) {
+
+                startActivity(
+                        new Intent(
+                                DashboardActivity.this,
+                                QRScannerActivity.class
+                        )
+                );
+
+                overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                );
+
+                return true;
+            }
 
 
-        // ==================================================
-        // HOME SELECTED BY DEFAULT
-        // ==================================================
+            // =================================================
+            // CARDS
+            // =================================================
+            //
+            // THIS WAS THE MISSING PART.
+            //
+            // Dashboard Cards
+            //        ↓
+            // CardsActivity
+            //
+            // =================================================
+
+            if (id == R.id.nav_cards) {
+
+                startActivity(
+                        new Intent(
+                                DashboardActivity.this,
+                                CardsActivity.class
+                        )
+                );
+
+                overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                );
+
+                return true;
+            }
+
+
+            // =================================================
+            // MENU
+            // =================================================
+
+            if (id == R.id.nav_menu) {
+
+                startActivity(
+                        new Intent(
+                                DashboardActivity.this,
+                                ProfileActivity.class
+                        )
+                );
+
+                overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                );
+
+                return true;
+            }
+
+
+            // =================================================
+            // UNKNOWN ITEM
+            // =================================================
+
+            return false;
+        });
+
+
+        // =====================================================
+        // DEFAULT HOME
+        // =====================================================
 
         bottomNavigation.setSelectedItemId(
                 R.id.nav_home
@@ -469,9 +537,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
-    // DYNAMIC GREETING
-    // ==================================================
+    // =========================================================
+    // GREETING
+    // =========================================================
 
     private void setGreeting() {
 
@@ -479,9 +547,7 @@ public class DashboardActivity extends AppCompatActivity {
                 Calendar.getInstance();
 
         int hour =
-                calendar.get(
-                        Calendar.HOUR_OF_DAY
-                );
+                calendar.get(Calendar.HOUR_OF_DAY);
 
 
         if (hour >= 5 && hour < 12) {
@@ -494,7 +560,6 @@ public class DashboardActivity extends AppCompatActivity {
                     "Have a great day ahead!"
             );
 
-
         } else if (hour >= 12 && hour < 17) {
 
             tvGreeting.setText(
@@ -505,7 +570,6 @@ public class DashboardActivity extends AppCompatActivity {
                     "Hope your day is going well!"
             );
 
-
         } else if (hour >= 17 && hour < 21) {
 
             tvGreeting.setText(
@@ -515,7 +579,6 @@ public class DashboardActivity extends AppCompatActivity {
             tvGreetingMessage.setText(
                     "Relax and manage your finances."
             );
-
 
         } else {
 
@@ -530,9 +593,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // LOAD DASHBOARD
-    // ==================================================
+    // =========================================================
 
     private void loadDashboard() {
 
@@ -592,7 +655,6 @@ public class DashboardActivity extends AppCompatActivity {
 
                                     checkTransactionPin();
 
-
                                 } else {
 
                                     Toast.makeText(
@@ -622,9 +684,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // CURRENCY FORMATTER
-    // ==================================================
+    // =========================================================
 
     private String formatCurrency(
             double amount
@@ -632,21 +694,16 @@ public class DashboardActivity extends AppCompatActivity {
 
         NumberFormat formatter =
                 NumberFormat.getCurrencyInstance(
-                        new Locale(
-                                "en",
-                                "IN"
-                        )
+                        new Locale("en", "IN")
                 );
 
-        return formatter.format(
-                amount
-        );
+        return formatter.format(amount);
     }
 
 
-    // ==================================================
+    // =========================================================
     // MASK ACCOUNT NUMBER
-    // ==================================================
+    // =========================================================
 
     private String maskAccountNumber(
             String accountNumber
@@ -661,9 +718,7 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
 
-        if (
-                accountNumber.length() <= 4
-        ) {
+        if (accountNumber.length() <= 4) {
 
             return accountNumber;
         }
@@ -679,9 +734,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // CHECK TRANSACTION PIN
-    // ==================================================
+    // =========================================================
 
     private void checkTransactionPin() {
 
@@ -705,13 +760,10 @@ public class DashboardActivity extends AppCompatActivity {
                                             response.body();
 
 
-                                    // ==================================================
-                                    // Full Name
-                                    // ==================================================
-
                                     if (
                                             profile.getFullName() != null
-                                                    && !profile.getFullName()
+                                                    && !profile
+                                                    .getFullName()
                                                     .trim()
                                                     .isEmpty()
                                     ) {
@@ -729,22 +781,12 @@ public class DashboardActivity extends AppCompatActivity {
                                     }
 
 
-                                    // ==================================================
-                                    // Transaction PIN
-                                    // ==================================================
-
                                     if (
                                             !profile.isTransactionPinSet()
                                     ) {
 
-                                        startActivity(
-                                                new Intent(
-                                                        DashboardActivity.this,
-                                                        SetTransactionPinActivity.class
-                                                )
-                                        );
+                                        showTransactionPinDialog();
                                     }
-
 
                                 } else {
 
@@ -761,16 +803,19 @@ public class DashboardActivity extends AppCompatActivity {
                                     @NonNull Throwable t
                             ) {
 
-                                // Dashboard continues normally.
+                                /*
+                                 * Dashboard should continue working
+                                 * even if profile loading fails.
+                                 */
                             }
                         }
                 );
     }
 
 
-    // ==================================================
-    // RECENT TRANSACTIONS
-    // ==================================================
+    // =========================================================
+    // LOAD RECENT TRANSACTIONS
+    // =========================================================
 
     private void loadRecentTransactions(
             String accountNumber
@@ -835,9 +880,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // REFRESH DASHBOARD
-    // ==================================================
+    // =========================================================
 
     private void refreshDashboard() {
 
@@ -856,9 +901,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // CLEAR DASHBOARD
-    // ==================================================
+    // =========================================================
 
     private void clearDashboard() {
 
@@ -870,6 +915,7 @@ public class DashboardActivity extends AppCompatActivity {
         tvWelcome.setText(
                 "Welcome"
         );
+
 
         tvAccountType.setText(
                 "--"
@@ -900,9 +946,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // VISIBILITY BUTTONS
-    // ==================================================
+    // =========================================================
 
     private void setupVisibilityButtons() {
 
@@ -930,24 +976,21 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // BALANCE VISIBILITY
-    // ==================================================
+    // =========================================================
 
     private void updateBalanceVisibility() {
 
         if (balanceVisible) {
 
             tvBalance.setText(
-                    formatCurrency(
-                            actualBalance
-                    )
+                    formatCurrency(actualBalance)
             );
 
             imgToggleBalance.setImageResource(
                     R.drawable.ic_visibility_off_24
             );
-
 
         } else {
 
@@ -962,9 +1005,9 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // ACCOUNT NUMBER VISIBILITY
-    // ==================================================
+    // =========================================================
 
     private void updateAccountVisibility() {
 
@@ -977,7 +1020,6 @@ public class DashboardActivity extends AppCompatActivity {
             imgToggleAccount.setImageResource(
                     R.drawable.ic_visibility_off_24
             );
-
 
         } else {
 
@@ -994,9 +1036,30 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
-    // UTILITY
-    // ==================================================
+    // =========================================================
+    // TRANSACTION PIN DIALOG
+    // =========================================================
+
+    private void showTransactionPinDialog() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Transaction PIN Required")
+                .setMessage("Please set your transaction PIN before making transactions.")
+                .setPositiveButton("Set PIN", (dialog, which) -> {
+                    Intent intent = new Intent(
+                            DashboardActivity.this,
+                            SetTransactionPinActivity.class
+                    );
+                    startActivity(intent);
+                })
+                .setNegativeButton("Later", null)
+                .show();
+    }
+
+
+    // =========================================================
+    // TOAST
+    // =========================================================
 
     private void showToast(
             String message
@@ -1010,15 +1073,15 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-    // ==================================================
+    // =========================================================
     // INITIALIZE VIEWS
-    // ==================================================
+    // =========================================================
 
     private void initializeViews() {
 
-        // ==================================================
-        // Header
-        // ==================================================
+        // =====================================================
+        // HEADER
+        // =====================================================
 
         tvGreeting =
                 findViewById(
@@ -1036,9 +1099,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // Account Details
-        // ==================================================
+        // =====================================================
+        // ACCOUNT
+        // =====================================================
 
         tvAccountNumber =
                 findViewById(
@@ -1071,9 +1134,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // Visibility Icons
-        // ==================================================
+        // =====================================================
+        // VISIBILITY ICONS
+        // =====================================================
 
         imgToggleBalance =
                 findViewById(
@@ -1086,9 +1149,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // Profile
-        // ==================================================
+        // =====================================================
+        // PROFILE
+        // =====================================================
 
         btnProfile =
                 findViewById(
@@ -1096,9 +1159,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // View All
-        // ==================================================
+        // =====================================================
+        // VIEW ALL
+        // =====================================================
 
         tvViewAll =
                 findViewById(
@@ -1106,9 +1169,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // Quick Actions
-        // ==================================================
+        // =====================================================
+        // QUICK ACTIONS
+        // =====================================================
 
         cardDeposit =
                 findViewById(
@@ -1131,9 +1194,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // Recent Transactions
-        // ==================================================
+        // =====================================================
+        // RECENT TRANSACTIONS
+        // =====================================================
 
         rvRecentTransactions =
                 findViewById(
@@ -1141,9 +1204,9 @@ public class DashboardActivity extends AppCompatActivity {
                 );
 
 
-        // ==================================================
-        // Bottom Navigation
-        // ==================================================
+        // =====================================================
+        // BOTTOM NAVIGATION
+        // =====================================================
 
         bottomNavigation =
                 findViewById(

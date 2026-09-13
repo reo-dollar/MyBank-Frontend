@@ -1,7 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.MyBank" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+    <style
+        name="Theme.MyBank"
+        parent="Base.Theme.MyBank">
+
+        <!-- Dark status bar icons -->
+        <item name="android:windowLightStatusBar">
+            false
+        </item>
+
+        <!-- Dark navigation bar icons -->
+        <item
+            name="android:windowLightNavigationBar"
+            tools:targetApi="27">
+            false
+        </item>
+
     </style>
+
 </resources>

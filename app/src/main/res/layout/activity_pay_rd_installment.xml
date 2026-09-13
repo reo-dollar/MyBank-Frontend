@@ -3,58 +3,114 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    android:background="@color/background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
+
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="52dp">
+        android:paddingTop="52dp"
+        android:paddingBottom="20dp">
+
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="Pay RD Installment"
+            android:textColor="@color/text_primary"
             android:textSize="24sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
+
+        <!-- ================================================= -->
+        <!-- RD NUMBER -->
+        <!-- ================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutRDNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+
+            android:layout_marginTop="20dp"
+
+            android:hint="RD Number">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etRDNumber"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="RD Number"/>
+
+                android:inputType="text"
+                android:maxLines="1"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <!-- ================================================= -->
+        <!-- INSTALLMENT AMOUNT -->
+        <!-- ================================================= -->
+
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp">
+
+            android:layout_marginTop="16dp"
+
+            android:hint="Installment Amount">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAmount"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Installment Amount"
-                android:inputType="numberDecimal"/>
+
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <!-- ================================================= -->
+        <!-- PAY BUTTON -->
+        <!-- ================================================= -->
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPayInstallment"
+
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
+
             android:layout_marginTop="24dp"
-            android:text="Pay Installment"/>
+
+            android:text="Pay Installment"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+
+            app:cornerRadius="16dp" />
+
 
     </LinearLayout>
 

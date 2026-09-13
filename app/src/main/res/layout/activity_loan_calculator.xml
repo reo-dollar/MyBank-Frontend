@@ -3,171 +3,158 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    android:fillViewport="true"
-    android:background="#F5F7FA">
+    android:background="@color/background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
 
-
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
         <!-- HEADER -->
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="20dp">
+            android:paddingBottom="16dp">
 
             <ImageButton
                 android:id="@+id/btnBack"
-
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-
                 android:background="?attr/selectableItemBackgroundBorderless"
-
                 android:contentDescription="Back"
+                android:padding="8dp"
+                android:src="@android:drawable/ic_menu_revert"
+                android:tint="@color/text_secondary" />
 
-                android:src="@android:drawable/ic_menu_revert" />
-
-
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-
-                android:layout_weight="1"
                 android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                android:text="Loan Calculator"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loan Calculator"
+                    android:textColor="@color/text_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-                android:textColor="#172033"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+            </LinearLayout>
 
         </LinearLayout>
 
-
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
         <!-- DESCRIPTION -->
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginBottom="20dp"
-
             android:text="Calculate your estimated monthly EMI, total interest and total repayment amount."
-
-            android:textColor="#667085"
+            android:textColor="@color/text_secondary"
             android:textSize="15sp" />
 
-
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
         <!-- CALCULATOR CARD -->
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/calculatorCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginBottom="20dp"
-
+            app:cardBackgroundColor="@color/surface"
             app:cardCornerRadius="18dp"
             app:cardElevation="2dp"
-            app:strokeWidth="0dp">
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:orientation="vertical"
                 android:padding="20dp">
-
 
                 <!-- ================================================= -->
                 <!-- LOAN AMOUNT -->
                 <!-- ================================================= -->
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutLoanAmount"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="14dp"
-
                     android:hint="Loan Amount">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLoanAmount"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:inputType="numberDecimal"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_secondary" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <!-- ================================================= -->
                 <!-- INTEREST RATE -->
                 <!-- ================================================= -->
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutInterestRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="14dp"
-
                     android:hint="Annual Interest Rate (%)">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etInterestRate"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:inputType="numberDecimal"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_secondary" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <!-- ================================================= -->
                 <!-- TENURE -->
                 <!-- ================================================= -->
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutTenure"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="20dp"
-
                     android:hint="Tenure (Months)">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTenure"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-
                         android:inputType="number"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_secondary" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <!-- ================================================= -->
                 <!-- CALCULATE EMI -->
@@ -175,16 +162,15 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCalculate"
-
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-
                     android:text="Calculate EMI"
                     android:textAllCaps="false"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
-
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/primary"
                     app:cornerRadius="14dp" />
-
 
                 <!-- ================================================= -->
                 <!-- VIEW MY LOANS -->
@@ -192,20 +178,16 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnMyLoans"
-
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
-
                     android:layout_marginTop="10dp"
-
                     android:text="View My Loans"
                     android:textAllCaps="false"
+                    android:textColor="@color/primary"
                     android:textSize="15sp"
-
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-
-                    app:cornerRadius="12dp" />
-
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/primary" />
 
                 <!-- ================================================= -->
                 <!-- LOADING -->
@@ -213,172 +195,125 @@
 
                 <ProgressBar
                     android:id="@+id/progressBar"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
                     android:layout_gravity="center"
-
                     android:layout_marginTop="16dp"
-
+                    android:indeterminateTint="@color/primary"
                     android:visibility="gone" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
         <!-- RESULT CARD -->
-        <!-- ================================================= -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/resultCard"
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:visibility="gone"
-
+            app:cardBackgroundColor="@color/surface"
             app:cardCornerRadius="18dp"
-            app:cardElevation="2dp">
+            app:cardElevation="2dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:orientation="vertical"
                 android:padding="20dp">
 
-
-                <!-- ================================================= -->
                 <!-- RESULT TITLE -->
-                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="18dp"
-
                     android:text="Loan Estimate"
-
-                    android:textColor="#172033"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-
-                <!-- ================================================= -->
-                <!-- EMI -->
-                <!-- ================================================= -->
+                <!-- MONTHLY EMI -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:text="Monthly EMI"
-
-                    android:textColor="#667085"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
-
 
                 <TextView
                     android:id="@+id/tvEmiAmount"
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="18dp"
-
                     android:text="₹0.00"
-
-                    android:textColor="#172033"
+                    android:textColor="@color/text_primary"
                     android:textSize="26sp"
                     android:textStyle="bold" />
 
-
-                <!-- ================================================= -->
                 <!-- TOTAL INTEREST -->
-                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:text="Total Interest"
-
-                    android:textColor="#667085"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
-
 
                 <TextView
                     android:id="@+id/tvTotalInterest"
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="18dp"
-
                     android:text="₹0.00"
-
-                    android:textColor="#172033"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-
-                <!-- ================================================= -->
                 <!-- TOTAL PAYABLE -->
-                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:text="Total Payable"
-
-                    android:textColor="#667085"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp" />
-
 
                 <TextView
                     android:id="@+id/tvTotalPayable"
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:layout_marginBottom="20dp"
-
                     android:text="₹0.00"
-
-                    android:textColor="#172033"
+                    android:textColor="@color/text_primary"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-
-                <!-- ================================================= -->
                 <!-- APPLY FOR LOAN -->
-                <!-- ================================================= -->
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnApplyLoan"
-
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
-
                     android:text="Apply for Loan"
                     android:textAllCaps="false"
+                    android:textColor="@color/white"
                     android:textSize="15sp"
-
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/primary"
                     app:cornerRadius="12dp" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-
-        <!-- ================================================= -->
         <!-- BOTTOM SPACING -->
-        <!-- ================================================= -->
 
         <View
             android:layout_width="match_parent"

@@ -8,6 +8,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.rohit.mybank.R;
 import com.rohit.mybank.api.LoanApi;
 import com.rohit.mybank.api.RetrofitClient;
+import com.rohit.mybank.dialog.PinVerificationDialog;
 import com.rohit.mybank.model.loan.LoanDashboardResponse;
 import com.rohit.mybank.model.loan.LoanPrepaymentResponse;
 
@@ -610,8 +613,41 @@ public class LoanDashboardActivity extends AppCompatActivity {
                 )
                 .setPositiveButton(
                         "Confirm",
-                        (dialog, which) ->
-                                executeLoanPrepayment()
+                        (dialog, which) -> {
+
+                            // =================================================
+                            // TRANSACTION PIN VERIFICATION
+                            // =================================================
+                            //
+                            // IMPORTANT:
+                            // Do NOT call executeLoanPrepayment() directly.
+                            // The loan must only be closed after the
+                            // Transaction PIN has been successfully verified.
+                            //
+                            PinVerificationDialog.showForTransactionPin(
+                                    LoanDashboardActivity.this,
+                                    new PinVerificationDialog.OnPinVerifiedWithPinListener() {
+
+                                        @Override
+                                        public void onSuccess(
+                                                String transactionPin
+                                        ) {
+
+                                            // PIN verified successfully.
+                                            // Now execute the actual prepayment.
+                                            executeLoanPrepayment();
+                                        }
+
+                                        @Override
+                                        public void onFailure() {
+
+                                            // Invalid PIN / network failure.
+                                            // PinVerificationDialog keeps the
+                                            // PIN dialog open when appropriate.
+                                        }
+                                    }
+                            );
+                        }
                 )
                 .show();
     }
@@ -687,10 +723,12 @@ public class LoanDashboardActivity extends AppCompatActivity {
 
                             enablePrepayButton();
 
+                            String serverMessage =
+                                    getServerErrorMessage(response);
+
                             showPrepaymentError(
                                     "Unable to close the loan.\n\n" +
-                                            "Server returned: " +
-                                            response.code()
+                                            serverMessage
                             );
 
                             return;
@@ -877,6 +915,126 @@ public class LoanDashboardActivity extends AppCompatActivity {
 
 
     // =========================================================
+    // READ SERVER ERROR
+    // =========================================================
+
+    /**
+     * Extracts the actual error message returned by the backend.
+     *
+     * Spring Boot commonly returns JSON such as:
+     *
+     * {
+     *     "timestamp": "...",
+     *     "status": 400,
+     *     "error": "Bad Request",
+     *     "message": "Insufficient account balance for loan prepayment",
+     *     "path": "/loans/..."
+     * }
+     *
+     * The old implementation only displayed "Server returned: 400",
+     * which hid the real business validation failure.
+     */
+    private String getServerErrorMessage(
+            Response<?> response
+    ) {
+
+        if (response == null) {
+            return "Unknown server error.";
+        }
+
+        if (response.errorBody() == null) {
+            return "Server returned HTTP " +
+                    response.code() +
+                    ".";
+        }
+
+        try {
+
+            String rawError =
+                    response.errorBody().string();
+
+            if (rawError == null ||
+                    rawError.trim().isEmpty()) {
+
+                return "Server returned HTTP " +
+                        response.code() +
+                        ".";
+            }
+
+            String trimmed =
+                    rawError.trim();
+
+            // -------------------------------------------------
+            // JSON error response
+            // -------------------------------------------------
+
+            if (trimmed.startsWith("{")) {
+
+                JSONObject json =
+                        new JSONObject(trimmed);
+
+                String message =
+                        json.optString(
+                                "message",
+                                ""
+                        );
+
+                if (message != null &&
+                        !message.trim().isEmpty() &&
+                        !"null".equalsIgnoreCase(
+                                message.trim()
+                        )) {
+
+                    return message.trim();
+                }
+
+                String detail =
+                        json.optString(
+                                "detail",
+                                ""
+                        );
+
+                if (detail != null &&
+                        !detail.trim().isEmpty() &&
+                        !"null".equalsIgnoreCase(
+                                detail.trim()
+                        )) {
+
+                    return detail.trim();
+                }
+
+                String error =
+                        json.optString(
+                                "error",
+                                ""
+                        );
+
+                if (error != null &&
+                        !error.trim().isEmpty() &&
+                        !"null".equalsIgnoreCase(
+                                error.trim()
+                        )) {
+
+                    return error.trim();
+                }
+            }
+
+            // -------------------------------------------------
+            // Non-JSON response
+            // -------------------------------------------------
+
+            return trimmed;
+
+        } catch (Exception exception) {
+
+            return "Server returned HTTP " +
+                    response.code() +
+                    ".";
+        }
+    }
+
+
+    // =========================================================
     // PREPAYMENT ERROR
     // =========================================================
 
@@ -964,8 +1122,7 @@ public class LoanDashboardActivity extends AppCompatActivity {
 
                             showError(
                                     "Unable to load loan dashboard.\n\n" +
-                                            "Server returned: " +
-                                            response.code()
+                                            getServerErrorMessage(response)
                             );
 
                             return;

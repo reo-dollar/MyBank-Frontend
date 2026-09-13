@@ -1,81 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
 
     <!-- ========================================================= -->
-    <!-- GENERAL APP COLORS                                        -->
+    <!-- MyBank Light Theme Colors                                  -->
     <!-- ========================================================= -->
 
     <!-- Primary -->
     <color name="primary">#2563EB</color>
     <color name="primary_dark">#1D4ED8</color>
-
-    <!-- Accent -->
     <color name="accent">#14B8A6</color>
 
-    <!-- Background -->
+    <!-- Background / Surface -->
     <color name="background">#F8FAFC</color>
-
-    <!-- Surface -->
     <color name="surface">#FFFFFF</color>
-
-    <!-- Dark Card -->
-    <color name="card_dark">#1E293B</color>
+    <color name="card_dark">#E5E7EB</color>
 
     <!-- Text -->
     <color name="text_primary">#0F172A</color>
     <color name="text_secondary">#64748B</color>
-
-    <!-- Card Text -->
     <color name="card_text">#FFFFFF</color>
 
-    <!-- ========================================================= -->
-    <!-- GENERAL STATUS COLORS                                     -->
-    <!-- ========================================================= -->
-
+    <!-- Status -->
     <color name="success">#16A34A</color>
     <color name="error">#DC2626</color>
 
-    <!-- ========================================================= -->
-    <!-- BASIC COLORS                                              -->
-    <!-- ========================================================= -->
-
+    <!-- Basic -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
-    <!-- ========================================================= -->
-    <!-- ADMIN DASHBOARD COLORS                                    -->
-    <!-- ========================================================= -->
-
-    <!-- Admin Background -->
+    <!-- Admin -->
     <color name="admin_background">#F4F7FB</color>
-
-    <!-- Admin Card -->
     <color name="admin_card">#FFFFFF</color>
-
-    <!-- Admin Text -->
     <color name="admin_text_primary">#111827</color>
     <color name="admin_text_secondary">#64748B</color>
-
-    <!-- ========================================================= -->
-    <!-- ADMIN MANAGEMENT BUTTON COLORS                            -->
-    <!-- ========================================================= -->
-
-    <!-- User Management -->
     <color name="admin_primary">#2563EB</color>
-
-    <!-- Customer Management -->
     <color name="admin_customer">#0F766E</color>
-
-    <!-- Account Management -->
     <color name="admin_account">#4F46E5</color>
-
-    <!-- Transaction Management -->
     <color name="admin_transaction">#C2410C</color>
-
-    <!-- Loan Management -->
     <color name="admin_loan">#7C3AED</color>
-
-    <!-- Logout -->
     <color name="admin_logout">#DC2626</color>
 
 </resources>

@@ -4,171 +4,304 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:fillViewport="true"
-    android:background="#F5F7FA"
+    android:background="@color/background"
+
     tools:context=".activities.payments.recurringdeposit.OpenRDActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
+
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="52dp">
+        android:paddingTop="52dp"
+        android:paddingBottom="20dp">
+
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="Open Recurring Deposit"
+
+            android:textColor="@color/text_primary"
             android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="#212121"/>
+            android:textStyle="bold" />
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="Start saving every month"
-            android:textColor="#757575"
-            android:textSize="14sp"/>
 
-        <!-- Account Number -->
+            android:layout_marginTop="6dp"
+
+            android:text="Start saving every month"
+
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+
+        <!-- ================================================= -->
+        <!-- ACCOUNT NUMBER -->
+        <!-- ================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutAccountNumber"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="24dp"
-            android:hint="Account Number">
+
+            android:hint="Account Number"
+
+            app:boxBackgroundMode="outline">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAccountNumber"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"/>
+
+                android:inputType="text"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Monthly Installment -->
+
+        <!-- ================================================= -->
+        <!-- MONTHLY INSTALLMENT -->
+        <!-- ================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutMonthlyInstallment"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="16dp"
-            android:hint="Monthly Installment (₹)">
+
+            android:hint="Monthly Installment (₹)"
+
+            app:boxBackgroundMode="outline">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMonthlyInstallment"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+
+                android:inputType="numberDecimal"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Interest Rate -->
+
+        <!-- ================================================= -->
+        <!-- INTEREST RATE -->
+        <!-- ================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInterestRate"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="16dp"
-            android:hint="Interest Rate (%)">
+
+            android:hint="Interest Rate (%)"
+
+            app:boxBackgroundMode="outline">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etInterestRate"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+
+                android:inputType="numberDecimal"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Tenure -->
+
+        <!-- ================================================= -->
+        <!-- TENURE -->
+        <!-- ================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutTenure"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="16dp"
-            android:hint="Tenure (Months)">
+
+            android:hint="Tenure (Months)"
+
+            app:boxBackgroundMode="outline">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTenure"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+
+                android:inputType="number"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
-        <!-- ====================================== -->
-        <!-- Auto Debit -->
-        <!-- ====================================== -->
+
+
+        <!-- ================================================= -->
+        <!-- AUTO DEBIT -->
+        <!-- ================================================= -->
 
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchAutoDebit"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Enable Auto Debit"/>
 
-        <!-- ====================================== -->
-        <!-- Open RD Button -->
-        <!-- ====================================== -->
+            android:layout_marginTop="20dp"
+
+            android:text="Enable Auto Debit"
+
+            android:textColor="@color/text_primary" />
+
+
+        <!-- ================================================= -->
+        <!-- OPEN RD BUTTON -->
+        <!-- ================================================= -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnOpenRD"
+
             android:layout_width="match_parent"
             android:layout_height="56dp"
+
             android:layout_marginTop="24dp"
+
             android:text="Open Recurring Deposit"
             android:textAllCaps="false"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textStyle="bold"
 
-        <!-- ====================================== -->
-        <!-- Information Card -->
-        <!-- ====================================== -->
+            android:textColor="@android:color/white"
+
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="18dp" />
+
+
+        <!-- ================================================= -->
+        <!-- IMPORTANT INFORMATION CARD -->
+        <!-- ================================================= -->
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardImportantInformation"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="24dp"
+
+            app:cardBackgroundColor="@color/surface"
             app:cardCornerRadius="16dp"
-            app:cardElevation="4dp">
+            app:cardElevation="4dp"
+
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
+
                 android:padding="16dp">
+
+
+                <!-- ================================================= -->
+                <!-- CARD TITLE -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:text="Important Information"
-                    android:textStyle="bold"
+
+                    android:textColor="@color/text_primary"
                     android:textSize="18sp"
-                    android:textColor="#212121"/>
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- INFORMATION 1 -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="12dp"
+
                     android:text="• Monthly installment will be automatically debited if Auto Debit is enabled."
-                    android:textSize="14sp"
-                    android:textColor="#616161"/>
+
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+
+                <!-- ================================================= -->
+                <!-- INFORMATION 2 -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="8dp"
+
                     android:text="• Interest is calculated according to the selected tenure and prevailing bank rate."
-                    android:textSize="14sp"
-                    android:textColor="#616161"/>
+
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+
+                <!-- ================================================= -->
+                <!-- INFORMATION 3 -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="8dp"
+
                     android:text="• Premature closure may reduce the applicable interest."
-                    android:textSize="14sp"
-                    android:textColor="#616161"/>
+
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

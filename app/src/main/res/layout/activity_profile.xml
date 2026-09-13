@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC">
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,8 +27,8 @@
             app:cardCornerRadius="24dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -44,28 +44,24 @@
                     android:layout_width="90dp"
                     android:layout_height="90dp"
                     android:background="@drawable/circle_white"
-                    android:padding="18dp"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop"
                     android:src="@android:drawable/ic_menu_myplaces"
-                    android:contentDescription="Profile"/>
+                    android:contentDescription="Profile" />
 
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-
                     android:gravity="center"
-
                     android:text="Loading..."
-
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
                     android:textSize="21sp"
-
                     android:maxLines="1"
                     android:ellipsize="end"
-
-                    android:includeFontPadding="true"/>
+                    android:includeFontPadding="true" />
 
                 <TextView
                     android:id="@+id/tvAccountTypeHeader"
@@ -74,7 +70,7 @@
                     android:layout_marginTop="8dp"
                     android:text="Savings Account"
                     android:textColor="@android:color/white"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -88,7 +84,7 @@
                         android:layout_height="20dp"
                         android:src="@drawable/ic_verified_24"
                         android:contentDescription="Verified"
-                        app:tint="#22C55E"/>
+                        app:tint="@color/success" />
 
                     <TextView
                         android:id="@+id/tvVerified"
@@ -98,7 +94,7 @@
                         android:text="Verified Customer"
                         android:textStyle="bold"
                         android:textColor="@android:color/white"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -118,8 +114,8 @@
             app:cardCornerRadius="20dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -131,16 +127,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Personal Information"
-                    android:textColor="#111827"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="20dp"
-                    android:background="#E5E7EB"/>
+                    android:background="?attr/colorOutline" />
 
                 <!-- Full Name -->
 
@@ -154,7 +150,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_myplaces"/>
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -167,8 +164,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Full Name"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvFullName"
@@ -176,9 +173,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -196,7 +193,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_manage"/>
+                        android:src="@android:drawable/ic_menu_manage"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -209,8 +207,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Username"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvUsername"
@@ -218,9 +216,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -238,7 +236,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_dialog_email"/>
+                        android:src="@android:drawable/ic_dialog_email"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -251,8 +250,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Email"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvEmail"
@@ -260,9 +259,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -280,7 +279,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_call"/>
+                        android:src="@android:drawable/ic_menu_call"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -293,8 +293,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Phone"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvPhone"
@@ -302,9 +302,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -321,7 +321,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_mylocation"/>
+                        android:src="@android:drawable/ic_menu_mylocation"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -334,8 +335,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Address"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvAddress"
@@ -343,9 +344,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -354,6 +355,7 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
         <!-- ====================================================== -->
         <!-- Bank Information -->
         <!-- ====================================================== -->
@@ -366,8 +368,8 @@
             app:cardCornerRadius="20dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -379,16 +381,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bank Information"
-                    android:textColor="#111827"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="20dp"
-                    android:background="#E5E7EB"/>
+                    android:background="?attr/colorOutline" />
 
                 <!-- Customer ID -->
 
@@ -402,7 +404,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_info_details"/>
+                        android:src="@android:drawable/ic_menu_info_details"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -415,8 +418,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Customer ID"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvCustomerId"
@@ -424,9 +427,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -444,7 +447,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_agenda"/>
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -457,8 +461,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Account Number"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvAccountNumber"
@@ -466,9 +470,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -486,7 +490,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_sort_by_size"/>
+                        android:src="@android:drawable/ic_menu_sort_by_size"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -499,8 +504,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Account Type"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvAccountType"
@@ -508,9 +513,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -528,7 +533,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_mylocation"/>
+                        android:src="@android:drawable/ic_menu_mylocation"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -541,8 +547,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Branch"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvBranch"
@@ -550,9 +556,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -570,7 +576,8 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:src="@android:drawable/ic_menu_edit"/>
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="@color/primary" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -583,8 +590,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="IFSC Code"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvIfsc"
@@ -592,9 +599,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#111827"
+                            android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -613,7 +620,7 @@
                         android:layout_height="20dp"
                         android:src="@drawable/ic_verified_24"
                         android:contentDescription="Verified"
-                        app:tint="#22C55E"/>
+                        app:tint="@color/success" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -626,8 +633,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="KYC Status"
-                            android:textColor="#6B7280"
-                            android:textSize="13sp"/>
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/tvKyc"
@@ -635,9 +642,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:text="Loading..."
-                            android:textColor="#4CAF50"
+                            android:textColor="@color/success"
                             android:textStyle="bold"
-                            android:textSize="17sp"/>
+                            android:textSize="17sp" />
 
                     </LinearLayout>
 
@@ -656,9 +663,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:text="Settings"
-            android:textColor="#111827"
+            android:textColor="@color/text_primary"
             android:textStyle="bold"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
 
         <!-- ====================================================== -->
         <!-- Edit Profile -->
@@ -676,8 +683,8 @@
             app:cardCornerRadius="18dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -690,7 +697,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_menu_edit"
-                    android:tint="#2563EB"/>
+                    app:tint="@color/primary" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -698,14 +705,15 @@
                     android:layout_weight="1"
                     android:layout_marginStart="18dp"
                     android:text="Edit Profile"
-                    android:textColor="#111827"
+                    android:textColor="@color/text_primary"
                     android:textSize="16sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@android:drawable/ic_media_next"/>
+                    android:src="@android:drawable/ic_media_next"
+                    app:tint="@color/text_secondary" />
 
             </LinearLayout>
 
@@ -727,8 +735,8 @@
             app:cardCornerRadius="18dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -741,7 +749,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_lock_lock"
-                    android:tint="#2563EB"/>
+                    app:tint="@color/primary" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -749,14 +757,15 @@
                     android:layout_weight="1"
                     android:layout_marginStart="18dp"
                     android:text="Change Password"
-                    android:textColor="#111827"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@android:drawable/ic_media_next"/>
+                    android:src="@android:drawable/ic_media_next"
+                    app:tint="@color/text_secondary" />
 
             </LinearLayout>
 
@@ -771,12 +780,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
 
             app:cardCornerRadius="18dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -789,7 +801,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_dialog_info"
-                    android:tint="#2563EB"/>
+                    app:tint="@color/primary" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -797,15 +809,15 @@
                     android:layout_weight="1"
                     android:layout_marginStart="18dp"
                     android:text="Notifications"
-                    android:textColor="#111827"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchNotifications"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checked="true"/>
+                    android:checked="true" />
 
             </LinearLayout>
 
@@ -820,12 +832,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="14dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
 
             app:cardCornerRadius="18dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -838,7 +853,8 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_menu_day"
-                    android:tint="#2563EB"/>
+                    app:tint="@color/primary"
+                    android:contentDescription="Dark Mode" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -846,14 +862,14 @@
                     android:layout_weight="1"
                     android:layout_marginStart="18dp"
                     android:text="Dark Mode"
-                    android:textColor="#111827"
+                    android:textColor="@color/text_primary"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchDarkMode"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
@@ -875,8 +891,8 @@
             app:cardCornerRadius="18dp"
             app:cardElevation="2dp"
             app:strokeWidth="1dp"
-            app:strokeColor="#E5E7EB"
-            app:cardBackgroundColor="@android:color/white">
+            app:strokeColor="?attr/colorOutline"
+            app:cardBackgroundColor="@color/surface">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -889,7 +905,8 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_lock_idle_lock"
-                    android:tint="#2563EB"/>
+                    app:tint="@color/primary"
+                    android:contentDescription="Fingerprint Login" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -904,7 +921,7 @@
                         android:text="Fingerprint Login"
                         android:textStyle="bold"
                         android:textSize="16sp"
-                        android:textColor="#111827"/>
+                        android:textColor="@color/text_primary" />
 
                     <TextView
                         android:id="@+id/tvFingerprintStatus"
@@ -913,18 +930,19 @@
                         android:layout_marginTop="2dp"
                         android:text="Disabled"
                         android:textSize="12sp"
-                        android:textColor="#6B7280"/>
+                        android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchFingerprint"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
         <!-- ====================================================== -->
         <!-- Logout Button -->
         <!-- ====================================================== -->
@@ -947,9 +965,9 @@
             android:drawableStart="@android:drawable/ic_lock_power_off"
             android:drawablePadding="8dp"
 
-            app:backgroundTint="#D32F2F"
+            app:backgroundTint="@color/error"
             app:cornerRadius="18dp"
-            app:iconGravity="textStart"/>
+            app:iconGravity="textStart" />
 
     </LinearLayout>
 

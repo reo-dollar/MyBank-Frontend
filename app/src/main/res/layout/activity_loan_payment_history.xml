@@ -8,7 +8,8 @@
     android:layout_height="match_parent"
 
     android:orientation="vertical"
-    android:background="#F6F7FB">
+
+    android:background="@color/background">
 
 
     <!-- ========================================================= -->
@@ -48,7 +49,7 @@
 
             android:src="@android:drawable/ic_media_previous"
 
-            android:tint="#172033" />
+            android:tint="@color/text_primary" />
 
 
         <!-- ===================================================== -->
@@ -72,7 +73,8 @@
 
                 android:text="EMI Payment History"
 
-                android:textColor="#172033"
+                android:textColor="@color/text_primary"
+
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -87,7 +89,8 @@
 
                 android:text="LN000000000"
 
-                android:textColor="#667085"
+                android:textColor="@color/text_secondary"
+
                 android:textSize="12sp"
 
                 android:maxLines="1"
@@ -112,10 +115,13 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
 
-        app:cardBackgroundColor="#F3EAF8"
+        app:cardBackgroundColor="@color/surface"
+
         app:cardCornerRadius="16dp"
         app:cardElevation="2dp"
-        app:strokeWidth="0dp">
+
+        app:strokeColor="?attr/colorOutline"
+        app:strokeWidth="1dp">
 
 
         <LinearLayout
@@ -135,7 +141,8 @@
 
                 android:text="EMI Payment History"
 
-                android:textColor="#172033"
+                android:textColor="@color/text_primary"
+
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -150,7 +157,8 @@
 
                 android:text="Loading payment history..."
 
-                android:textColor="#667085"
+                android:textColor="@color/text_secondary"
+
                 android:textSize="12sp" />
 
         </LinearLayout>
@@ -200,7 +208,9 @@
             android:paddingTop="4dp"
             android:paddingBottom="16dp"
 
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+
+            android:background="@color/background" />
 
 
         <!-- ===================================================== -->
@@ -234,7 +244,8 @@
 
                 android:text="No EMI Payment History"
 
-                android:textColor="#172033"
+                android:textColor="@color/text_primary"
+
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -250,7 +261,8 @@
 
                 android:text="No EMI payments have been made yet."
 
-                android:textColor="#667085"
+                android:textColor="@color/text_secondary"
+
                 android:textSize="13sp" />
 
         </LinearLayout>

@@ -3,68 +3,127 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+
     android:layout_marginStart="12dp"
     android:layout_marginEnd="12dp"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
+
+    app:cardBackgroundColor="@color/surface"
     app:cardCornerRadius="16dp"
-    app:cardElevation="6dp">
+    app:cardElevation="6dp"
+    app:strokeColor="?attr/colorOutline"
+    app:strokeWidth="1dp">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- RD Number + Status -->
+
+        <!-- ================================================= -->
+        <!-- RD NUMBER + STATUS -->
+        <!-- ================================================= -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
             android:orientation="horizontal">
+
+
+            <!-- RD NUMBER -->
 
             <TextView
                 android:id="@+id/tvRDNumber"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+
                 android:layout_weight="1"
+
                 android:text="RD202600001"
-                android:textStyle="bold"
-                android:textSize="18sp"/>
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <!-- STATUS -->
 
             <TextView
                 android:id="@+id/tvStatus"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                android:paddingStart="8dp"
+                android:paddingEnd="4dp"
+
                 android:text="ACTIVE"
-                android:textStyle="bold"
-                android:textColor="#2E7D32"/>
+                android:textColor="@color/success"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
+
+        <!-- ================================================= -->
+        <!-- CUSTOMER NAME -->
+        <!-- ================================================= -->
+
         <TextView
             android:id="@+id/tvCustomerName"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="10dp"
+
             android:text="Customer Name"
-            android:textSize="16sp"/>
+            android:textColor="@color/text_primary"
+            android:textSize="16sp" />
+
+
+        <!-- ================================================= -->
+        <!-- MONTHLY INSTALLMENT -->
+        <!-- ================================================= -->
 
         <TextView
             android:id="@+id/tvMonthlyInstallment"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="8dp"
-            android:text="Monthly Installment : ₹5000"/>
+
+            android:text="Monthly Installment : ₹5000"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+
+        <!-- ================================================= -->
+        <!-- MATURITY AMOUNT -->
+        <!-- ================================================= -->
 
         <TextView
             android:id="@+id/tvMaturityAmount"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="6dp"
-            android:text="Maturity Amount : ₹130000"/>
+
+            android:text="Maturity Amount : ₹130000"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
 
     </LinearLayout>
 

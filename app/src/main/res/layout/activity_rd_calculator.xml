@@ -4,201 +4,329 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA"
+
+    android:background="@color/background"
     android:fillViewport="true"
+
     tools:context=".activities.payments.recurringdeposit.RDCalculatorActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
+
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="52dp">
+        android:paddingTop="52dp"
+        android:paddingBottom="20dp">
 
-        <!-- ====================================== -->
-        <!-- Header -->
-        <!-- ====================================== -->
+
+        <!-- ===================================================== -->
+        <!-- HEADER -->
+        <!-- ===================================================== -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="Recurring Deposit Calculator"
-            android:textStyle="bold"
+
+            android:textColor="@color/text_primary"
             android:textSize="26sp"
-            android:textColor="#212121"/>
+            android:textStyle="bold" />
+
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="Calculate maturity amount before opening an RD"
-            android:textColor="#757575"
-            android:textSize="14sp"/>
 
-        <!-- ====================================== -->
-        <!-- Monthly Installment -->
-        <!-- ====================================== -->
+            android:layout_marginTop="5dp"
+
+            android:text="Calculate maturity amount before opening an RD"
+
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+
+        <!-- ===================================================== -->
+        <!-- MONTHLY INSTALLMENT -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="24dp"
+
             android:hint="Monthly Installment (₹)"
+
+            app:boxBackgroundMode="outline"
+
             app:boxCornerRadiusBottomEnd="14dp"
             app:boxCornerRadiusBottomStart="14dp"
             app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp">
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="@color/text_secondary"
+            app:hintTextColor="@color/text_secondary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMonthlyInstallment"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+
+                android:inputType="numberDecimal"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ====================================== -->
-        <!-- Interest Rate -->
-        <!-- ====================================== -->
+
+        <!-- ===================================================== -->
+        <!-- INTEREST RATE -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="16dp"
+
             android:hint="Interest Rate (%)"
+
+            app:boxBackgroundMode="outline"
+
             app:boxCornerRadiusBottomEnd="14dp"
             app:boxCornerRadiusBottomStart="14dp"
             app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp">
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="@color/text_secondary"
+            app:hintTextColor="@color/text_secondary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etInterestRate"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"/>
+
+                android:inputType="numberDecimal"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ====================================== -->
-        <!-- Tenure -->
-        <!-- ====================================== -->
+
+        <!-- ===================================================== -->
+        <!-- TENURE -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="16dp"
+
             android:hint="Tenure (Months)"
+
+            app:boxBackgroundMode="outline"
+
             app:boxCornerRadiusBottomEnd="14dp"
             app:boxCornerRadiusBottomStart="14dp"
             app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp">
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="@color/text_secondary"
+            app:hintTextColor="@color/text_secondary">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTenure"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+
+                android:inputType="number"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ====================================== -->
-        <!-- Calculate Button -->
-        <!-- ====================================== -->
+
+        <!-- ===================================================== -->
+        <!-- CALCULATE BUTTON -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalculate"
+
             android:layout_width="match_parent"
             android:layout_height="56dp"
+
             android:layout_marginTop="24dp"
+
             android:text="Calculate"
             android:textAllCaps="false"
-            android:textSize="16sp"/>
-        <!-- ====================================== -->
-        <!-- Result Card -->
-        <!-- ====================================== -->
+            android:textSize="16sp"
+            android:textStyle="bold"
+
+            android:textColor="@android:color/white"
+
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="18dp" />
+
+
+        <!-- ===================================================== -->
+        <!-- RESULT CARD -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardResult"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="24dp"
+
+            app:cardBackgroundColor="@color/surface"
             app:cardCornerRadius="18dp"
-            app:cardElevation="6dp">
+            app:cardElevation="6dp"
+
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
+
                 android:padding="20dp">
 
+
+                <!-- ================================================= -->
+                <!-- RESULT TITLE -->
+                <!-- ================================================= -->
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:text="Calculation Result"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:textColor="#212121"/>
 
-                <!-- Total Deposit -->
+                    android:textColor="@color/text_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- TOTAL DEPOSIT LABEL -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="24dp"
+
                     android:text="Total Deposit"
-                    android:textStyle="bold"
-                    android:textSize="15sp"/>
+
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+                <!-- TOTAL DEPOSIT VALUE -->
 
                 <TextView
                     android:id="@+id/tvTotalDeposit"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="₹0.00"
-                    android:textColor="#1976D2"
-                    android:textSize="22sp"
-                    android:textStyle="bold"/>
 
-                <!-- Estimated Interest -->
+                    android:layout_marginTop="4dp"
+
+                    android:text="₹0.00"
+
+                    android:textColor="@color/primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- ESTIMATED INTEREST LABEL -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="20dp"
+
                     android:text="Estimated Interest"
-                    android:textStyle="bold"
-                    android:textSize="15sp"/>
+
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ESTIMATED INTEREST VALUE -->
 
                 <TextView
                     android:id="@+id/tvEstimatedInterest"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="₹0.00"
-                    android:textColor="#2E7D32"
-                    android:textSize="22sp"
-                    android:textStyle="bold"/>
 
-                <!-- Maturity Amount -->
+                    android:layout_marginTop="4dp"
+
+                    android:text="₹0.00"
+
+                    android:textColor="@color/success"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+
+                <!-- ================================================= -->
+                <!-- MATURITY AMOUNT LABEL -->
+                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="20dp"
+
                     android:text="Maturity Amount"
-                    android:textStyle="bold"
-                    android:textSize="15sp"/>
+
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+                <!-- MATURITY AMOUNT VALUE -->
 
                 <TextView
                     android:id="@+id/tvMaturityAmount"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+
                     android:layout_marginTop="4dp"
+
                     android:text="₹0.00"
-                    android:textColor="#F57C00"
+
+                    android:textColor="@color/accent"
                     android:textSize="24sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </LinearLayout>
 

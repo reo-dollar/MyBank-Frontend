@@ -2,10 +2,14 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical"
-    android:background="#F5F7FA">
+
+    android:background="@color/background">
+
 
     <!-- ===================================================== -->
     <!-- HEADER -->
@@ -14,28 +18,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:gravity="center_vertical"
         android:orientation="horizontal"
+
         android:paddingStart="20dp"
         android:paddingTop="16dp"
         android:paddingEnd="20dp"
         android:paddingBottom="16dp">
 
+
+        <!-- BACK BUTTON -->
+
         <ImageButton
             android:id="@+id/btnBack"
+
             android:layout_width="48dp"
             android:layout_height="48dp"
+
             android:background="?attr/selectableItemBackgroundBorderless"
+
             android:contentDescription="Back"
-            android:src="@android:drawable/ic_menu_revert" />
+
+            android:padding="10dp"
+
+            android:src="@android:drawable/ic_menu_revert"
+
+            android:tint="@color/text_primary" />
+
+
+        <!-- TITLE -->
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+
             android:layout_weight="1"
             android:layout_marginStart="8dp"
+
             android:text="My Loans"
-            android:textColor="#172033"
+
+            android:textColor="@color/text_primary"
+
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -48,13 +72,18 @@
 
     <TextView
         android:id="@+id/tvLoanSummary"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:paddingBottom="14dp"
+
         android:text="Your loan applications"
-        android:textColor="#667085"
+
+        android:textColor="@color/text_secondary"
+
         android:textSize="14sp" />
 
 
@@ -64,10 +93,14 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_gravity="center"
+
         android:layout_marginTop="30dp"
+
         android:visibility="gone" />
 
 
@@ -77,29 +110,49 @@
 
     <LinearLayout
         android:id="@+id/emptyState"
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:layout_weight="1"
+
         android:gravity="center"
+
         android:orientation="vertical"
+
         android:padding="32dp"
+
         android:visibility="gone">
+
+
+        <!-- EMPTY TITLE -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="No Loans Found"
-            android:textColor="#172033"
+
+            android:textColor="@color/text_primary"
+
             android:textSize="20sp"
             android:textStyle="bold" />
 
+
+        <!-- EMPTY DESCRIPTION -->
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="8dp"
+
             android:gravity="center"
+
             android:text="You don't have any loan applications yet."
-            android:textColor="#667085"
+
+            android:textColor="@color/text_secondary"
+
             android:textSize="14sp" />
 
     </LinearLayout>
@@ -111,10 +164,14 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerLoans"
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
+
         android:layout_weight="1"
+
         android:clipToPadding="false"
+
         android:paddingStart="16dp"
         android:paddingTop="4dp"
         android:paddingEnd="16dp"

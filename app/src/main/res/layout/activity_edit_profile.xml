@@ -1,172 +1,434 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:fillViewport="true"
-    android:background="#F5F7FA">
+    android:background="@color/background"
+    android:clipToPadding="false">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
+
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="52dp">
+        android:paddingTop="52dp"
+        android:paddingBottom="32dp">
 
-        <!-- Profile Image -->
+
+        <!-- ========================================================= -->
+        <!-- PROFILE PHOTO                                             -->
+        <!-- ========================================================= -->
 
         <ImageView
             android:id="@+id/imgProfile"
+
             android:layout_width="110dp"
             android:layout_height="110dp"
+
             android:layout_gravity="center"
+
             android:src="@drawable/ic_person_24"
             android:background="@drawable/circle_background"
-            android:padding="20dp"/>
 
-        <Button
+            android:scaleType="centerCrop"
+            android:padding="0dp"
+            android:clipToOutline="true"
+
+            android:contentDescription="@string/profile_photo" />
+
+
+        <!-- ========================================================= -->
+        <!-- CHANGE PHOTO                                               -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnChangePhoto"
+
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
+
             android:layout_gravity="center"
+
             android:layout_marginTop="10dp"
-            android:text="Change Photo"/>
+
+            android:text="@string/change_photo"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="@android:color/white"
+
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="24dp" />
+
+
+        <!-- ========================================================= -->
+        <!-- REMOVE PHOTO                                              -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRemovePhoto"
+
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+
+            android:layout_gravity="center"
+
+            android:layout_marginTop="6dp"
+
+            android:text="Remove Photo"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:textColor="@color/error"
+
+            android:visibility="gone"
+
+            app:backgroundTint="@android:color/transparent"
+            app:cornerRadius="24dp"
+            app:strokeColor="@color/error"
+            app:strokeWidth="1dp" />
+
+
+        <!-- ========================================================= -->
+        <!-- TITLE                                                      -->
+        <!-- ========================================================= -->
 
         <TextView
+            android:id="@+id/tvEditProfileTitle"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Profile"
-            android:textStyle="bold"
-            android:textSize="26sp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"/>
 
-        <!-- Email -->
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="20dp"
+
+            android:text="@string/edit_profile"
+
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+
+        <!-- ========================================================= -->
+        <!-- EMAIL                                                      -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmail"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            app:startIconDrawable="@android:drawable/ic_dialog_email">
+
+            android:hint="@string/email"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary"
+
+            app:startIconDrawable="@android:drawable/ic_dialog_email"
+            app:startIconTint="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"/>
+
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+
+                android:autofillHints="emailAddress"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Mobile -->
+
+        <!-- ========================================================= -->
+        <!-- MOBILE                                                     -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilMobile"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="14dp"
-            android:hint="Mobile"
-            app:startIconDrawable="@android:drawable/ic_menu_call">
+
+            android:hint="@string/phone_number"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary"
+
+            app:startIconDrawable="@android:drawable/ic_menu_call"
+            app:startIconTint="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMobile"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"/>
+
+                android:inputType="phone"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+
+                android:autofillHints="phone"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Address -->
+
+        <!-- ========================================================= -->
+        <!-- ADDRESS                                                    -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilAddress"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="14dp"
-            android:hint="Address">
+
+            android:hint="Address"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAddress"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+
+                android:inputType="textCapSentences|textMultiLine"
+
+                android:minLines="1"
+                android:maxLines="3"
+
+                android:gravity="top|start"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- City -->
+
+        <!-- ========================================================= -->
+        <!-- CITY                                                       -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCity"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="14dp"
-            android:hint="City">
+
+            android:hint="City"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCity"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+
+                android:inputType="textCapWords"
+
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- State -->
+
+        <!-- ========================================================= -->
+        <!-- STATE                                                      -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilState"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="14dp"
-            android:hint="State">
+
+            android:hint="State"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etState"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+
+                android:inputType="textCapWords"
+
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Pincode -->
+
+        <!-- ========================================================= -->
+        <!-- PINCODE                                                    -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilPincode"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="14dp"
-            android:hint="Pincode">
+
+            android:hint="Pincode"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPincode"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+
+                android:inputType="number"
+                android:maxLength="6"
+
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Occupation -->
+
+        <!-- ========================================================= -->
+        <!-- OCCUPATION                                                 -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilOccupation"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:layout_marginTop="14dp"
-            android:hint="Occupation">
+
+            android:hint="Occupation"
+
+            app:boxStrokeColor="@color/primary"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etOccupation"
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+
+                android:inputType="textCapWords"
+
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <!-- ========================================================= -->
+        <!-- PROGRESS BAR                                               -->
+        <!-- ========================================================= -->
+
         <ProgressBar
             android:id="@+id/progressBar"
+
             android:layout_width="40dp"
             android:layout_height="40dp"
+
             android:layout_gravity="center"
+
             android:layout_marginTop="20dp"
-            android:visibility="gone"/>
+
+            android:visibility="gone"
+            android:indeterminate="true" />
+
+
+        <!-- ========================================================= -->
+        <!-- SAVE CHANGES                                               -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnUpdate"
+
             android:layout_width="match_parent"
             android:layout_height="56dp"
+
             android:layout_marginTop="24dp"
-            android:text="Save Changes"/>
+
+            android:text="@string/save_changes"
+            android:textAllCaps="false"
+            android:textSize="15sp"
+            android:textColor="@android:color/white"
+
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="28dp" />
+
 
     </LinearLayout>
 

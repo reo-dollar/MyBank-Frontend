@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- ====================================================== -->
-    <!-- Permissions -->
+    <!-- PERMISSIONS -->
     <!-- ====================================================== -->
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Internet access -->
+    <uses-permission
+        android:name="android.permission.INTERNET" />
 
     <!-- Biometric authentication -->
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission
+        android:name="android.permission.USE_BIOMETRIC" />
+
 
     <!-- ====================================================== -->
-    <!-- Application -->
+    <!-- APPLICATION -->
     <!-- ====================================================== -->
 
     <application
         android:name=".MyBankApplication"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="My Bank"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyBank"
         android:usesCleartextTraffic="true">
 
+
         <!-- ================================================== -->
-        <!-- Splash -->
+        <!-- SPLASH -->
         <!-- ================================================== -->
 
         <activity
@@ -38,16 +41,19 @@
 
             <intent-filter>
 
-                <action android:name="android.intent.action.MAIN" />
+                <action
+                    android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
 
             </intent-filter>
 
         </activity>
 
+
         <!-- ================================================== -->
-        <!-- Authentication -->
+        <!-- ADMIN -->
         <!-- ================================================== -->
 
         <activity
@@ -77,32 +83,19 @@
         <activity
             android:name=".activities.admin.AdminAccountDetailsActivity"
             android:exported="false" />
+
         <activity
             android:name=".activities.admin.AdminTransactionsActivity"
             android:exported="false" />
-        <activity
-            android:name=".activities.loan.LoanCalculatorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.loan.LoanApplicationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.loan.MyLoansActivity"
-            android:exported="false" />
 
-        <activity
-            android:name=".activities.loan.LoanDashboardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.loan.LoanEMIScheduleActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.loan.LoanEMIPaymentHistoryActivity"
-            android:exported="false" />
         <activity
             android:name=".activities.admin.AdminLoanManagementActivity"
             android:exported="false" />
 
+
+        <!-- ================================================== -->
+        <!-- AUTHENTICATION -->
+        <!-- ================================================== -->
 
         <activity
             android:name=".activities.auth.LoginActivity"
@@ -120,21 +113,20 @@
             android:name=".activities.auth.ForgotPasswordActivity"
             android:exported="false" />
 
-        <!-- ================================================== -->
-        <!-- Reset Password Deep Link -->
-        <!-- ================================================== -->
-
         <activity
             android:name=".activities.auth.ResetPasswordActivity"
             android:exported="true">
 
             <intent-filter>
 
-                <action android:name="android.intent.action.VIEW" />
+                <action
+                    android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category
+                    android:name="android.intent.category.DEFAULT" />
 
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category
+                    android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:scheme="mybank"
@@ -144,13 +136,15 @@
 
         </activity>
 
+
         <!-- ================================================== -->
-        <!-- Dashboard -->
+        <!-- DASHBOARD -->
         <!-- ================================================== -->
 
         <activity
             android:name=".activities.dashboard.DashboardActivity"
             android:exported="false" />
+
 
         <!-- ================================================== -->
         <!-- KYC -->
@@ -180,13 +174,10 @@
             android:name=".activities.kyc.ReviewActivity"
             android:exported="false" />
 
-        <!-- ================================================== -->
-        <!-- Banking -->
-        <!-- ================================================== -->
 
-        <activity
-            android:name=".activities.banking.CreateAccountActivity"
-            android:exported="false" />
+        <!-- ================================================== -->
+        <!-- BANKING -->
+        <!-- ================================================== -->
 
         <activity
             android:name=".activities.banking.DepositActivity"
@@ -204,8 +195,9 @@
             android:name=".activities.banking.TransactionHistoryActivity"
             android:exported="false" />
 
+
         <!-- ================================================== -->
-        <!-- Profile -->
+        <!-- PROFILE -->
         <!-- ================================================== -->
 
         <activity
@@ -220,8 +212,9 @@
             android:name=".activities.profile.ChangePasswordActivity"
             android:exported="false" />
 
+
         <!-- ================================================== -->
-        <!-- Payments -->
+        <!-- PAYMENTS -->
         <!-- ================================================== -->
 
         <activity
@@ -265,6 +258,7 @@
             android:name=".activities.payments.FixedDepositActivity"
             android:exported="false" />
 
+
         <!-- ================================================== -->
         <!-- QR -->
         <!-- ================================================== -->
@@ -273,8 +267,9 @@
             android:name=".activities.qr.QRScannerActivity"
             android:exported="false" />
 
+
         <!-- ================================================== -->
-        <!-- Transaction PIN -->
+        <!-- TRANSACTION PIN -->
         <!-- ================================================== -->
 
         <activity
@@ -285,8 +280,9 @@
             android:name=".activities.pin.VerifyTransactionPinActivity"
             android:exported="false" />
 
+
         <!-- ================================================== -->
-        <!-- Recurring Deposit -->
+        <!-- RECURRING DEPOSIT -->
         <!-- ================================================== -->
 
         <activity
@@ -326,7 +322,38 @@
             android:exported="false" />
 
 
-        <!---Cards-->
+        <!-- ================================================== -->
+        <!-- LOANS -->
+        <!-- ================================================== -->
+
+        <activity
+            android:name=".activities.loan.LoanCalculatorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.loan.LoanApplicationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.loan.LoanDashboardActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.loan.LoanEMIPaymentHistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.loan.MyLoansActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.loan.LoanEMIScheduleActivity"
+            android:exported="false" />
+
+
+        <!-- ================================================== -->
+        <!-- CARDS -->
+        <!-- ================================================== -->
+
         <activity
             android:name=".activities.cards.CardsActivity"
             android:exported="false" />
@@ -336,23 +363,18 @@
             android:exported="false" />
 
         <activity
-            android:name=".activities.cards.CreditCardApplicationActivity"
+            android:name=".activities.cards.MyCardActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".activities.admin.CreditCardApplicationAdminActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.cards.CardDetailsActivity"
-            android:exported="false" />
 
         <!-- ================================================== -->
-        <!-- Main Activity -->
+        <!-- MAIN ACTIVITY -->
         <!-- ================================================== -->
 
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+
 
     </application>
 

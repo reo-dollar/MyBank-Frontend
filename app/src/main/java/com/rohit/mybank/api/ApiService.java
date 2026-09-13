@@ -75,18 +75,29 @@ import com.rohit.mybank.model.admin.AdminCustomerResponse;
 import com.rohit.mybank.model.admin.AdminAccountResponse;
 import com.rohit.mybank.model.admin.AdminTransactionPageResponse;
 
+/*
+ * ============================================================
+ * DEBIT CARD
+ * ============================================================
+ */
+import com.rohit.mybank.model.cards.DebitCardResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
 
 
 /**
@@ -364,10 +375,25 @@ public interface ApiService {
     // PROFILE
     // =========================================================
 
+    /**
+     * GET PROFILE
+     *
+     * GET /profile
+     */
     @GET("profile")
     Call<ProfileResponse> getProfile();
 
 
+    /**
+     * UPDATE PROFILE
+     *
+     * PUT /profile
+     *
+     * Updates profile text/details.
+     *
+     * Profile photo is uploaded separately using
+     * uploadProfilePhoto().
+     */
     @PUT("profile")
     Call<ProfileResponse> updateProfile(
             @Body UpdateProfileRequest request
@@ -375,9 +401,65 @@ public interface ApiService {
 
 
     // =========================================================
+    // PROFILE PHOTO
+    // =========================================================
+
+    /**
+     * UPLOAD PROFILE PHOTO
+     *
+     * POST /profile/photo
+     *
+     * Content-Type:
+     * multipart/form-data
+     *
+     * Multipart field:
+     * photo
+     *
+     * The backend determines the authenticated customer
+     * from the JWT token.
+     */
+    @Multipart
+    @POST("profile/photo")
+    Call<ProfileResponse> uploadProfilePhoto(
+            @Part MultipartBody.Part photo
+    );
+
+
+    /**
+     * GET PROFILE PHOTO
+     *
+     * GET /profile/photo
+     *
+     * Returns the authenticated user's JPEG profile photo.
+     *
+     * @Streaming prevents Retrofit from unnecessarily
+     * buffering the complete response before exposing it.
+     */
+    @Streaming
+    @GET("profile/photo")
+    Call<ResponseBody> getProfilePhoto();
+
+
+    /**
+     * DELETE PROFILE PHOTO
+     *
+     * DELETE /profile/photo
+     *
+     * Removes the authenticated user's profile photo.
+     */
+    @DELETE("profile/photo")
+    Call<ProfileResponse> deleteProfilePhoto();
+
+
+    // =========================================================
     // CHANGE PASSWORD
     // =========================================================
 
+    /**
+     * CHANGE PASSWORD
+     *
+     * PUT /profile/change-password
+     */
     @PUT("profile/change-password")
     Call<ResponseBody> changePassword(
             @Body ChangePasswordRequest request
@@ -588,5 +670,102 @@ public interface ApiService {
             @Path("rdNumber") String rdNumber
     );
 
+
+    // =========================================================
+    // DEBIT CARD
+    // =========================================================
+
+    /**
+     * GET MY DEBIT CARD
+     *
+     * GET /api/debit-cards/my
+     *
+     * Returns the debit card belonging to the authenticated
+     * customer.
+     */
+    @GET("api/debit-cards/my")
+    Call<DebitCardResponse> getMyDebitCard();
+
+
+    // =========================================================
+    // FREEZE MY DEBIT CARD
+    // =========================================================
+
+    /**
+     * PUT /api/debit-cards/my/freeze
+     */
+    @PUT("debit-cards/my/freeze")
+    Call<DebitCardResponse> freezeMyDebitCard();
+
+
+    // =========================================================
+    // UNFREEZE MY DEBIT CARD
+    // =========================================================
+
+    /**
+     * PUT /api/debit-cards/my/unfreeze
+     */
+    @PUT("debit-cards/my/unfreeze")
+    Call<DebitCardResponse> unfreezeMyDebitCard();
+
+
+    // =========================================================
+    // ONLINE TRANSACTIONS
+    // =========================================================
+
+    @PUT("debit-cards/my/controls/online/enable")
+    Call<DebitCardResponse> enableOnlineTransactions();
+
+
+    @PUT("debit-cards/my/controls/online/disable")
+    Call<DebitCardResponse> disableOnlineTransactions();
+
+
+    // =========================================================
+    // CONTACTLESS
+    // =========================================================
+
+    @PUT("debit-cards/my/controls/contactless/enable")
+    Call<DebitCardResponse> enableContactless();
+
+
+    @PUT("debit-cards/my/controls/contactless/disable")
+    Call<DebitCardResponse> disableContactless();
+
+
+    // =========================================================
+    // INTERNATIONAL TRANSACTIONS
+    // =========================================================
+
+    @PUT("debit-cards/my/controls/international/enable")
+    Call<DebitCardResponse> enableInternationalTransactions();
+
+
+    @PUT("debit-cards/my/controls/international/disable")
+    Call<DebitCardResponse> disableInternationalTransactions();
+
+
+    // =========================================================
+    // ATM TRANSACTIONS
+    // =========================================================
+
+    @PUT("debit-cards/my/controls/atm/enable")
+    Call<DebitCardResponse> enableAtmTransactions();
+
+
+    @PUT("debit-cards/my/controls/atm/disable")
+    Call<DebitCardResponse> disableAtmTransactions();
+
+
+    // =========================================================
+    // POS TRANSACTIONS
+    // =========================================================
+
+    @PUT("debit-cards/my/controls/pos/enable")
+    Call<DebitCardResponse> enablePosTransactions();
+
+
+    @PUT("debit-cards/my/controls/pos/disable")
+    Call<DebitCardResponse> disablePosTransactions();
 
 }

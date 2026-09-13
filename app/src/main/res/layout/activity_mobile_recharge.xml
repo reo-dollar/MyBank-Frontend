@@ -13,38 +13,67 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Toolbar -->
+        <!-- ===================================================== -->
+        <!-- TOOLBAR -->
+        <!-- ===================================================== -->
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
-            android:title="Mobile Recharge"
-            app:navigationIcon="@drawable/ic_arrow_back"/>
+            android:background="@color/background"
+            android:title=""
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:navigationIconTint="@color/text_primary" />
+
+        <!-- ===================================================== -->
+        <!-- CONTENT -->
+        <!-- ===================================================== -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="8dp">
 
-            <!-- Heading -->
+            <!-- ================================================= -->
+            <!-- TITLE -->
+            <!-- ================================================= -->
 
             <TextView
+                android:id="@+id/tvPageTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Mobile Recharge"
+                android:textColor="@color/text_primary"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <!-- ================================================= -->
+            <!-- SUBTITLE -->
+            <!-- ================================================= -->
+
+            <TextView
+                android:id="@+id/tvPageSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"
                 android:text="Recharge your prepaid mobile"
                 android:textColor="@color/text_secondary"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
-            <!-- Mobile Number -->
+            <!-- ================================================= -->
+            <!-- MOBILE NUMBER -->
+            <!-- ================================================= -->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutMobileNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:hint="Mobile Number"
                 app:startIconDrawable="@drawable/ic_mobile">
 
@@ -54,11 +83,15 @@
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
                     android:inputType="phone"
-                    android:maxLength="10"/>
+                    android:maxLength="10"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Operator -->
+            <!-- ================================================= -->
+            <!-- OPERATOR -->
+            <!-- ================================================= -->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutOperator"
@@ -73,11 +106,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="none"/>
+                    android:inputType="none"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Circle -->
+            <!-- ================================================= -->
+            <!-- CIRCLE -->
+            <!-- ================================================= -->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutCircle"
@@ -92,11 +129,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"
-                    android:inputType="none"/>
+                    android:inputType="none"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Amount -->
+            <!-- ================================================= -->
+            <!-- RECHARGE AMOUNT -->
+            <!-- ================================================= -->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutAmount"
@@ -111,18 +152,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
-                    android:inputType="number"/>
+                    android:inputType="number"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Recharge Summary -->
+            <!-- ================================================= -->
+            <!-- RECHARGE SUMMARY -->
+            <!-- ================================================= -->
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardRechargeSummary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@color/surface"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="4dp">
+                app:cardElevation="4dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -131,45 +180,53 @@
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/tvSummaryTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Recharge Summary"
-                        android:textStyle="bold"
-                        android:textSize="18sp"/>
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvSummaryMobile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="Mobile : -"/>
+                        android:text="Mobile : -"
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:id="@+id/tvSummaryOperator"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Operator : -"/>
+                        android:text="Operator : -"
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:id="@+id/tvSummaryCircle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Circle : -"/>
+                        android:text="Circle : -"
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:id="@+id/tvSummaryAmount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Amount : ₹0"/>
+                        android:text="Amount : ₹0"
+                        android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Progress -->
+            <!-- ================================================= -->
+            <!-- PROGRESS -->
+            <!-- ================================================= -->
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -177,9 +234,11 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
-            <!-- Recharge Button -->
+            <!-- ================================================= -->
+            <!-- RECHARGE BUTTON -->
+            <!-- ================================================= -->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRecharge"
@@ -188,9 +247,11 @@
                 android:layout_marginTop="24dp"
                 android:text="Recharge Now"
                 android:textAllCaps="false"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:cornerRadius="18dp"/>
+                app:backgroundTint="@color/primary"
+                app:cornerRadius="18dp" />
 
         </LinearLayout>
 
