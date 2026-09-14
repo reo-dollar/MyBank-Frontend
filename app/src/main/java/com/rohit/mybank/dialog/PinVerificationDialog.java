@@ -19,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 /**
  * =========================================================
  * TRANSACTION PIN VERIFICATION DIALOG
@@ -30,20 +31,13 @@ import retrofit2.Response;
  * 2. Accept exactly 6 digits
  * 3. Verify PIN with backend
  * 4. Keep dialog open when PIN is invalid
- * 5. Return verified PIN to calling activity
- *
- * Used by:
- *
- * - Deposit
- * - Withdraw
- * - Transfer
- * - RD installment
- * - FD operations
- * - Loan EMI payment
+ * 5. Allow Android Back to close the dialog
+ * 6. Return verified PIN to calling activity
  *
  * =========================================================
  */
 public class PinVerificationDialog {
+
 
     // =========================================================
     // CALLBACK - WITHOUT PIN
@@ -72,11 +66,6 @@ public class PinVerificationDialog {
     // =========================================================
     // SIMPLE SHOW METHOD
     // =========================================================
-    //
-    // Use when the caller only needs to know whether
-    // the PIN was successfully verified.
-    //
-    // =========================================================
 
     public static void show(
             Context context,
@@ -86,6 +75,7 @@ public class PinVerificationDialog {
         if (context == null || listener == null) {
             return;
         }
+
 
         showInternal(
                 context,
@@ -98,6 +88,7 @@ public class PinVerificationDialog {
 
                         listener.onSuccess();
                     }
+
 
                     @Override
                     public void onFailure() {
@@ -112,13 +103,6 @@ public class PinVerificationDialog {
     // =========================================================
     // TRANSACTION PIN METHOD
     // =========================================================
-    //
-    // IMPORTANT:
-    //
-    // Deposit / Withdraw / Transfer / RD / FD / EMI
-    // should use THIS method.
-    //
-    // =========================================================
 
     public static void showForTransactionPin(
             Context context,
@@ -128,6 +112,7 @@ public class PinVerificationDialog {
         if (context == null || listener == null) {
             return;
         }
+
 
         showInternal(
                 context,
@@ -142,6 +127,7 @@ public class PinVerificationDialog {
                                 transactionPin
                         );
                     }
+
 
                     @Override
                     public void onFailure() {
@@ -176,6 +162,7 @@ public class PinVerificationDialog {
             InternalListener listener
     ) {
 
+
         // =====================================================
         // VALIDATION
         // =====================================================
@@ -207,10 +194,12 @@ public class PinVerificationDialog {
                         R.id.etPin
                 );
 
+
         MaterialButton btnVerify =
                 view.findViewById(
                         R.id.btnVerify
                 );
+
 
         ProgressBar progressBar =
                 view.findViewById(
@@ -239,14 +228,62 @@ public class PinVerificationDialog {
 
 
         // =====================================================
-        // CREATE ALERT DIALOG
+        // DIALOG
         // =====================================================
 
         AlertDialog dialog =
                 new AlertDialog.Builder(context)
                         .setView(view)
-                        .setCancelable(false)
+
+                        // =================================================
+                        // IMPORTANT FIX
+                        // =================================================
+                        //
+                        // OLD:
+                        //
+                        // .setCancelable(false)
+                        //
+                        // This prevented Android Back from closing
+                        // the dialog.
+                        //
+                        // NEW:
+                        //
+                        .setCancelable(true)
+
                         .create();
+
+
+        // =====================================================
+        // OUTSIDE TOUCH
+        // =====================================================
+        //
+        // Do NOT close the dialog when the user accidentally
+        // taps outside it.
+        //
+        // Android Back still works.
+        //
+        // =====================================================
+
+        dialog.setCanceledOnTouchOutside(
+                false
+        );
+
+
+        // =====================================================
+        // CANCEL / BACK HANDLING
+        // =====================================================
+
+        dialog.setOnCancelListener(
+                dialogInterface -> {
+
+                    // ---------------------------------------------
+                    // Tell calling activity that PIN authentication
+                    // was cancelled.
+                    // ---------------------------------------------
+
+                    listener.onFailure();
+                }
+        );
 
 
         // =====================================================
@@ -268,347 +305,329 @@ public class PinVerificationDialog {
         // VERIFY BUTTON
         // =====================================================
 
-        btnVerify.setOnClickListener(v -> {
-
-            // =================================================
-            // CLEAR OLD ERROR
-            // =================================================
-
-            etPin.setError(null);
+        btnVerify.setOnClickListener(
+                v -> {
 
 
-            // =================================================
-            // READ PIN
-            // =================================================
+                    // =================================================
+                    // CLEAR PREVIOUS ERROR
+                    // =================================================
 
-            String enteredPin = "";
-
-            if (etPin.getText() != null) {
-
-                enteredPin =
-                        etPin.getText()
-                                .toString()
-                                .trim();
-            }
+                    etPin.setError(null);
 
 
-            // =================================================
-            // EMPTY PIN
-            // =================================================
+                    // =================================================
+                    // READ PIN
+                    // =================================================
 
-            if (TextUtils.isEmpty(
-                    enteredPin
-            )) {
-
-                etPin.setError(
-                        "Enter Transaction PIN"
-                );
-
-                etPin.requestFocus();
-
-                return;
-            }
+                    String enteredPin = "";
 
 
-            // =================================================
-            // PIN FORMAT
-            // =================================================
-            //
-            // Transaction PIN must contain exactly
-            // 6 numeric digits.
-            //
-            // =================================================
+                    if (etPin.getText() != null) {
 
-            if (!enteredPin.matches(
-                    "\\d{6}"
-            )) {
-
-                etPin.setError(
-                        "PIN must be exactly 6 digits"
-                );
-
-                etPin.requestFocus();
-
-                return;
-            }
+                        enteredPin =
+                                etPin.getText()
+                                        .toString()
+                                        .trim();
+                    }
 
 
-            // =================================================
-            // FINAL PIN
-            // =================================================
+                    // =================================================
+                    // EMPTY PIN
+                    // =================================================
 
-            final String verifiedPin =
-                    enteredPin;
+                    if (TextUtils.isEmpty(
+                            enteredPin
+                    )) {
 
+                        etPin.setError(
+                                "Enter Transaction PIN"
+                        );
 
-            // =================================================
-            // CREATE REQUEST
-            // =================================================
+                        etPin.requestFocus();
 
-            VerifyPinRequest request =
-                    new VerifyPinRequest();
-
-            request.setPin(
-                    verifiedPin
-            );
+                        return;
+                    }
 
 
-            // =================================================
-            // SHOW LOADING
-            // =================================================
+                    // =================================================
+                    // PIN FORMAT
+                    // =================================================
 
-            progressBar.setVisibility(
-                    View.VISIBLE
-            );
+                    if (!enteredPin.matches(
+                            "\\d{6}"
+                    )) {
 
-            btnVerify.setEnabled(
-                    false
-            );
+                        etPin.setError(
+                                "PIN must be exactly 6 digits"
+                        );
 
-            etPin.setEnabled(
-                    false
-            );
+                        etPin.requestFocus();
 
-
-            // =================================================
-            // VERIFY PIN THROUGH BACKEND
-            // =================================================
-
-            repository
-                    .verifyTransactionPin(
-                            request
-                    )
-                    .enqueue(
-                            new Callback<VerifyPinResponse>() {
-
-                                // =================================
-                                // SERVER RESPONSE
-                                // =================================
-
-                                @Override
-                                public void onResponse(
-                                        Call<VerifyPinResponse> call,
-                                        Response<VerifyPinResponse> response
-                                ) {
-
-                                    // ===============================
-                                    // STOP LOADING
-                                    // ===============================
-
-                                    progressBar.setVisibility(
-                                            View.GONE
-                                    );
-
-                                    btnVerify.setEnabled(
-                                            true
-                                    );
-
-                                    etPin.setEnabled(
-                                            true
-                                    );
+                        return;
+                    }
 
 
-                                    // ===============================
-                                    // HTTP ERROR
-                                    // ===============================
+                    // =================================================
+                    // FINAL PIN
+                    // =================================================
 
-                                    if (!response.isSuccessful()) {
+                    final String verifiedPin =
+                            enteredPin;
 
-                                        String message =
-                                                "Unable to verify Transaction PIN.";
 
-                                        try {
+                    // =================================================
+                    // CREATE REQUEST
+                    // =================================================
 
-                                            if (response.errorBody()
-                                                    != null) {
+                    VerifyPinRequest request =
+                            new VerifyPinRequest();
 
-                                                String serverError =
-                                                        response.errorBody()
-                                                                .string();
+                    request.setPin(
+                            verifiedPin
+                    );
 
-                                                if (!TextUtils.isEmpty(
-                                                        serverError
-                                                )) {
 
-                                                    message =
-                                                            serverError;
-                                                }
+                    // =================================================
+                    // SHOW LOADING
+                    // =================================================
+
+                    progressBar.setVisibility(
+                            View.VISIBLE
+                    );
+
+
+                    // =================================================
+                    // DISABLE CONTROLS
+                    // =================================================
+
+                    btnVerify.setEnabled(
+                            false
+                    );
+
+                    etPin.setEnabled(
+                            false
+                    );
+
+
+                    // =================================================
+                    // VERIFY PIN THROUGH BACKEND
+                    // =================================================
+
+                    repository
+                            .verifyTransactionPin(
+                                    request
+                            )
+                            .enqueue(
+                                    new Callback<VerifyPinResponse>() {
+
+
+                                        // =================================
+                                        // SERVER RESPONSE
+                                        // =================================
+
+                                        @Override
+                                        public void onResponse(
+                                                Call<VerifyPinResponse> call,
+                                                Response<VerifyPinResponse> response
+                                        ) {
+
+
+                                            // =================================
+                                            // STOP LOADING
+                                            // =================================
+
+                                            progressBar.setVisibility(
+                                                    View.GONE
+                                            );
+
+
+                                            // =================================
+                                            // RE-ENABLE CONTROLS
+                                            // =================================
+
+                                            btnVerify.setEnabled(
+                                                    true
+                                            );
+
+                                            etPin.setEnabled(
+                                                    true
+                                            );
+
+
+                                            // =================================
+                                            // HTTP ERROR
+                                            // =================================
+
+                                            if (!response.isSuccessful()) {
+
+                                                Toast.makeText(
+                                                        context,
+                                                        "Unable to verify Transaction PIN. "
+                                                                + "Server Error: "
+                                                                + response.code(),
+                                                        Toast.LENGTH_LONG
+                                                ).show();
+
+                                                return;
                                             }
 
-                                        } catch (Exception ignored) {
-                                            // Keep default message.
+
+                                            // =================================
+                                            // EMPTY RESPONSE
+                                            // =================================
+
+                                            if (response.body() == null) {
+
+                                                Toast.makeText(
+                                                        context,
+                                                        "Empty server response.",
+                                                        Toast.LENGTH_LONG
+                                                ).show();
+
+                                                return;
+                                            }
+
+
+                                            // =================================
+                                            // RESPONSE
+                                            // =================================
+
+                                            VerifyPinResponse verifyResponse =
+                                                    response.body();
+
+
+                                            // =================================
+                                            // SUCCESS
+                                            // =================================
+
+                                            if (verifyResponse.isSuccess()) {
+
+
+                                                // ---------------------------------
+                                                // CLOSE DIALOG
+                                                // ---------------------------------
+
+                                                if (dialog.isShowing()) {
+
+                                                    dialog.dismiss();
+                                                }
+
+
+                                                // ---------------------------------
+                                                // RETURN VERIFIED PIN
+                                                // ---------------------------------
+
+                                                listener.onSuccess(
+                                                        verifiedPin
+                                                );
+
+                                                return;
+                                            }
+
+
+                                            // =================================
+                                            // INVALID PIN
+                                            // =================================
+
+                                            String message =
+                                                    verifyResponse.getMessage();
+
+
+                                            if (TextUtils.isEmpty(
+                                                    message
+                                            )) {
+
+                                                message =
+                                                        "Invalid Transaction PIN.";
+                                            }
+
+
+                                            // =================================
+                                            // SHOW ERROR
+                                            // =================================
+
+                                            etPin.setError(
+                                                    message
+                                            );
+
+
+                                            etPin.requestFocus();
+
+
+                                            // =================================
+                                            // CLEAR OLD PIN
+                                            // =================================
+
+                                            etPin.setText("");
+
+
+                                            // =================================
+                                            // KEEP DIALOG OPEN
+                                            // =================================
                                         }
 
 
-                                        Toast.makeText(
-                                                context,
-                                                message,
-                                                Toast.LENGTH_LONG
-                                        ).show();
+                                        // =================================
+                                        // NETWORK FAILURE
+                                        // =================================
+
+                                        @Override
+                                        public void onFailure(
+                                                Call<VerifyPinResponse> call,
+                                                Throwable t
+                                        ) {
 
 
-                                        listener.onFailure();
+                                            // =================================
+                                            // STOP LOADING
+                                            // =================================
 
-                                        return;
-                                    }
-
-
-                                    // ===============================
-                                    // EMPTY RESPONSE
-                                    // ===============================
-
-                                    if (response.body() == null) {
-
-                                        Toast.makeText(
-                                                context,
-                                                "Empty server response.",
-                                                Toast.LENGTH_LONG
-                                        ).show();
-
-                                        listener.onFailure();
-
-                                        return;
-                                    }
+                                            progressBar.setVisibility(
+                                                    View.GONE
+                                            );
 
 
-                                    // ===============================
-                                    // RESPONSE BODY
-                                    // ===============================
+                                            // =================================
+                                            // RE-ENABLE CONTROLS
+                                            // =================================
 
-                                    VerifyPinResponse verifyResponse =
-                                            response.body();
+                                            btnVerify.setEnabled(
+                                                    true
+                                            );
+
+                                            etPin.setEnabled(
+                                                    true
+                                            );
 
 
-                                    // ===============================
-                                    // SUCCESS
-                                    // ===============================
+                                            // =================================
+                                            // ERROR MESSAGE
+                                            // =================================
 
-                                    if (verifyResponse.isSuccess()) {
+                                            String errorMessage =
+                                                    "Unable to connect to the server.";
 
-                                        // -----------------------------
-                                        // CLOSE DIALOG
-                                        // -----------------------------
 
-                                        if (dialog.isShowing()) {
-                                            dialog.dismiss();
+                                            if (t != null
+                                                    && !TextUtils.isEmpty(
+                                                    t.getMessage()
+                                            )) {
+
+                                                errorMessage =
+                                                        "Network Error: "
+                                                                + t.getMessage();
+                                            }
+
+
+                                            Toast.makeText(
+                                                    context,
+                                                    errorMessage,
+                                                    Toast.LENGTH_LONG
+                                            ).show();
                                         }
-
-
-                                        // -----------------------------
-                                        // RETURN VERIFIED PIN
-                                        // -----------------------------
-
-                                        listener.onSuccess(
-                                                verifiedPin
-                                        );
-
-                                        return;
                                     }
-
-
-                                    // ===============================
-                                    // INVALID PIN
-                                    // ===============================
-
-                                    String message =
-                                            verifyResponse.getMessage();
-
-
-                                    if (TextUtils.isEmpty(
-                                            message
-                                    )) {
-
-                                        message =
-                                                "Invalid Transaction PIN";
-                                    }
-
-
-                                    // -----------------------------
-                                    // SHOW ERROR
-                                    // -----------------------------
-
-                                    etPin.setError(
-                                            message
-                                    );
-
-                                    etPin.requestFocus();
-
-
-                                    // -----------------------------
-                                    // CLEAR PIN
-                                    // -----------------------------
-
-                                    etPin.setText("");
-
-
-                                    // -----------------------------
-                                    // KEEP DIALOG OPEN
-                                    // -----------------------------
-
-                                    listener.onFailure();
-                                }
-
-
-                                // =================================
-                                // NETWORK FAILURE
-                                // =================================
-
-                                @Override
-                                public void onFailure(
-                                        Call<VerifyPinResponse> call,
-                                        Throwable t
-                                ) {
-
-                                    progressBar.setVisibility(
-                                            View.GONE
-                                    );
-
-                                    btnVerify.setEnabled(
-                                            true
-                                    );
-
-                                    etPin.setEnabled(
-                                            true
-                                    );
-
-
-                                    String errorMessage =
-                                            "Network Error";
-
-
-                                    if (t != null
-                                            && !TextUtils.isEmpty(
-                                            t.getMessage()
-                                    )) {
-
-                                        errorMessage =
-                                                "Network Error: "
-                                                        + t.getMessage();
-                                    }
-
-
-                                    Toast.makeText(
-                                            context,
-                                            errorMessage,
-                                            Toast.LENGTH_LONG
-                                    ).show();
-
-
-                                    listener.onFailure();
-                                }
-                            }
-                    );
-        });
-
-
-        // =====================================================
-        // CANCEL / BACK HANDLING
-        // =====================================================
-
-        dialog.setOnCancelListener(
-                dialogInterface -> {
-
-                    listener.onFailure();
+                            );
                 }
         );
     }

@@ -1,7 +1,6 @@
 package com.rohit.mybank.activities.dashboard;
 
 import android.content.Intent;
-import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -9,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +27,7 @@ import com.rohit.mybank.activities.cards.CardsActivity;
 import com.rohit.mybank.activities.payments.PaymentsActivity;
 import com.rohit.mybank.activities.pin.SetTransactionPinActivity;
 import com.rohit.mybank.activities.profile.ProfileActivity;
+import com.rohit.mybank.activities.qr.MyQrActivity;
 import com.rohit.mybank.activities.qr.QRScannerActivity;
 
 import com.rohit.mybank.adapter.TransactionAdapter;
@@ -68,15 +69,10 @@ import retrofit2.Response;
  * CARDS
  * MENU
  *
- * Cards navigation:
+ * Header:
  *
- * Dashboard
- *      ↓
- * Cards
- *      ↓
- * CardsActivity
- *      ↓
- * GET /api/debit-cards/my
+ * My QR
+ * Profile
  *
  * ============================================================
  */
@@ -113,9 +109,10 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     // =========================================================
-    // PROFILE BUTTON
+    // HEADER BUTTONS
     // =========================================================
 
+    private ImageButton btnMyQr;
     private ImageButton btnProfile;
 
 
@@ -278,6 +275,26 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         // =====================================================
+        // MY QR BUTTON
+        // =====================================================
+
+        btnMyQr.setOnClickListener(v -> {
+
+            startActivity(
+                    new Intent(
+                            DashboardActivity.this,
+                            MyQrActivity.class
+                    )
+            );
+
+            overridePendingTransition(
+                    android.R.anim.fade_in,
+                    android.R.anim.fade_out
+            );
+        });
+
+
+        // =====================================================
         // DEPOSIT
         // =====================================================
 
@@ -340,6 +357,10 @@ public class DashboardActivity extends AppCompatActivity {
 
         });
 
+
+        // =====================================================
+        // VIEW ALL TRANSACTIONS
+        // =====================================================
 
         tvViewAll.setOnClickListener(v -> {
 
@@ -469,14 +490,6 @@ public class DashboardActivity extends AppCompatActivity {
 
             // =================================================
             // CARDS
-            // =================================================
-            //
-            // THIS WAS THE MISSING PART.
-            //
-            // Dashboard Cards
-            //        ↓
-            // CardsActivity
-            //
             // =================================================
 
             if (id == R.id.nav_cards) {
@@ -619,17 +632,34 @@ public class DashboardActivity extends AppCompatActivity {
                                             response.body();
 
 
+                                    // =================================================
+                                    // ACCOUNT NUMBER
+                                    // =================================================
+
                                     actualAccountNumber =
                                             account.getAccNo();
+
+
+                                    // =================================================
+                                    // BALANCE
+                                    // =================================================
 
                                     actualBalance =
                                             account.getBalance();
 
 
+                                    // =================================================
+                                    // UPDATE VISIBILITY
+                                    // =================================================
+
                                     updateAccountVisibility();
 
                                     updateBalanceVisibility();
 
+
+                                    // =================================================
+                                    // ACCOUNT DETAILS
+                                    // =================================================
 
                                     tvAccountType.setText(
                                             account.getAccountType()
@@ -648,10 +678,18 @@ public class DashboardActivity extends AppCompatActivity {
                                     );
 
 
+                                    // =================================================
+                                    // RECENT TRANSACTIONS
+                                    // =================================================
+
                                     loadRecentTransactions(
                                             actualAccountNumber
                                     );
 
+
+                                    // =================================================
+                                    // CHECK TRANSACTION PIN
+                                    // =================================================
 
                                     checkTransactionPin();
 
@@ -760,6 +798,10 @@ public class DashboardActivity extends AppCompatActivity {
                                             response.body();
 
 
+                                    // =================================================
+                                    // WELCOME NAME
+                                    // =================================================
+
                                     if (
                                             profile.getFullName() != null
                                                     && !profile
@@ -780,6 +822,10 @@ public class DashboardActivity extends AppCompatActivity {
                                         );
                                     }
 
+
+                                    // =================================================
+                                    // TRANSACTION PIN
+                                    // =================================================
 
                                     if (
                                             !profile.isTransactionPinSet()
@@ -1044,15 +1090,26 @@ public class DashboardActivity extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setTitle("Transaction PIN Required")
-                .setMessage("Please set your transaction PIN before making transactions.")
-                .setPositiveButton("Set PIN", (dialog, which) -> {
-                    Intent intent = new Intent(
-                            DashboardActivity.this,
-                            SetTransactionPinActivity.class
-                    );
-                    startActivity(intent);
-                })
-                .setNegativeButton("Later", null)
+                .setMessage(
+                        "Please set your transaction PIN before making transactions."
+                )
+                .setPositiveButton(
+                        "Set PIN",
+                        (dialog, which) -> {
+
+                            Intent intent =
+                                    new Intent(
+                                            DashboardActivity.this,
+                                            SetTransactionPinActivity.class
+                                    );
+
+                            startActivity(intent);
+                        }
+                )
+                .setNegativeButton(
+                        "Later",
+                        null
+                )
                 .show();
     }
 
@@ -1150,8 +1207,13 @@ public class DashboardActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // PROFILE
+        // MY QR + PROFILE
         // =====================================================
+
+        btnMyQr =
+                findViewById(
+                        R.id.btnMyQr
+                );
 
         btnProfile =
                 findViewById(

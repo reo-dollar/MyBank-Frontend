@@ -85,4 +85,16 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-process:2.11.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0")
 
+    // =========================================================
+// QR SCANNER
+// =========================================================
+// CameraX
+    implementation("androidx.camera:camera-camera2:1.6.2")
+    implementation("androidx.camera:camera-core:1.6.2")
+    implementation("androidx.camera:camera-lifecycle:1.6.2")
+    implementation("androidx.camera:camera-view:1.6.2")
+// Google ML Kit - bundled QR/barcode scanner
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation("com.google.zxing:core:3.5.3")
+
 }

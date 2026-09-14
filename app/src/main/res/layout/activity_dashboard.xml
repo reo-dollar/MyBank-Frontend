@@ -56,6 +56,10 @@
                 android:orientation="horizontal">
 
 
+                <!-- ================================================== -->
+                <!-- GREETING / WELCOME -->
+                <!-- ================================================== -->
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -119,7 +123,32 @@
                 </LinearLayout>
 
 
-                <!-- Profile Button -->
+                <!-- ================================================== -->
+                <!-- MY QR BUTTON -->
+                <!-- ================================================== -->
+
+                <ImageButton
+                    android:id="@+id/btnMyQr"
+
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+
+                    android:background="?attr/selectableItemBackgroundBorderless"
+
+                    android:padding="12dp"
+
+                    android:src="@drawable/ic_qr_code_24"
+
+                    android:scaleType="centerInside"
+
+                    android:contentDescription="My QR"
+
+                    app:tint="@color/primary" />
+
+
+                <!-- ================================================== -->
+                <!-- PROFILE BUTTON -->
+                <!-- ================================================== -->
 
                 <ImageButton
                     android:id="@+id/btnProfile"

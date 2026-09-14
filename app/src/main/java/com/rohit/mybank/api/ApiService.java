@@ -74,6 +74,11 @@ import com.rohit.mybank.model.admin.AdminUserResponse;
 import com.rohit.mybank.model.admin.AdminCustomerResponse;
 import com.rohit.mybank.model.admin.AdminAccountResponse;
 import com.rohit.mybank.model.admin.AdminTransactionPageResponse;
+import com.rohit.mybank.model.qr.QrMyResponse;
+import com.rohit.mybank.model.qr.QrResolveResponse;
+import retrofit2.http.Query;
+import com.rohit.mybank.model.qr.QrPaymentRequest;
+import com.rohit.mybank.model.qr.QrPaymentResponse;
 
 /*
  * ============================================================
@@ -768,4 +773,60 @@ public interface ApiService {
     @PUT("debit-cards/my/controls/pos/disable")
     Call<DebitCardResponse> disablePosTransactions();
 
+    // =========================================================
+// MY QR
+// =========================================================
+
+    /**
+     * =========================================================
+     * GET MY QR
+     * =========================================================
+     *
+     * GET /api/qr/me
+     *
+     * Returns the authenticated user's personal QR identity.
+     *
+     * =========================================================
+     */
+    @GET("api/qr/me")
+    Call<QrMyResponse> getMyQr();
+
+
+// =========================================================
+// QR RECIPIENT RESOLUTION
+// =========================================================
+
+    /**
+     * =========================================================
+     * RESOLVE QR RECIPIENT
+     * =========================================================
+     *
+     * GET /api/qr/resolve?paymentId=PAY_...
+     *
+     * Resolves a scanned Payment ID into recipient details.
+     *
+     * This endpoint DOES NOT transfer money.
+     *
+     * =========================================================
+     */
+    @GET("api/qr/resolve")
+    Call<QrResolveResponse> resolveQrRecipient(
+            @Query("paymentId") String paymentId
+    );
+    // =========================================================
+// QR PAYMENT
+// =========================================================
+//
+// POST /api/qr/pay
+//
+// The authenticated JWT determines the sender.
+//
+// =========================================================
+
+    @POST("api/qr/pay")
+    Call<QrPaymentResponse> payUsingQr(
+            @Body QrPaymentRequest request
+    );
+
 }
+
