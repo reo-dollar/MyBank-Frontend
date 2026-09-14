@@ -1,72 +1,426 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+
+    android:background="@color/background"
+    android:fillViewport="true"
+    android:overScrollMode="never">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="52dp">
+
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="32dp">
+
+
+        <!-- ========================================================= -->
+        <!-- PROGRESS                                                   -->
+        <!-- ========================================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <!-- STEP 1 - COMPLETED -->
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+
+                android:gravity="center"
+
+                android:text="✓"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+
+                android:background="@drawable/bg_step_completed"
+                android:backgroundTint="@color/card_dark" />
+
+
+            <!-- CONNECTOR -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+
+                android:layout_weight="1"
+
+                android:background="@color/primary" />
+
+
+            <!-- STEP 2 - COMPLETED -->
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+
+                android:gravity="center"
+
+                android:text="✓"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+
+                android:background="@drawable/bg_step_completed"
+                android:backgroundTint="@color/card_dark" />
+
+
+            <!-- CONNECTOR -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+
+                android:layout_weight="1"
+
+                android:background="@color/primary" />
+
+
+            <!-- STEP 3 - COMPLETED -->
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+
+                android:gravity="center"
+
+                android:text="✓"
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+
+                android:background="@drawable/bg_step_completed"
+                android:backgroundTint="@color/card_dark" />
+
+
+            <!-- CONNECTOR -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+
+                android:layout_weight="1"
+
+                android:background="@color/primary" />
+
+
+            <!-- STEP 4 - ACTIVE -->
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+
+                android:gravity="center"
+
+                android:text="4"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+
+                android:background="@drawable/bg_step_active"
+                android:backgroundTint="@color/primary" />
+
+
+            <!-- CONNECTOR -->
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+
+                android:layout_weight="1"
+
+                android:background="?attr/colorOutline" />
+
+
+            <!-- STEP 5 -->
+
+            <TextView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+
+                android:gravity="center"
+
+                android:text="5"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+
+                android:background="@drawable/bg_step_inactive"
+                android:backgroundTint="@color/card_dark" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- CURRENT STEP                                               -->
+        <!-- ========================================================= -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:layout_marginTop="26dp"
+
             android:text="Step 4 of 5"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
+
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+
+        <!-- ========================================================= -->
+        <!-- TITLE                                                       -->
+        <!-- ========================================================= -->
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
+            android:layout_marginTop="5dp"
+
             android:text="Address Details"
-            android:textStyle="bold"
+
+            android:textColor="@color/text_primary"
             android:textSize="28sp"
-            android:layout_marginBottom="25dp"/>
+            android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/etAddress"
+
+        <!-- ========================================================= -->
+        <!-- SUBTITLE                                                    -->
+        <!-- ========================================================= -->
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:gravity="top"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="6dp"
+
+            android:text="Enter your current residential address"
+
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+
+        <!-- ========================================================= -->
+        <!-- FULL ADDRESS                                                -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="28dp"
+
             android:hint="Full Address"
-            android:inputType="textMultiLine"/>
 
-        <EditText
-            android:id="@+id/etCity"
+            app:boxBackgroundColor="@color/surface"
+
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="?attr/colorOutline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAddress"
+
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+
+                android:gravity="top|start"
+
+                android:inputType="textMultiLine|textCapSentences"
+
+                android:padding="16dp"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+
+                android:textSize="15sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- CITY                                                        -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+
+            android:layout_marginTop="14dp"
+
             android:hint="City"
-            android:inputType="textPersonName"/>
 
-        <EditText
-            android:id="@+id/etState"
+            app:boxBackgroundColor="@color/surface"
+
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="?attr/colorOutline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCity"
+
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+
+                android:inputType="textPersonName"
+
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+
+                android:textSize="15sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- STATE                                                       -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+
+            android:layout_marginTop="14dp"
+
             android:hint="State"
-            android:inputType="textPersonName"/>
 
-        <EditText
-            android:id="@+id/etPincode"
+            app:boxBackgroundColor="@color/surface"
+
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="?attr/colorOutline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etState"
+
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+
+                android:inputType="textPersonName"
+
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+
+                android:textSize="15sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- PIN CODE                                                    -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:hint="Pincode"
-            android:inputType="number"
-            android:maxLength="6"/>
 
-        <Button
+            android:layout_marginTop="14dp"
+
+            android:hint="PIN Code"
+
+            app:boxBackgroundColor="@color/surface"
+
+            app:boxCornerRadiusBottomEnd="14dp"
+            app:boxCornerRadiusBottomStart="14dp"
+            app:boxCornerRadiusTopEnd="14dp"
+            app:boxCornerRadiusTopStart="14dp"
+
+            app:boxStrokeColor="?attr/colorOutline"
+            app:boxStrokeWidth="1dp"
+            app:boxStrokeWidthFocused="2dp"
+
+            app:hintTextColor="@color/text_secondary">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPincode"
+
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+
+                android:inputType="number"
+                android:maxLength="6"
+
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_secondary"
+
+                android:textSize="15sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- NEXT BUTTON                                                 -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNext"
+
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="30dp"
-            android:text="Next"/>
+            android:layout_height="56dp"
+
+            android:layout_marginTop="24dp"
+
+            android:text="Next  →"
+            android:textAllCaps="false"
+
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+
+            app:backgroundTint="@color/primary"
+            app:cornerRadius="28dp"
+            app:elevation="3dp" />
+
 
     </LinearLayout>
 

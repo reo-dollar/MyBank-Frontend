@@ -2,6 +2,7 @@ package com.rohit.mybank.activities.kyc;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,6 +30,9 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
     private KycRequest request;
 
+    // True when opened from ReviewActivity for editing
+    private boolean editMode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,14 +40,58 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
         initializeViews();
 
-        request = new KycRequest();
+        // Check whether this screen was opened for editing
+        editMode = getIntent().getBooleanExtra("edit_mode", false);
+
+        /*
+         * NORMAL MODE:
+         * Create a completely new KycRequest.
+         *
+         * EDIT MODE:
+         * Get the existing KycRequest from ReviewActivity.
+         */
+        if (editMode) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+                request = getIntent().getSerializableExtra(
+                        "kyc",
+                        KycRequest.class
+                );
+
+            } else {
+
+                request = (KycRequest) getIntent()
+                        .getSerializableExtra("kyc");
+            }
+
+            if (request == null) {
+
+                Toast.makeText(
+                        this,
+                        "KYC data not found",
+                        Toast.LENGTH_LONG
+                ).show();
+
+                finish();
+                return;
+            }
+
+        } else {
+
+            request = new KycRequest();
+        }
 
         setupGenderSpinner();
 
         setupDatePicker();
 
-        btnNext.setOnClickListener(v -> validateAndContinue());
+        // Populate existing values when editing
+        if (editMode) {
+            populateExistingData();
+        }
 
+        btnNext.setOnClickListener(v -> validateAndContinue());
     }
 
     private void initializeViews() {
@@ -56,7 +104,6 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         spGender = findViewById(R.id.spGender);
 
         btnNext = findViewById(R.id.btnNext);
-
     }
 
     private void setupGenderSpinner() {
@@ -73,7 +120,6 @@ public class PersonalDetailsActivity extends AppCompatActivity {
         );
 
         spGender.setAdapter(adapter);
-
     }
 
     private void setupDatePicker() {
@@ -93,55 +139,117 @@ public class PersonalDetailsActivity extends AppCompatActivity {
 
                                 String date =
                                         y + "-" +
-                                                String.format("%02d", m + 1) +
+                                                String.format(
+                                                        "%02d",
+                                                        m + 1
+                                                ) +
                                                 "-" +
-                                                String.format("%02d", d);
+                                                String.format(
+                                                        "%02d",
+                                                        d
+                                                );
 
                                 etDob.setText(date);
-
                             },
                             year,
                             month,
                             day
                     );
 
+            // Do not allow selecting a future date
+            dialog.getDatePicker().setMaxDate(
+                    System.currentTimeMillis()
+            );
+
             dialog.show();
-
         });
+    }
 
+    /**
+     * Populate previously saved personal details
+     * when the user opens this screen from ReviewActivity.
+     */
+    private void populateExistingData() {
+
+        if (request.getFirstName() != null) {
+            etFirstName.setText(request.getFirstName());
+        }
+
+        if (request.getMiddleName() != null) {
+            etMiddleName.setText(request.getMiddleName());
+        }
+
+        if (request.getLastName() != null) {
+            etLastName.setText(request.getLastName());
+        }
+
+        if (request.getDateOfBirth() != null) {
+            etDob.setText(request.getDateOfBirth());
+        }
+
+        if (request.getGender() != null) {
+
+            String existingGender = request.getGender();
+
+            ArrayAdapter adapter =
+                    (ArrayAdapter) spGender.getAdapter();
+
+            int position = adapter.getPosition(existingGender);
+
+            if (position >= 0) {
+                spGender.setSelection(position);
+            }
+        }
     }
 
     private void validateAndContinue() {
 
         String firstName =
-                etFirstName.getText().toString().trim();
+                etFirstName.getText()
+                        .toString()
+                        .trim();
 
         String middleName =
-                etMiddleName.getText().toString().trim();
+                etMiddleName.getText()
+                        .toString()
+                        .trim();
 
         String lastName =
-                etLastName.getText().toString().trim();
+                etLastName.getText()
+                        .toString()
+                        .trim();
 
         String dob =
-                etDob.getText().toString().trim();
+                etDob.getText()
+                        .toString()
+                        .trim();
 
-        String gender =
-                spGender.getSelectedItem().toString();
+        String gender = "";
 
+        if (spGender.getSelectedItem() != null) {
+            gender = spGender
+                    .getSelectedItem()
+                    .toString()
+                    .trim();
+        }
+
+        // First name validation
         if (firstName.isEmpty()) {
 
             etFirstName.setError("Required");
+            etFirstName.requestFocus();
             return;
-
         }
 
+        // Last name validation
         if (lastName.isEmpty()) {
 
             etLastName.setError("Required");
+            etLastName.requestFocus();
             return;
-
         }
 
+        // Date of birth validation
         if (dob.isEmpty()) {
 
             Toast.makeText(
@@ -150,11 +258,13 @@ public class PersonalDetailsActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
 
+            etDob.requestFocus();
             return;
-
         }
 
-        if (gender.equals("Select Gender")) {
+        // Gender validation
+        if (gender.equals("Select Gender")
+                || gender.isEmpty()) {
 
             Toast.makeText(
                     this,
@@ -163,25 +273,73 @@ public class PersonalDetailsActivity extends AppCompatActivity {
             ).show();
 
             return;
-
         }
 
+        /*
+         * Update the SAME KycRequest object.
+         */
         request.setFirstName(firstName);
         request.setMiddleName(middleName);
         request.setLastName(lastName);
         request.setDateOfBirth(dob);
         request.setGender(gender);
 
+        /*
+         * EDIT MODE
+         *
+         * Return the updated request directly to ReviewActivity.
+         */
+        if (editMode) {
+
+            Intent resultIntent = new Intent();
+
+            resultIntent.putExtra(
+                    "kyc",
+                    request
+            );
+
+            setResult(
+                    RESULT_OK,
+                    resultIntent
+            );
+
+            finish();
+
+            return;
+        }
+
+        /*
+         * NORMAL REGISTRATION FLOW
+         *
+         * Personal Details → Contact Details
+         */
         Intent intent =
                 new Intent(
-                        this,
+                        PersonalDetailsActivity.this,
                         ContactDetailsActivity.class
                 );
 
-        intent.putExtra("kyc", request);
+        intent.putExtra(
+                "kyc",
+                request
+        );
 
         startActivity(intent);
-
     }
 
+    @Override
+    public void onBackPressed() {
+
+        /*
+         * When editing from ReviewActivity,
+         * simply return to ReviewActivity.
+         */
+        if (editMode) {
+
+            finish();
+            return;
+        }
+
+        super.onBackPressed();
+    }
 }
