@@ -9,7 +9,7 @@
 
     android:orientation="vertical"
 
-    android:background="#F5F9FF">
+    android:background="@color/background">
 
 
     <!-- ===================================================== -->
@@ -28,7 +28,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="16dp"
 
-        android:background="#1565C0">
+        android:background="@color/primary_dark">
 
 
         <ImageButton
@@ -106,7 +106,7 @@
 
                 android:text="Review your payment"
 
-                android:textColor="#102A43"
+                android:textColor="@color/text_primary"
 
                 android:textSize="22sp"
 
@@ -124,7 +124,7 @@
 
                 android:text="Please check the details before continuing."
 
-                android:textColor="#607D8B"
+                android:textColor="@color/text_secondary"
 
                 android:textSize="14sp" />
 
@@ -149,6 +149,8 @@
                 android:background="@drawable/bg_qr_recipient_card">
 
 
+                <!-- AVATAR -->
+
                 <TextView
 
                     android:id="@+id/tvRecipientInitials"
@@ -160,7 +162,7 @@
 
                     android:text="RV"
 
-                    android:textColor="#1565C0"
+                    android:textColor="@color/primary"
 
                     android:textSize="19sp"
 
@@ -188,7 +190,7 @@
 
                         android:text="Paying to"
 
-                        android:textColor="#78909C"
+                        android:textColor="@color/text_secondary"
 
                         android:textSize="12sp" />
 
@@ -204,7 +206,7 @@
 
                         android:text="Recipient Name"
 
-                        android:textColor="#102A43"
+                        android:textColor="@color/text_primary"
 
                         android:textSize="17sp"
 
@@ -222,7 +224,7 @@
 
                         android:text="XXXXXXXX0003"
 
-                        android:textColor="#607D8B"
+                        android:textColor="@color/text_secondary"
 
                         android:textSize="13sp" />
 
@@ -258,7 +260,7 @@
 
                     android:text="Amount to pay"
 
-                    android:textColor="#607D8B"
+                    android:textColor="@color/text_secondary"
 
                     android:textSize="13sp" />
 
@@ -276,7 +278,7 @@
 
                     android:text="₹500.00"
 
-                    android:textColor="#1565C0"
+                    android:textColor="@color/primary"
 
                     android:textSize="38sp"
 
@@ -310,7 +312,7 @@
 
                     android:text="Payment ID"
 
-                    android:textColor="#607D8B"
+                    android:textColor="@color/text_secondary"
 
                     android:textSize="12sp" />
 
@@ -326,7 +328,7 @@
 
                     android:text="PAY_..."
 
-                    android:textColor="#1565C0"
+                    android:textColor="@color/primary"
 
                     android:textSize="12sp"
 
@@ -362,7 +364,7 @@
 
                     android:text="Security check"
 
-                    android:textColor="#8A5A00"
+                    android:textColor="@color/text_primary"
 
                     android:textSize="14sp"
 
@@ -378,7 +380,7 @@
 
                     android:text="Make sure the recipient and amount are correct. Your payment will require transaction PIN verification."
 
-                    android:textColor="#795548"
+                    android:textColor="@color/text_secondary"
 
                     android:textSize="13sp" />
 
@@ -401,7 +403,7 @@
 
         android:padding="16dp"
 
-        android:background="@android:color/white">
+        android:background="@color/surface">
 
 
         <Button
@@ -411,7 +413,7 @@
             android:layout_width="match_parent"
             android:layout_height="54dp"
 
-            android:backgroundTint="#1565C0"
+            android:backgroundTint="@color/primary"
 
             android:text="Continue"
 

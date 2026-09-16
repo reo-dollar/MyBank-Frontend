@@ -24,6 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 /**
  * ============================================================
  * Profile Activity
@@ -43,96 +44,122 @@ import retrofit2.Response;
 public class ProfileActivity extends AppCompatActivity {
 
     private ActivityProfileBinding binding;
+
     private SessionManager sessionManager;
+
     private ProfileRepository repository;
 
+
     /*
-     * Prevents duplicate callbacks when the fingerprint
-     * switch state is changed programmatically.
+     * ============================================================
+     * Fingerprint Switch Protection
+     * ============================================================
+     *
+     * Prevents the fingerprint listener from executing when
+     * the switch is changed programmatically.
      */
     private boolean isUpdatingFingerprintSwitch = false;
 
+
     /*
      * ============================================================
-     * Dark Mode Preferences
+     * Preferences
      * ============================================================
      */
+
     private static final String PREFS_NAME =
             "MyBankPreferences";
 
     private static final String KEY_DARK_MODE =
             "dark_mode";
 
+    private static final String KEY_NOTIFICATIONS_ENABLED =
+            "notifications_enabled";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
 
         /*
          * ========================================================
          * Initialize ViewBinding
          * ========================================================
          */
+
         binding = ActivityProfileBinding.inflate(
                 getLayoutInflater()
         );
 
         setContentView(binding.getRoot());
 
+
         /*
          * ========================================================
          * Initialize Session / Repository
          * ========================================================
          */
+
         sessionManager = new SessionManager(this);
+
         repository = new ProfileRepository(this);
+
 
         /*
          * ========================================================
          * Load Profile
          * ========================================================
          */
+
         loadProfile();
+
 
         /*
          * ========================================================
          * Load Profile Photo
          * ========================================================
          */
+
         loadProfilePhoto();
+
 
         /*
          * ========================================================
          * Initialize Click Listeners
          * ========================================================
          */
+
         initializeClickListeners();
     }
+
 
     /**
      * ============================================================
      * Reload profile when activity becomes visible.
      * ============================================================
+     *
+     * This ensures changes made in EditProfileActivity are
+     * reflected when the user returns.
      */
     @Override
     protected void onResume() {
 
         super.onResume();
 
+
         /*
-         * Don't duplicate the initial request unnecessarily.
-         *
-         * onCreate already loads the profile.
-         *
-         * onResume ensures changes made in EditProfileActivity
-         * are reflected when the user returns.
+         * Don't duplicate work before repository is initialized.
          */
         if (repository != null) {
 
             loadProfile();
+
             loadProfilePhoto();
         }
     }
+
 
     /**
      * ============================================================
@@ -156,9 +183,13 @@ public class ProfileActivity extends AppCompatActivity {
                             ProfileResponse profile =
                                     response.body();
 
+
                             /*
+                             * =================================================
                              * Name
+                             * =================================================
                              */
+
                             binding.tvName.setText(
                                     safeValue(
                                             profile.getFullName()
@@ -171,18 +202,26 @@ public class ProfileActivity extends AppCompatActivity {
                                     )
                             );
 
+
                             /*
+                             * =================================================
                              * Username
+                             * =================================================
                              */
+
                             binding.tvUsername.setText(
                                     safeValue(
                                             sessionManager.getUsername()
                                     )
                             );
 
+
                             /*
+                             * =================================================
                              * Contact Information
+                             * =================================================
                              */
+
                             binding.tvEmail.setText(
                                     safeValue(
                                             profile.getEmail()
@@ -201,9 +240,13 @@ public class ProfileActivity extends AppCompatActivity {
                                     )
                             );
 
+
                             /*
+                             * =================================================
                              * Customer / Account Information
+                             * =================================================
                              */
+
                             binding.tvCustomerId.setText(
                                     safeValue(
                                             profile.getCustomerId()
@@ -256,6 +299,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
 
+
                     @Override
                     public void onFailure(
                             Call<ProfileResponse> call,
@@ -276,6 +320,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
     }
+
 
     /**
      * ============================================================
@@ -301,8 +346,11 @@ public class ProfileActivity extends AppCompatActivity {
                     ) {
 
                         /*
+                         * =================================================
                          * Photo exists.
+                         * =================================================
                          */
+
                         if (response.isSuccessful()
                                 && response.body() != null) {
 
@@ -340,7 +388,6 @@ public class ProfileActivity extends AppCompatActivity {
                              *
                              * Keep the default drawable from XML.
                              */
-                            return;
 
                         } else {
 
@@ -350,6 +397,7 @@ public class ProfileActivity extends AppCompatActivity {
                              */
                         }
                     }
+
 
                     @Override
                     public void onFailure(
@@ -367,6 +415,7 @@ public class ProfileActivity extends AppCompatActivity {
         );
     }
 
+
     /**
      * ============================================================
      * Initialize Click Listeners
@@ -374,11 +423,13 @@ public class ProfileActivity extends AppCompatActivity {
      */
     private void initializeClickListeners() {
 
+
         /*
          * ========================================================
-         * Initialize Fingerprint UI
+         * Fingerprint UI
          * ========================================================
          */
+
         isUpdatingFingerprintSwitch = true;
 
         binding.switchFingerprint.setChecked(
@@ -387,24 +438,110 @@ public class ProfileActivity extends AppCompatActivity {
 
         isUpdatingFingerprintSwitch = false;
 
+
         binding.tvFingerprintStatus.setText(
                 sessionManager.isFingerprintEnabled()
                         ? "Enabled"
                         : "Disabled"
         );
 
+
         /*
          * ========================================================
-         * Initialize Dark Mode UI
+         * Notifications UI
+         * ========================================================
+         *
+         * For now the notification preference is stored locally.
+         *
+         * Backend synchronization will be implemented in a
+         * later step.
+         */
+
+        boolean notificationsEnabled =
+                getSharedPreferences(
+                        PREFS_NAME,
+                        MODE_PRIVATE
+                ).getBoolean(
+                        KEY_NOTIFICATIONS_ENABLED,
+                        true
+                );
+
+
+        /*
+         * Restore notification switch state.
+         *
+         * Listener is attached after this so restoring the
+         * state does not trigger the listener.
+         */
+
+        binding.switchNotifications.setChecked(
+                notificationsEnabled
+        );
+
+
+        /*
+         * ========================================================
+         * Notifications Switch
          * ========================================================
          */
 
+        binding.switchNotifications.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+
+                    /*
+                     * Save notification preference locally.
+                     *
+                     * Backend persistence will be added later.
+                     */
+
+                    getSharedPreferences(
+                            PREFS_NAME,
+                            MODE_PRIVATE
+                    )
+                            .edit()
+                            .putBoolean(
+                                    KEY_NOTIFICATIONS_ENABLED,
+                                    isChecked
+                            )
+                            .apply();
+
+
+                    Toast.makeText(
+                            ProfileActivity.this,
+                            isChecked
+                                    ? "Notifications enabled"
+                                    : "Notifications disabled",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+        );
+
+
         /*
-         * Read saved Dark Mode state.
+         * ========================================================
+         * Notifications Card
+         * ========================================================
          *
-         * false = Light
-         * true  = Dark
+         * Tapping the card opens the dedicated notification
+         * settings screen.
          */
+
+        binding.cardNotifications.setOnClickListener(v ->
+                startActivity(
+                        new Intent(
+                                ProfileActivity.this,
+                                NotificationsActivity.class
+                        )
+                )
+        );
+
+
+        /*
+         * ========================================================
+         * Dark Mode UI
+         * ========================================================
+         */
+
         boolean darkModeEnabled =
                 getSharedPreferences(
                         PREFS_NAME,
@@ -414,27 +551,31 @@ public class ProfileActivity extends AppCompatActivity {
                         false
                 );
 
+
         /*
-         * Restore switch state.
+         * Restore Dark Mode switch state.
          *
-         * Listener is attached after this, so restoring the
-         * state does not trigger a theme change.
+         * Listener is attached after restoring the state.
          */
+
         binding.switchDarkMode.setChecked(
                 darkModeEnabled
         );
+
 
         /*
          * ========================================================
          * Dark Mode Switch
          * ========================================================
          */
+
         binding.switchDarkMode.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
 
                     /*
-                     * Save the user's preference.
+                     * Save user's Dark Mode preference.
                      */
+
                     getSharedPreferences(
                             PREFS_NAME,
                             MODE_PRIVATE
@@ -446,15 +587,11 @@ public class ProfileActivity extends AppCompatActivity {
                             )
                             .apply();
 
+
                     /*
-                     * Apply the selected application theme.
-                     *
-                     * MODE_NIGHT_YES
-                     *      = Dark Mode
-                     *
-                     * MODE_NIGHT_NO
-                     *      = Light Mode
+                     * Apply application theme.
                      */
+
                     if (isChecked) {
 
                         AppCompatDelegate.setDefaultNightMode(
@@ -470,6 +607,7 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
+
         /*
          * ========================================================
          * Dark Mode Card
@@ -477,18 +615,19 @@ public class ProfileActivity extends AppCompatActivity {
          *
          * Tapping anywhere on the Dark Mode card toggles the
          * switch.
-         *
-         * The switch listener above handles the actual theme.
          */
+
         binding.cardDarkMode.setOnClickListener(v ->
                 binding.switchDarkMode.toggle()
         );
+
 
         /*
          * ========================================================
          * Edit Profile
          * ========================================================
          */
+
         binding.cardEditProfile.setOnClickListener(v ->
                 startActivity(
                         new Intent(
@@ -498,11 +637,13 @@ public class ProfileActivity extends AppCompatActivity {
                 )
         );
 
+
         /*
          * ========================================================
          * Change Password
          * ========================================================
          */
+
         binding.cardChangePassword.setOnClickListener(v ->
                 startActivity(
                         new Intent(
@@ -512,24 +653,13 @@ public class ProfileActivity extends AppCompatActivity {
                 )
         );
 
-        /*
-         * ========================================================
-         * Notifications
-         * ========================================================
-         */
-        binding.cardNotifications.setOnClickListener(v ->
-                Toast.makeText(
-                        ProfileActivity.this,
-                        "Coming Soon",
-                        Toast.LENGTH_SHORT
-                ).show()
-        );
 
         /*
          * ========================================================
          * Fingerprint Login
          * ========================================================
          */
+
         binding.switchFingerprint.setOnCheckedChangeListener(
                 new CompoundButton.OnCheckedChangeListener() {
 
@@ -543,15 +673,18 @@ public class ProfileActivity extends AppCompatActivity {
                          * Prevent callback when we change the
                          * switch programmatically.
                          */
+
                         if (isUpdatingFingerprintSwitch) {
                             return;
                         }
+
 
                         /*
                          * =================================================
                          * Enable Fingerprint
                          * =================================================
                          */
+
                         if (isChecked) {
 
                             if (!BiometricHelper.isBiometricAvailable(
@@ -566,6 +699,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         Toast.LENGTH_LONG
                                 ).show();
 
+
                                 isUpdatingFingerprintSwitch = true;
 
                                 binding.switchFingerprint.setChecked(
@@ -574,6 +708,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 isUpdatingFingerprintSwitch = false;
 
+
                                 binding.tvFingerprintStatus.setText(
                                         "Disabled"
                                 );
@@ -581,10 +716,12 @@ public class ProfileActivity extends AppCompatActivity {
                                 return;
                             }
 
+
                             /*
                              * Authenticate the user before enabling
                              * fingerprint login.
                              */
+
                             BiometricHelper.authenticate(
                                     ProfileActivity.this,
                                     new BiometricHelper.AuthenticationListener() {
@@ -597,8 +734,10 @@ public class ProfileActivity extends AppCompatActivity {
                                                             true
                                                     );
 
+
                                             binding.tvFingerprintStatus
                                                     .setText("Enabled");
+
 
                                             Toast.makeText(
                                                     ProfileActivity.this,
@@ -606,6 +745,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                     Toast.LENGTH_SHORT
                                             ).show();
                                         }
+
 
                                         @Override
                                         public void onAuthenticationFailed(
@@ -617,6 +757,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                             false
                                                     );
 
+
                                             isUpdatingFingerprintSwitch =
                                                     true;
 
@@ -626,8 +767,10 @@ public class ProfileActivity extends AppCompatActivity {
                                             isUpdatingFingerprintSwitch =
                                                     false;
 
+
                                             binding.tvFingerprintStatus
                                                     .setText("Disabled");
+
 
                                             Toast.makeText(
                                                     ProfileActivity.this,
@@ -640,20 +783,24 @@ public class ProfileActivity extends AppCompatActivity {
 
                         }
 
+
                         /*
                          * =================================================
                          * Disable Fingerprint
                          * =================================================
                          */
+
                         else {
 
                             sessionManager.setFingerprintEnabled(
                                     false
                             );
 
+
                             binding.tvFingerprintStatus.setText(
                                     "Disabled"
                             );
+
 
                             Toast.makeText(
                                     ProfileActivity.this,
@@ -665,41 +812,51 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
+
         /*
          * ========================================================
          * Logout
          * ========================================================
          */
+
         binding.btnLogout.setOnClickListener(v -> {
 
             /*
              * Disable fingerprint after logout.
              */
+
             sessionManager.setFingerprintEnabled(false);
+
 
             /*
              * Clear authentication/session data.
              */
+
             sessionManager.clearSession();
+
 
             /*
              * Navigate to Login.
              */
+
             Intent intent = new Intent(
                     ProfileActivity.this,
                     LoginActivity.class
             );
+
 
             intent.setFlags(
                     Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TASK
             );
 
+
             startActivity(intent);
 
             finish();
         });
     }
+
 
     /**
      * ============================================================
@@ -709,11 +866,13 @@ public class ProfileActivity extends AppCompatActivity {
     private String safeValue(String value) {
 
         if (value == null || value.trim().isEmpty()) {
+
             return "-";
         }
 
         return value;
     }
+
 
     /**
      * ============================================================
@@ -723,17 +882,25 @@ public class ProfileActivity extends AppCompatActivity {
     private String getErrorMessage(Throwable throwable) {
 
         if (throwable == null) {
+
             return "Unknown error";
         }
 
-        String message = throwable.getMessage();
 
-        if (message == null || message.trim().isEmpty()) {
+        String message =
+                throwable.getMessage();
+
+
+        if (message == null
+                || message.trim().isEmpty()) {
+
             return "Unknown error";
         }
+
 
         return message;
     }
+
 
     /**
      * ============================================================

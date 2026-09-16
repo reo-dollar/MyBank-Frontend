@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:fillViewport="true"
+    android:background="@color/background"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="32dp">
+
+
+        <!-- ====================================================== -->
+        <!-- HEADER -->
+        <!-- ====================================================== -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+
+                android:background="?attr/selectableItemBackgroundBorderless"
+
+                android:src="@android:drawable/ic_media_previous"
+
+                android:contentDescription="Back"
+
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+
+                android:layout_marginStart="4dp"
+
+                android:text="Notifications"
+
+                android:textColor="@color/text_primary"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ====================================================== -->
+        <!-- INTRODUCTION -->
+        <!-- ====================================================== -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+
+            android:text="Notification Settings"
+
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvNotificationStatus"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="20dp"
+
+            android:text="You will receive account and service notifications"
+
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+
+
+        <!-- ====================================================== -->
+        <!-- MASTER NOTIFICATIONS -->
+        <!-- ====================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="14dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline"
+
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:src="@android:drawable/ic_dialog_info"
+
+                    android:contentDescription="Notifications"
+
+                    app:tint="@color/primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="18dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Receive Notifications"
+
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="Control normal account and service notifications"
+
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchAllNotifications"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ====================================================== -->
+        <!-- TRANSACTION ALERTS -->
+        <!-- ====================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="14dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline"
+
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:src="@android:drawable/ic_menu_agenda"
+
+                    android:contentDescription="Transaction Alerts"
+
+                    app:tint="@color/primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="18dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Transaction Alerts"
+
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="Get notified when money is credited or debited"
+
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchTransactionAlerts"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ====================================================== -->
+        <!-- PAYMENT ALERTS -->
+        <!-- ====================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="14dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline"
+
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:src="@android:drawable/ic_menu_send"
+
+                    android:contentDescription="Payment Alerts"
+
+                    app:tint="@color/primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="18dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Payment Alerts"
+
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="Receive bill and payment updates"
+
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchPaymentAlerts"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ====================================================== -->
+        <!-- LOAN / EMI ALERTS -->
+        <!-- ====================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="14dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline"
+
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:src="@android:drawable/ic_menu_manage"
+
+                    android:contentDescription="Loan and EMI Alerts"
+
+                    app:tint="@color/primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="18dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Loan &amp; EMI Alerts"
+
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="Receive loan and EMI due-date updates"
+
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchLoanAlerts"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ====================================================== -->
+        <!-- SECURITY ALERTS -->
+        <!-- ====================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="14dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline"
+
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:src="@android:drawable/ic_lock_lock"
+
+                    android:contentDescription="Security Alerts"
+
+                    app:tint="@color/primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="18dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Security Alerts"
+
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="Important login and security activity"
+
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchSecurityAlerts"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:checked="true" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ====================================================== -->
+        <!-- PROMOTIONAL ALERTS -->
+        <!-- ====================================================== -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="24dp"
+
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+
+            app:strokeWidth="1dp"
+            app:strokeColor="?attr/colorOutline"
+
+            app:cardBackgroundColor="@color/surface">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:padding="18dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:src="@android:drawable/ic_dialog_info"
+
+                    android:contentDescription="Promotional Alerts"
+
+                    app:tint="@color/primary" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+                    android:layout_marginStart="18dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Promotional Alerts"
+
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="Offers, promotions and marketing messages"
+
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchPromotionalAlerts"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </LinearLayout>
+
+</ScrollView>

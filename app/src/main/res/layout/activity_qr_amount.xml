@@ -9,7 +9,7 @@
 
     android:orientation="vertical"
 
-    android:background="#F5F9FF">
+    android:background="@color/background">
 
 
     <!-- ===================================================== -->
@@ -28,7 +28,7 @@
         android:paddingStart="8dp"
         android:paddingEnd="16dp"
 
-        android:background="#1565C0">
+        android:background="@color/primary_dark">
 
 
         <ImageButton
@@ -106,7 +106,7 @@
 
                 android:text="How much do you want to pay?"
 
-                android:textColor="#102A43"
+                android:textColor="@color/text_primary"
 
                 android:textSize="22sp"
 
@@ -124,7 +124,7 @@
 
                 android:text="Enter the amount you want to send."
 
-                android:textColor="#607D8B"
+                android:textColor="@color/text_secondary"
 
                 android:textSize="14sp" />
 
@@ -160,7 +160,7 @@
 
                     android:text="RV"
 
-                    android:textColor="#1565C0"
+                    android:textColor="@color/primary"
 
                     android:textSize="19sp"
 
@@ -188,7 +188,7 @@
 
                         android:text="Paying"
 
-                        android:textColor="#78909C"
+                        android:textColor="@color/text_secondary"
 
                         android:textSize="12sp" />
 
@@ -204,7 +204,7 @@
 
                         android:text="Recipient Name"
 
-                        android:textColor="#102A43"
+                        android:textColor="@color/text_primary"
 
                         android:textSize="16sp"
 
@@ -222,7 +222,7 @@
 
                         android:text="XXXXXXXX0003"
 
-                        android:textColor="#607D8B"
+                        android:textColor="@color/text_secondary"
 
                         android:textSize="13sp" />
 
@@ -258,7 +258,7 @@
 
                     android:text="Payment Amount"
 
-                    android:textColor="#607D8B"
+                    android:textColor="@color/text_secondary"
 
                     android:textSize="13sp" />
 
@@ -282,7 +282,7 @@
 
                         android:text="₹"
 
-                        android:textColor="#1565C0"
+                        android:textColor="@color/primary"
 
                         android:textSize="34sp"
 
@@ -312,9 +312,9 @@
 
                         android:padding="0dp"
 
-                        android:textColor="#102A43"
+                        android:textColor="@color/text_primary"
 
-                        android:textColorHint="#B0BEC5"
+                        android:textColorHint="@color/text_secondary"
 
                         android:textSize="34sp"
 
@@ -330,7 +330,7 @@
 
                     android:layout_marginTop="8dp"
 
-                    android:background="#D7E3F4" />
+                    android:background="?attr/colorOutline" />
 
 
                 <TextView
@@ -342,7 +342,7 @@
 
                     android:layout_marginTop="8dp"
 
-                    android:textColor="#C62828"
+                    android:textColor="@color/error"
 
                     android:textSize="12sp"
 
@@ -376,7 +376,7 @@
 
                     android:text="Payment ID"
 
-                    android:textColor="#607D8B"
+                    android:textColor="@color/text_secondary"
 
                     android:textSize="12sp" />
 
@@ -392,7 +392,7 @@
 
                     android:text="PAY_..."
 
-                    android:textColor="#1565C0"
+                    android:textColor="@color/primary"
 
                     android:textSize="12sp"
 
@@ -426,7 +426,7 @@
 
                     android:text="Before continuing"
 
-                    android:textColor="#8A5A00"
+                    android:textColor="@color/text_primary"
 
                     android:textSize="14sp"
 
@@ -442,11 +442,12 @@
 
                     android:text="Check the recipient name and account details before proceeding."
 
-                    android:textColor="#795548"
+                    android:textColor="@color/text_secondary"
 
                     android:textSize="13sp" />
 
             </LinearLayout>
+
 
         </LinearLayout>
 
@@ -464,7 +465,7 @@
 
         android:padding="16dp"
 
-        android:background="@android:color/white">
+        android:background="@color/surface">
 
 
         <Button
@@ -474,7 +475,7 @@
             android:layout_width="match_parent"
             android:layout_height="54dp"
 
-            android:backgroundTint="#1565C0"
+            android:backgroundTint="@color/primary"
 
             android:text="Continue"
 
