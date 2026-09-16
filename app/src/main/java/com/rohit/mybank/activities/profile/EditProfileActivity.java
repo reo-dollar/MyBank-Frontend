@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,8 +22,11 @@ import com.rohit.mybank.model.profile.ProfileResponse;
 import com.rohit.mybank.model.profile.UpdateProfileRequest;
 import com.rohit.mybank.repository.ProfileRepository;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -33,43 +37,37 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class EditProfileActivity extends AppCompatActivity {
 
     private ActivityEditProfileBinding binding;
     private ProfileRepository repository;
 
-    /**
-     * Image selected by the user.
-     *
-     * The image is NOT uploaded immediately.
-     * It is uploaded only when Update is pressed.
-     */
+    // =========================================================
+    // PROFILE PHOTO
+    // =========================================================
+
     @Nullable
     private Uri selectedPhotoUri;
 
-    /**
-     * Prevents duplicate update/remove/upload operations.
-     */
-    private boolean updateInProgress = false;
-
-    /**
-     * Stores the original/default drawable of the profile ImageView.
-     *
-     * This avoids hardcoding a drawable name such as
-     * R.drawable.ic_profile.
-     */
     @Nullable
     private Drawable defaultProfileDrawable;
 
-    /**
-     * Maximum Android-side profile photo size.
-     */
     private static final long MAX_PROFILE_PHOTO_SIZE =
             5L * 1024L * 1024L;
 
-    /**
-     * Android image picker.
-     */
+
+    // =========================================================
+    // UPDATE STATE
+    // =========================================================
+
+    private boolean updateInProgress = false;
+
+
+    // =========================================================
+    // IMAGE PICKER
+    // =========================================================
+
     private final ActivityResultLauncher<String> pickImageLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.GetContent(),
@@ -86,22 +84,12 @@ public class EditProfileActivity extends AppCompatActivity {
                             return;
                         }
 
-                        /*
-                         * Store selected URI.
-                         */
                         selectedPhotoUri = uri;
 
-                        /*
-                         * Show selected image immediately.
-                         */
                         if (binding != null) {
 
                             binding.imgProfile.setImageURI(uri);
 
-                            /*
-                             * A photo is now available,
-                             * so show Remove Photo.
-                             */
                             binding.btnRemovePhoto.setVisibility(
                                     View.VISIBLE
                             );
@@ -109,76 +97,97 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
             );
 
+
+    // =========================================================
+    // ON CREATE
+    // =========================================================
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
-        /*
-         * Initialize ViewBinding.
-         */
-        binding = ActivityEditProfileBinding.inflate(
-                getLayoutInflater()
+        binding =
+                ActivityEditProfileBinding.inflate(
+                        getLayoutInflater()
+                );
+
+        setContentView(
+                binding.getRoot()
         );
 
-        setContentView(binding.getRoot());
 
-        /*
-         * Save the default profile drawable before
-         * loading the user's actual photo.
-         */
+        // -----------------------------------------------------
+        // Save default profile image
+        // -----------------------------------------------------
+
         defaultProfileDrawable =
                 binding.imgProfile.getDrawable();
 
-        /*
-         * Initialize repository.
-         */
-        repository = new ProfileRepository(this);
 
-        /*
-         * Remove Photo is hidden initially.
-         *
-         * It will become visible if an existing photo
-         * is successfully loaded.
-         */
+        // -----------------------------------------------------
+        // Repository
+        // -----------------------------------------------------
+
+        repository =
+                new ProfileRepository(this);
+
+
+        // -----------------------------------------------------
+        // Hide Remove Photo initially
+        // -----------------------------------------------------
+
         binding.btnRemovePhoto.setVisibility(
                 View.GONE
         );
 
-        /*
-         * Load profile details.
-         */
+
+        // -----------------------------------------------------
+        // Load profile
+        // -----------------------------------------------------
+
         loadProfile();
 
-        /*
-         * Load existing profile photo.
-         */
+
+        // -----------------------------------------------------
+        // Load profile photo
+        // -----------------------------------------------------
+
         loadProfilePhoto();
 
-        /*
-         * Change Photo button.
-         */
+
+        // -----------------------------------------------------
+        // Change photo
+        // -----------------------------------------------------
+
         binding.btnChangePhoto.setOnClickListener(
                 v -> openPhotoPicker()
         );
 
-        /*
-         * Remove Photo button.
-         */
+
+        // -----------------------------------------------------
+        // Remove photo
+        // -----------------------------------------------------
+
         binding.btnRemovePhoto.setOnClickListener(
                 v -> confirmRemovePhoto()
         );
 
-        /*
-         * Update button.
-         */
+
+        // -----------------------------------------------------
+        // Update profile
+        // -----------------------------------------------------
+
         binding.btnUpdate.setOnClickListener(
                 v -> updateProfile()
         );
     }
 
-    /**
-     * Opens Android image picker.
-     */
+
+    // =========================================================
+    // OPEN PHOTO PICKER
+    // =========================================================
+
     private void openPhotoPicker() {
 
         if (updateInProgress) {
@@ -188,9 +197,11 @@ public class EditProfileActivity extends AppCompatActivity {
         pickImageLauncher.launch("image/*");
     }
 
-    /**
-     * Loads profile details from backend.
-     */
+
+    // =========================================================
+    // LOAD PROFILE
+    // =========================================================
+
     private void loadProfile() {
 
         repository.getProfile().enqueue(
@@ -208,63 +219,56 @@ public class EditProfileActivity extends AppCompatActivity {
                             ProfileResponse profile =
                                     response.body();
 
-                            /*
-                             * Email.
-                             */
+
+                            // Email
                             binding.etEmail.setText(
                                     safeString(
                                             profile.getEmail()
                                     )
                             );
 
-                            /*
-                             * Mobile.
-                             */
+
+                            // Mobile
                             binding.etMobile.setText(
                                     safeString(
                                             profile.getMobile()
                                     )
                             );
 
-                            /*
-                             * Address.
-                             */
+
+                            // Address
                             binding.etAddress.setText(
                                     safeString(
                                             profile.getAddress()
                                     )
                             );
 
-                            /*
-                             * City.
-                             */
+
+                            // City
                             binding.etCity.setText(
                                     safeString(
                                             profile.getCity()
                                     )
                             );
 
-                            /*
-                             * State.
-                             */
+
+                            // State
                             binding.etState.setText(
                                     safeString(
                                             profile.getState()
                                     )
                             );
 
-                            /*
-                             * Pincode.
-                             */
+
+                            // Pincode
                             binding.etPincode.setText(
                                     safeString(
                                             profile.getPincode()
                                     )
                             );
 
-                            /*
-                             * Occupation.
-                             */
+
+                            // Occupation
                             binding.etOccupation.setText(
                                     safeString(
                                             profile.getOccupation()
@@ -280,6 +284,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             ).show();
                         }
                     }
+
 
                     @Override
                     public void onFailure(
@@ -302,14 +307,11 @@ public class EditProfileActivity extends AppCompatActivity {
         );
     }
 
-    /**
-     * Loads existing profile photo.
-     *
-     * Backend:
-     *
-     * 200 -> photo exists
-     * 404 -> no photo exists
-     */
+
+    // =========================================================
+    // LOAD PROFILE PHOTO
+    // =========================================================
+
     private void loadProfilePhoto() {
 
         repository.getProfilePhoto().enqueue(
@@ -326,11 +328,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
                             try {
 
-                                /*
-                                 * Read image bytes.
-                                 */
                                 byte[] imageBytes =
                                         response.body().bytes();
+
 
                                 if (imageBytes.length == 0) {
 
@@ -338,9 +338,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                     return;
                                 }
 
-                                /*
-                                 * Decode JPEG returned by backend.
-                                 */
+
                                 Bitmap bitmap =
                                         BitmapFactory.decodeByteArray(
                                                 imageBytes,
@@ -348,22 +346,18 @@ public class EditProfileActivity extends AppCompatActivity {
                                                 imageBytes.length
                                         );
 
+
                                 if (bitmap != null
                                         && binding != null) {
 
-                                    /*
-                                     * Display existing profile photo.
-                                     */
                                     binding.imgProfile.setImageBitmap(
                                             bitmap
                                     );
 
-                                    /*
-                                     * Photo exists.
-                                     */
                                     binding.btnRemovePhoto.setVisibility(
                                             View.VISIBLE
                                     );
+
                                 } else {
 
                                     hideRemovePhoto();
@@ -371,29 +365,19 @@ public class EditProfileActivity extends AppCompatActivity {
 
                             } catch (IOException e) {
 
-                                /*
-                                 * Keep default profile icon.
-                                 */
                                 hideRemovePhoto();
                             }
 
                         } else if (response.code() == 404) {
 
-                            /*
-                             * User has no profile photo.
-                             */
                             hideRemovePhoto();
 
                         } else {
 
-                            /*
-                             * Photo loading failed.
-                             *
-                             * Do not block profile editing.
-                             */
                             hideRemovePhoto();
                         }
                     }
+
 
                     @Override
                     public void onFailure(
@@ -401,19 +385,17 @@ public class EditProfileActivity extends AppCompatActivity {
                             Throwable t
                     ) {
 
-                        /*
-                         * Photo loading failure should not
-                         * prevent profile editing.
-                         */
                         hideRemovePhoto();
                     }
                 }
         );
     }
 
-    /**
-     * Hides the Remove Photo button.
-     */
+
+    // =========================================================
+    // HIDE REMOVE PHOTO
+    // =========================================================
+
     private void hideRemovePhoto() {
 
         if (binding != null) {
@@ -424,15 +406,17 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Shows confirmation dialog before deleting
-     * the profile photo.
-     */
+
+    // =========================================================
+    // CONFIRM REMOVE PHOTO
+    // =========================================================
+
     private void confirmRemovePhoto() {
 
         if (updateInProgress) {
             return;
         }
+
 
         new AlertDialog.Builder(this)
                 .setTitle("Remove Profile Photo")
@@ -451,22 +435,22 @@ public class EditProfileActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Removes profile photo from backend.
-     *
-     * Backend:
-     *
-     * DELETE /profile/photo
-     */
+
+    // =========================================================
+    // REMOVE PROFILE PHOTO
+    // =========================================================
+
     private void removeProfilePhoto() {
 
         if (updateInProgress) {
             return;
         }
 
+
         updateInProgress = true;
 
         setControlsEnabled(false);
+
 
         repository.deleteProfilePhoto().enqueue(
                 new Callback<ProfileResponse>() {
@@ -481,23 +465,15 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         setControlsEnabled(true);
 
+
                         if (response.isSuccessful()) {
 
-                            /*
-                             * Clear any locally selected photo.
-                             */
                             selectedPhotoUri = null;
 
-                            /*
-                             * Restore the original/default
-                             * profile drawable.
-                             */
                             restoreDefaultProfilePhoto();
 
-                            /*
-                             * Hide Remove Photo button.
-                             */
                             hideRemovePhoto();
+
 
                             Toast.makeText(
                                     EditProfileActivity.this,
@@ -518,6 +494,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                     }
 
+
                     @Override
                     public void onFailure(
                             Call<ProfileResponse> call,
@@ -528,9 +505,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         setControlsEnabled(true);
 
+
                         if (call.isCanceled()) {
                             return;
                         }
+
 
                         Toast.makeText(
                                 EditProfileActivity.this,
@@ -543,14 +522,17 @@ public class EditProfileActivity extends AppCompatActivity {
         );
     }
 
-    /**
-     * Restores the default profile image.
-     */
+
+    // =========================================================
+    // RESTORE DEFAULT PROFILE PHOTO
+    // =========================================================
+
     private void restoreDefaultProfilePhoto() {
 
         if (binding == null) {
             return;
         }
+
 
         if (defaultProfileDrawable != null) {
 
@@ -560,39 +542,34 @@ public class EditProfileActivity extends AppCompatActivity {
 
         } else {
 
-            /*
-             * If there was no drawable configured in XML,
-             * clear the ImageView.
-             */
-            binding.imgProfile.setImageDrawable(null);
+            binding.imgProfile.setImageDrawable(
+                    null
+            );
         }
     }
 
-    /**
-     * Updates profile details and, if selected,
-     * profile photo.
-     *
-     * Flow:
-     *
-     * 1. Validate fields
-     * 2. Update profile details
-     * 3. Upload selected photo
-     * 4. Finish only when required operations succeed
-     */
+
+    // =========================================================
+    // UPDATE PROFILE
+    // =========================================================
+
     private void updateProfile() {
 
         if (updateInProgress) {
             return;
         }
 
-        /*
-         * Read fields.
-         */
+
+        // -----------------------------------------------------
+        // READ FIELDS
+        // -----------------------------------------------------
+
         String email =
                 binding.etEmail
                         .getText()
                         .toString()
                         .trim();
+
 
         String mobile =
                 binding.etMobile
@@ -600,11 +577,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         .toString()
                         .trim();
 
+
         String address =
                 binding.etAddress
                         .getText()
                         .toString()
                         .trim();
+
 
         String city =
                 binding.etCity
@@ -612,11 +591,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         .toString()
                         .trim();
 
+
         String state =
                 binding.etState
                         .getText()
                         .toString()
                         .trim();
+
 
         String pincode =
                 binding.etPincode
@@ -624,15 +605,31 @@ public class EditProfileActivity extends AppCompatActivity {
                         .toString()
                         .trim();
 
+
         String occupation =
                 binding.etOccupation
                         .getText()
                         .toString()
                         .trim();
 
-        /*
-         * Basic validation.
-         */
+
+        // -----------------------------------------------------
+        // CLEAR OLD ERRORS
+        // -----------------------------------------------------
+
+        binding.etEmail.setError(null);
+        binding.etMobile.setError(null);
+        binding.etAddress.setError(null);
+        binding.etCity.setError(null);
+        binding.etState.setError(null);
+        binding.etPincode.setError(null);
+        binding.etOccupation.setError(null);
+
+
+        // =====================================================
+        // EMAIL VALIDATION
+        // =====================================================
+
         if (email.isEmpty()) {
 
             binding.etEmail.setError(
@@ -644,10 +641,29 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
+
+        if (!Patterns.EMAIL_ADDRESS
+                .matcher(email)
+                .matches()) {
+
+            binding.etEmail.setError(
+                    "Enter a valid email address"
+            );
+
+            binding.etEmail.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // MOBILE VALIDATION
+        // =====================================================
+
         if (mobile.isEmpty()) {
 
             binding.etMobile.setError(
-                    "Mobile is required"
+                    "Mobile number is required"
             );
 
             binding.etMobile.requestFocus();
@@ -655,32 +671,231 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        /*
-         * Create request.
-         */
+
+        if (!mobile.matches(
+                "^[6-9]\\d{9}$"
+        )) {
+
+            binding.etMobile.setError(
+                    "Enter a valid 10-digit mobile number"
+            );
+
+            binding.etMobile.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // ADDRESS VALIDATION
+        // =====================================================
+
+        if (address.isEmpty()) {
+
+            binding.etAddress.setError(
+                    "Address is required"
+            );
+
+            binding.etAddress.requestFocus();
+
+            return;
+        }
+
+
+        if (address.length() < 10
+                || address.length() > 200) {
+
+            binding.etAddress.setError(
+                    "Address must be between 10 and 200 characters"
+            );
+
+            binding.etAddress.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // CITY VALIDATION
+        // =====================================================
+
+        if (city.isEmpty()) {
+
+            binding.etCity.setError(
+                    "City is required"
+            );
+
+            binding.etCity.requestFocus();
+
+            return;
+        }
+
+
+        if (!city.matches(
+                "^[A-Za-z ]+$"
+        )) {
+
+            binding.etCity.setError(
+                    "City must contain only letters"
+            );
+
+            binding.etCity.requestFocus();
+
+            return;
+        }
+
+
+        if (city.length() < 2
+                || city.length() > 50) {
+
+            binding.etCity.setError(
+                    "City must be between 2 and 50 characters"
+            );
+
+            binding.etCity.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // STATE VALIDATION
+        // =====================================================
+
+        if (state.isEmpty()) {
+
+            binding.etState.setError(
+                    "State is required"
+            );
+
+            binding.etState.requestFocus();
+
+            return;
+        }
+
+
+        if (!state.matches(
+                "^[A-Za-z ]+$"
+        )) {
+
+            binding.etState.setError(
+                    "State must contain only letters"
+            );
+
+            binding.etState.requestFocus();
+
+            return;
+        }
+
+
+        if (state.length() < 2
+                || state.length() > 50) {
+
+            binding.etState.setError(
+                    "State must be between 2 and 50 characters"
+            );
+
+            binding.etState.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // PINCODE VALIDATION
+        // =====================================================
+
+        if (pincode.isEmpty()) {
+
+            binding.etPincode.setError(
+                    "Pincode is required"
+            );
+
+            binding.etPincode.requestFocus();
+
+            return;
+        }
+
+
+        if (!pincode.matches(
+                "^\\d{6}$"
+        )) {
+
+            binding.etPincode.setError(
+                    "Pincode must contain exactly 6 digits"
+            );
+
+            binding.etPincode.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // OCCUPATION VALIDATION
+        // =====================================================
+
+        if (occupation.isEmpty()) {
+
+            binding.etOccupation.setError(
+                    "Occupation is required"
+            );
+
+            binding.etOccupation.requestFocus();
+
+            return;
+        }
+
+
+        if (occupation.length() < 2
+                || occupation.length() > 50) {
+
+            binding.etOccupation.setError(
+                    "Occupation must be between 2 and 50 characters"
+            );
+
+            binding.etOccupation.requestFocus();
+
+            return;
+        }
+
+
+        // =====================================================
+        // CREATE REQUEST
+        // =====================================================
+
         UpdateProfileRequest request =
                 new UpdateProfileRequest();
 
+
         request.setEmail(email);
+
         request.setMobile(mobile);
+
         request.setAddress(address);
+
         request.setCity(city);
+
         request.setState(state);
+
         request.setPincode(pincode);
+
         request.setOccupation(occupation);
 
-        /*
-         * Start update operation.
-         */
+
+        // =====================================================
+        // START UPDATE
+        // =====================================================
+
         updateInProgress = true;
 
         setControlsEnabled(false);
 
-        /*
-         * STEP 1:
-         *
-         * Update normal profile information.
-         */
+
+        // =====================================================
+        // UPDATE PROFILE
+        // =====================================================
+
         repository.updateProfile(request)
                 .enqueue(
                         new Callback<ProfileResponse>() {
@@ -697,34 +912,26 @@ public class EditProfileActivity extends AppCompatActivity {
 
                                     setControlsEnabled(true);
 
-                                    Toast.makeText(
-                                            EditProfileActivity.this,
-                                            getHttpErrorMessage(
-                                                    response,
-                                                    "Profile update failed."
-                                            ),
-                                            Toast.LENGTH_LONG
-                                    ).show();
+                                    handleProfileUpdateError(
+                                            response
+                                    );
 
                                     return;
                                 }
 
-                                /*
-                                 * Text profile update succeeded.
-                                 *
-                                 * If the user selected a new photo,
-                                 * upload it now.
-                                 */
+
+                                // -------------------------------------------------
+                                // Profile details updated
+                                // -------------------------------------------------
+
                                 if (selectedPhotoUri != null) {
 
                                     uploadSelectedPhoto();
 
                                 } else {
 
-                                    /*
-                                     * Nothing else to upload.
-                                     */
                                     updateInProgress = false;
+
 
                                     Toast.makeText(
                                             EditProfileActivity.this,
@@ -732,9 +939,11 @@ public class EditProfileActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT
                                     ).show();
 
+
                                     finish();
                                 }
                             }
+
 
                             @Override
                             public void onFailure(
@@ -746,9 +955,11 @@ public class EditProfileActivity extends AppCompatActivity {
 
                                 setControlsEnabled(true);
 
+
                                 if (call.isCanceled()) {
                                     return;
                                 }
+
 
                                 Toast.makeText(
                                         EditProfileActivity.this,
@@ -761,17 +972,455 @@ public class EditProfileActivity extends AppCompatActivity {
                 );
     }
 
-    /**
-     * Uploads selected profile photo.
-     *
-     * Backend:
-     *
-     * POST /profile/photo
-     *
-     * Multipart field:
-     *
-     * photo
-     */
+
+    // =========================================================
+    // HANDLE PROFILE UPDATE ERROR
+    // =========================================================
+
+    private void handleProfileUpdateError(
+            Response<?> response
+    ) {
+
+        if (response == null) {
+
+            Toast.makeText(
+                    EditProfileActivity.this,
+                    "Profile update failed.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        // =====================================================
+        // HTTP 400
+        // =====================================================
+
+        if (response.code() == 400) {
+
+            String errorMessage =
+                    extractValidationError(
+                            response
+                    );
+
+
+            Toast.makeText(
+                    EditProfileActivity.this,
+                    errorMessage,
+                    Toast.LENGTH_LONG
+            ).show();
+
+
+            return;
+        }
+
+
+        // =====================================================
+        // HTTP 409
+        // =====================================================
+
+        if (response.code() == 409) {
+
+            handleProfileConflict(
+                    response
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // OTHER HTTP ERRORS
+        // =====================================================
+
+        Toast.makeText(
+                EditProfileActivity.this,
+                getHttpErrorMessage(
+                        response,
+                        "Profile update failed."
+                ),
+                Toast.LENGTH_LONG
+        ).show();
+    }
+
+
+    // =========================================================
+    // HANDLE 409 CONFLICT
+    // =========================================================
+
+    private void handleProfileConflict(
+            Response<?> response
+    ) {
+
+        String message =
+                extractServerMessage(
+                        response
+                );
+
+
+        String lowerMessage =
+                message.toLowerCase();
+
+
+        // =====================================================
+        // EMAIL CONFLICT
+        // =====================================================
+
+        if (lowerMessage.contains("email")) {
+
+            binding.etEmail.setError(
+                    "Email already registered. Please use a different email."
+            );
+
+
+            binding.etEmail.requestFocus();
+
+
+            Toast.makeText(
+                    EditProfileActivity.this,
+                    "Email already registered.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+
+            return;
+        }
+
+
+        // =====================================================
+        // MOBILE CONFLICT
+        // =====================================================
+
+        if (lowerMessage.contains("mobile")
+                || lowerMessage.contains("phone")) {
+
+            binding.etMobile.setError(
+                    "Mobile number already registered. Please use a different number."
+            );
+
+
+            binding.etMobile.requestFocus();
+
+
+            Toast.makeText(
+                    EditProfileActivity.this,
+                    "Mobile number already registered.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+
+            return;
+        }
+
+
+        // =====================================================
+        // UNKNOWN CONFLICT
+        // =====================================================
+
+        Toast.makeText(
+                EditProfileActivity.this,
+                message.isEmpty()
+                        ? "Profile update conflict."
+                        : message,
+                Toast.LENGTH_LONG
+        ).show();
+    }
+
+
+    // =========================================================
+    // EXTRACT SERVER MESSAGE
+    // =========================================================
+
+    private String extractServerMessage(
+            Response<?> response
+    ) {
+
+        try {
+
+            if (response == null) {
+                return "";
+            }
+
+
+            if (response.errorBody() == null) {
+                return "";
+            }
+
+
+            String errorBody =
+                    response.errorBody()
+                            .string();
+
+
+            if (errorBody == null
+                    || errorBody.trim().isEmpty()) {
+
+                return "";
+            }
+
+
+            JSONObject json =
+                    new JSONObject(
+                            errorBody
+                    );
+
+
+            // -------------------------------------------------
+            // Spring message
+            // -------------------------------------------------
+
+            String message =
+                    json.optString(
+                            "message",
+                            ""
+                    );
+
+
+            if (!message.isEmpty()) {
+
+                return message;
+            }
+
+
+            // -------------------------------------------------
+            // Error field
+            // -------------------------------------------------
+
+            String error =
+                    json.optString(
+                            "error",
+                            ""
+                    );
+
+
+            if (!error.isEmpty()) {
+
+                return error;
+            }
+
+
+        } catch (Exception ignored) {
+
+            // Ignore JSON parsing errors.
+        }
+
+
+        return "";
+    }
+
+
+    // =========================================================
+    // EXTRACT VALIDATION ERROR
+    // =========================================================
+
+    private String extractValidationError(
+            Response<?> response
+    ) {
+
+        try {
+
+            if (response.errorBody() == null) {
+
+                return "Profile update failed. (HTTP "
+                        + response.code()
+                        + ")";
+            }
+
+
+            String errorBody =
+                    response.errorBody()
+                            .string();
+
+
+            if (errorBody == null
+                    || errorBody.trim().isEmpty()) {
+
+                return "Profile update failed. (HTTP "
+                        + response.code()
+                        + ")";
+            }
+
+
+            JSONObject json =
+                    new JSONObject(
+                            errorBody
+                    );
+
+
+            // =================================================
+            // FIELD VALIDATION ERRORS
+            // =================================================
+
+            if (json.has("fields")) {
+
+                JSONObject fields =
+                        json.getJSONObject(
+                                "fields"
+                        );
+
+
+                StringBuilder message =
+                        new StringBuilder();
+
+
+                Iterator<String> keys =
+                        fields.keys();
+
+
+                while (keys.hasNext()) {
+
+                    String field =
+                            keys.next();
+
+
+                    String error =
+                            fields.optString(
+                                    field,
+                                    ""
+                            );
+
+
+                    if (error.isEmpty()) {
+                        continue;
+                    }
+
+
+                    if (message.length() > 0) {
+
+                        message.append("\n");
+                    }
+
+
+                    message.append(
+                            formatFieldName(
+                                    field
+                            )
+                    );
+
+
+                    message.append(": ");
+
+                    message.append(error);
+                }
+
+
+                if (message.length() > 0) {
+
+                    return message.toString();
+                }
+            }
+
+
+            // =================================================
+            // NORMAL BACKEND MESSAGE
+            // =================================================
+
+            String backendMessage =
+                    json.optString(
+                            "message",
+                            ""
+                    );
+
+
+            if (!backendMessage.isEmpty()) {
+
+                return backendMessage;
+            }
+
+
+            // =================================================
+            // ERROR FIELD
+            // =================================================
+
+            String error =
+                    json.optString(
+                            "error",
+                            ""
+                    );
+
+
+            if (!error.isEmpty()) {
+
+                return error;
+            }
+
+
+            // =================================================
+            // FALLBACK
+            // =================================================
+
+            return "Profile update failed. (HTTP "
+                    + response.code()
+                    + ")";
+
+
+        } catch (Exception e) {
+
+            return "Profile update failed. (HTTP "
+                    + response.code()
+                    + ")";
+        }
+    }
+
+
+    // =========================================================
+    // FORMAT FIELD NAME
+    // =========================================================
+
+    private String formatFieldName(
+            String field
+    ) {
+
+        if (field == null
+                || field.trim().isEmpty()) {
+
+            return "Field";
+        }
+
+
+        switch (field) {
+
+            case "email":
+                return "Email";
+
+            case "mobile":
+                return "Mobile";
+
+            case "address":
+                return "Address";
+
+            case "city":
+                return "City";
+
+            case "state":
+                return "State";
+
+            case "pincode":
+                return "Pincode";
+
+            case "occupation":
+                return "Occupation";
+
+            default:
+
+                if (field.length() == 1) {
+
+                    return field.toUpperCase();
+                }
+
+
+                return Character.toUpperCase(
+                        field.charAt(0)
+                ) + field.substring(1);
+        }
+    }
+
+
+    // =========================================================
+    // UPLOAD SELECTED PROFILE PHOTO
+    // =========================================================
+
     private void uploadSelectedPhoto() {
 
         if (selectedPhotoUri == null) {
@@ -780,57 +1429,55 @@ public class EditProfileActivity extends AppCompatActivity {
 
             setControlsEnabled(true);
 
+
             Toast.makeText(
                     EditProfileActivity.this,
                     "Profile Updated Successfully",
                     Toast.LENGTH_SHORT
             ).show();
 
+
             finish();
 
             return;
         }
 
-        /*
-         * Determine MIME type.
-         */
+
+        // =====================================================
+        // MIME TYPE
+        // =====================================================
+
         String mimeType =
                 getContentResolver().getType(
                         selectedPhotoUri
                 );
 
-        /*
-         * Some document providers don't return
-         * a MIME type.
-         */
+
         if (mimeType == null
                 || mimeType.trim().isEmpty()) {
 
-            mimeType = detectMimeType(
-                    selectedPhotoUri
-            );
+            mimeType =
+                    detectMimeType(
+                            selectedPhotoUri
+                    );
         }
 
-        /*
-         * Final fallback.
-         */
+
         if (mimeType == null
                 || mimeType.trim().isEmpty()) {
 
             mimeType = "image/jpeg";
         }
 
-        /*
-         * Normalize MIME type.
-         */
+
         mimeType =
                 mimeType.trim().toLowerCase();
 
-        /*
-         * Android-side validation.
-         *
-         * Backend performs final validation too.
-         */
+
+        // =====================================================
+        // VALIDATE MIME TYPE
+        // =====================================================
+
         if (!mimeType.equals("image/jpeg")
                 && !mimeType.equals("image/jpg")
                 && !mimeType.equals("image/png")) {
@@ -839,20 +1486,27 @@ public class EditProfileActivity extends AppCompatActivity {
 
             setControlsEnabled(true);
 
+
             Toast.makeText(
                     EditProfileActivity.this,
                     "Please select a JPEG or PNG image.",
                     Toast.LENGTH_LONG
             ).show();
 
+
             return;
         }
 
-        /*
-         * Validate selected file size.
-         */
+
+        // =====================================================
+        // VALIDATE SIZE
+        // =====================================================
+
         long fileSize =
-                getFileSize(selectedPhotoUri);
+                getFileSize(
+                        selectedPhotoUri
+                );
+
 
         if (fileSize > MAX_PROFILE_PHOTO_SIZE) {
 
@@ -860,29 +1514,29 @@ public class EditProfileActivity extends AppCompatActivity {
 
             setControlsEnabled(true);
 
+
             Toast.makeText(
                     EditProfileActivity.this,
                     "Profile photo must not exceed 5 MB.",
                     Toast.LENGTH_LONG
             ).show();
 
+
             return;
         }
 
-        /*
-         * Create streaming RequestBody.
-         */
+
+        // =====================================================
+        // REQUEST BODY
+        // =====================================================
+
         RequestBody requestBody =
                 createImageRequestBody(
                         selectedPhotoUri,
                         mimeType
                 );
 
-        /*
-         * Backend expects multipart field:
-         *
-         * photo
-         */
+
         MultipartBody.Part photoPart =
                 MultipartBody.Part.createFormData(
                         "photo",
@@ -890,91 +1544,84 @@ public class EditProfileActivity extends AppCompatActivity {
                         requestBody
                 );
 
-        /*
-         * STEP 2:
-         *
-         * Upload photo.
-         */
-        repository.uploadProfilePhoto(photoPart)
-                .enqueue(
-                        new Callback<ProfileResponse>() {
 
-                            @Override
-                            public void onResponse(
-                                    Call<ProfileResponse> call,
-                                    Response<ProfileResponse> response
-                            ) {
+        // =====================================================
+        // UPLOAD
+        // =====================================================
 
-                                updateInProgress = false;
+        repository.uploadProfilePhoto(
+                photoPart
+        ).enqueue(
+                new Callback<ProfileResponse>() {
 
-                                setControlsEnabled(true);
+                    @Override
+                    public void onResponse(
+                            Call<ProfileResponse> call,
+                            Response<ProfileResponse> response
+                    ) {
 
-                                if (response.isSuccessful()) {
+                        updateInProgress = false;
 
-                                    Toast.makeText(
-                                            EditProfileActivity.this,
-                                            "Profile Updated Successfully",
-                                            Toast.LENGTH_SHORT
-                                    ).show();
+                        setControlsEnabled(true);
 
-                                    finish();
 
-                                } else {
+                        if (response.isSuccessful()) {
 
-                                    /*
-                                     * Text profile update already
-                                     * succeeded.
-                                     *
-                                     * Only photo upload failed.
-                                     */
-                                    Toast.makeText(
-                                            EditProfileActivity.this,
-                                            getHttpErrorMessage(
-                                                    response,
-                                                    "Profile details updated, but photo upload failed."
-                                            ),
-                                            Toast.LENGTH_LONG
-                                    ).show();
-                                }
-                            }
+                            Toast.makeText(
+                                    EditProfileActivity.this,
+                                    "Profile Updated Successfully",
+                                    Toast.LENGTH_SHORT
+                            ).show();
 
-                            @Override
-                            public void onFailure(
-                                    Call<ProfileResponse> call,
-                                    Throwable t
-                            ) {
 
-                                updateInProgress = false;
+                            finish();
 
-                                setControlsEnabled(true);
+                        } else {
 
-                                if (call.isCanceled()) {
-                                    return;
-                                }
-
-                                /*
-                                 * Text profile update already succeeded.
-                                 */
-                                Toast.makeText(
-                                        EditProfileActivity.this,
-                                        "Profile details updated, but photo upload failed: "
-                                                + getErrorMessage(t),
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
+                            Toast.makeText(
+                                    EditProfileActivity.this,
+                                    getHttpErrorMessage(
+                                            response,
+                                            "Profile details updated, but photo upload failed."
+                                    ),
+                                    Toast.LENGTH_LONG
+                            ).show();
                         }
-                );
+                    }
+
+
+                    @Override
+                    public void onFailure(
+                            Call<ProfileResponse> call,
+                            Throwable t
+                    ) {
+
+                        updateInProgress = false;
+
+                        setControlsEnabled(true);
+
+
+                        if (call.isCanceled()) {
+                            return;
+                        }
+
+
+                        Toast.makeText(
+                                EditProfileActivity.this,
+                                "Profile details updated, but photo upload failed: "
+                                        + getErrorMessage(t),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
     }
 
-    /**
-     * Creates a streaming RequestBody.
-     *
-     * ContentResolver
-     *       ->
-     * InputStream
-     *       ->
-     * BufferedSink
-     */
+
+    // =========================================================
+    // CREATE IMAGE REQUEST BODY
+    // =========================================================
+
     private RequestBody createImageRequestBody(
             Uri uri,
             String mimeType
@@ -986,6 +1633,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         ? mimeType
                         : "image/jpeg";
 
+
         return new RequestBody() {
 
             @Override
@@ -996,11 +1644,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 );
             }
 
+
             @Override
             public long contentLength() {
 
                 return getFileSize(uri);
             }
+
 
             @Override
             public void writeTo(
@@ -1009,15 +1659,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 InputStream inputStream = null;
 
+
                 try {
 
-                    /*
-                     * Open selected image through
-                     * Android ContentResolver.
-                     */
                     inputStream =
                             getContentResolver()
                                     .openInputStream(uri);
+
 
                     if (inputStream == null) {
 
@@ -1026,13 +1674,13 @@ public class EditProfileActivity extends AppCompatActivity {
                         );
                     }
 
-                    /*
-                     * Stream image in chunks.
-                     */
+
                     byte[] buffer =
                             new byte[8192];
 
+
                     int bytesRead;
+
 
                     while ((bytesRead =
                             inputStream.read(buffer)) != -1) {
@@ -1043,6 +1691,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 bytesRead
                         );
                     }
+
 
                 } finally {
 
@@ -1062,18 +1711,22 @@ public class EditProfileActivity extends AppCompatActivity {
         };
     }
 
-    /**
-     * Returns selected file size.
-     *
-     * Returns -1 if the provider does not expose size.
-     */
-    private long getFileSize(Uri uri) {
+
+    // =========================================================
+    // GET FILE SIZE
+    // =========================================================
+
+    private long getFileSize(
+            Uri uri
+    ) {
 
         if (uri == null) {
             return -1;
         }
 
+
         Cursor cursor = null;
+
 
         try {
 
@@ -1086,12 +1739,14 @@ public class EditProfileActivity extends AppCompatActivity {
                             null
                     );
 
+
             if (cursor != null) {
 
                 int sizeIndex =
                         cursor.getColumnIndex(
                                 OpenableColumns.SIZE
                         );
+
 
                 if (sizeIndex >= 0
                         && cursor.moveToFirst()) {
@@ -1102,40 +1757,47 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }
 
+
         } catch (Exception ignored) {
 
-            /*
-             * Unknown size.
-             */
+            // Unknown size.
 
         } finally {
 
             if (cursor != null) {
+
                 cursor.close();
             }
         }
 
+
         return -1;
     }
 
-    /**
-     * Attempts to determine MIME type from
-     * file extension.
-     */
-    private String detectMimeType(Uri uri) {
+
+    // =========================================================
+    // DETECT MIME TYPE
+    // =========================================================
+
+    private String detectMimeType(
+            Uri uri
+    ) {
 
         if (uri == null) {
             return null;
         }
 
+
         String value =
                 uri.toString()
                         .toLowerCase();
+
 
         if (value.endsWith(".png")) {
 
             return "image/png";
         }
+
 
         if (value.endsWith(".jpg")
                 || value.endsWith(".jpeg")) {
@@ -1143,13 +1805,15 @@ public class EditProfileActivity extends AppCompatActivity {
             return "image/jpeg";
         }
 
+
         return null;
     }
 
-    /**
-     * Enables/disables all photo/profile controls
-     * while an operation is running.
-     */
+
+    // =========================================================
+    // ENABLE / DISABLE CONTROLS
+    // =========================================================
+
     private void setControlsEnabled(
             boolean enabled
     ) {
@@ -1158,22 +1822,27 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
+
         binding.btnUpdate.setEnabled(
                 enabled
         );
 
+
         binding.btnChangePhoto.setEnabled(
                 enabled
         );
+
 
         binding.btnRemovePhoto.setEnabled(
                 enabled
         );
     }
 
-    /**
-     * Safely converts null String to empty String.
-     */
+
+    // =========================================================
+    // SAFE STRING
+    // =========================================================
+
     private String safeString(
             String value
     ) {
@@ -1183,9 +1852,11 @@ public class EditProfileActivity extends AppCompatActivity {
                 : "";
     }
 
-    /**
-     * Builds a useful HTTP error message.
-     */
+
+    // =========================================================
+    // HTTP ERROR MESSAGE
+    // =========================================================
+
     private String getHttpErrorMessage(
             Response<?> response,
             String fallback
@@ -1195,12 +1866,11 @@ public class EditProfileActivity extends AppCompatActivity {
             return fallback;
         }
 
+
         String message =
                 "HTTP " + response.code();
 
-        /*
-         * Try to include server error body.
-         */
+
         try {
 
             if (response.errorBody() != null) {
@@ -1209,12 +1879,10 @@ public class EditProfileActivity extends AppCompatActivity {
                         response.errorBody()
                                 .string();
 
+
                 if (error != null
                         && !error.trim().isEmpty()) {
 
-                    /*
-                     * Keep error reasonably short.
-                     */
                     if (error.length() > 300) {
 
                         error =
@@ -1224,6 +1892,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 );
                     }
 
+
                     return fallback
                             + " ("
                             + message
@@ -1232,10 +1901,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             }
 
+
         } catch (Exception ignored) {
 
             // Use fallback.
         }
+
 
         return fallback
                 + " ("
@@ -1243,19 +1914,24 @@ public class EditProfileActivity extends AppCompatActivity {
                 + ")";
     }
 
-    /**
-     * Returns a safe network error message.
-     */
+
+    // =========================================================
+    // NETWORK ERROR MESSAGE
+    // =========================================================
+
     private String getErrorMessage(
             Throwable throwable
     ) {
 
         if (throwable == null) {
+
             return "Unknown error";
         }
 
+
         String message =
                 throwable.getMessage();
+
 
         if (message == null
                 || message.trim().isEmpty()) {
@@ -1263,17 +1939,20 @@ public class EditProfileActivity extends AppCompatActivity {
             return "Unknown error";
         }
 
+
         return message;
     }
+
+
+    // =========================================================
+    // ON DESTROY
+    // =========================================================
 
     @Override
     protected void onDestroy() {
 
         super.onDestroy();
 
-        /*
-         * Release ViewBinding reference.
-         */
         binding = null;
     }
 }
