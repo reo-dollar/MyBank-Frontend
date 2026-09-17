@@ -6,42 +6,163 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@color/background"
     android:fillViewport="true"
-    android:background="@color/background">
+    android:clipToPadding="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:orientation="vertical"
+
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp"
-        android:paddingTop="52dp">
+        android:paddingTop="40dp"
+        android:paddingBottom="28dp">
 
-        <!-- ========================= -->
-        <!-- Header -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- HEADER                                                     -->
+        <!-- ========================================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <!-- FD Icon Badge -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="?attr/colorOutline"
+                app:strokeWidth="1dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:gravity="center"
+
+                    android:text="FD"
+                    android:textColor="@color/primary"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Header Text -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Fixed Deposit"
+                    android:textColor="@color/text_primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="3dp"
+
+                    android:text="Grow your savings with guaranteed returns"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- INTRO CARD                                                 -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="22dp"
+
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="2dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Plan your investment"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="4dp"
+
+                    android:text="Enter your deposit details below to calculate the estimated maturity amount."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <!-- ========================================================= -->
+        <!-- DEPOSIT DETAILS                                            -->
+        <!-- ========================================================= -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🏦 Fixed Deposit"
-            android:textStyle="bold"
-            android:textSize="30sp"
-            android:textColor="@color/text_primary"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calculate your Fixed Deposit maturity instantly"
-            android:textColor="@color/text_secondary"
-            android:textSize="15sp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp"
 
-        <!-- ========================= -->
-        <!-- Deposit Amount -->
-        <!-- ========================= -->
+            android:text="Deposit Details"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <!-- ========================================================= -->
+        <!-- DEPOSIT AMOUNT                                             -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutPrincipal"
@@ -56,56 +177,23 @@
             app:prefixText="₹ ">
 
             <com.google.android.material.textfield.TextInputEditText
-
                 android:id="@+id/etPrincipal"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:inputType="numberDecimal"
-
-                android:maxLines="1"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- ========================= -->
-        <!-- Interest Rate -->
-        <!-- ========================= -->
-
-        <com.google.android.material.textfield.TextInputLayout
-
-            android:id="@+id/layoutInterest"
-
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="18dp"
-
-            android:hint="Interest Rate (%)"
-
-            app:suffixText="%">
-
-            <com.google.android.material.textfield.TextInputEditText
-
-                android:id="@+id/etInterest"
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:inputType="numberDecimal"
-
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ========================= -->
-        <!-- Tenure -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- TENURE                                                     -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
-
             android:id="@+id/layoutTenure"
 
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -113,31 +201,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="14dp"
 
-            android:hint="Tenure"
-
-            app:suffixText="Years">
+            android:hint="Tenure">
 
             <com.google.android.material.textfield.TextInputEditText
-
                 android:id="@+id/etTenure"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
                 android:inputType="numberDecimal"
-
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:imeOptions="actionNext" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ========================= -->
-        <!-- Tenure Type -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- TENURE TYPE                                                -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
-
             android:id="@+id/layoutTenureType"
 
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -145,27 +230,73 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="14dp"
 
             android:hint="Tenure Type">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-
                 android:id="@+id/actTenureType"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="none"/>
+                android:inputType="none"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ========================= -->
-        <!-- Interest Type -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- INTEREST CONFIGURATION                                    -->
+        <!-- ========================================================= -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp"
+
+            android:text="Interest Configuration"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <!-- ========================================================= -->
+        <!-- INTEREST RATE                                              -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutInterest"
 
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="Interest Rate"
+
+            app:suffixText="%">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etInterest"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:imeOptions="actionNext" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <!-- ========================================================= -->
+        <!-- INTEREST TYPE                                              -->
+        <!-- ========================================================= -->
+
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutInterestType"
 
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -173,27 +304,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="14dp"
 
             android:hint="Interest Type">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-
                 android:id="@+id/actInterestType"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="none"/>
+                android:inputType="none"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ========================= -->
-        <!-- Compounding Frequency -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- COMPOUNDING FREQUENCY                                     -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.textfield.TextInputLayout
-
             android:id="@+id/layoutCompounding"
 
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -201,174 +332,271 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="14dp"
 
             android:hint="Compounding Frequency">
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
-
                 android:id="@+id/actCompounding"
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="none"/>
+                android:inputType="none"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- ========================= -->
-        <!-- Investment Summary -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- INVESTMENT SUMMARY                                        -->
+        <!-- ========================================================= -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="28dp"
+            android:layout_marginBottom="12dp"
+
+            android:text="Investment Summary"
+            android:textColor="@color/text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="18dp"
-            app:cardElevation="4dp">
+
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="3dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:orientation="vertical"
                 android:padding="18dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                <!-- Summary Header -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Investment Summary"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="@color/text_primary"/>
+
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
+                        android:text="Maturity Overview"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="FD"
+                        android:textColor="@color/primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+
+                <!-- Divider -->
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="#E0E0E0"/>
 
-                <!-- Principal -->
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="14dp"
+
+                    android:background="?attr/colorOutline" />
+
+
+                <!-- PRINCIPAL -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
                         android:text="Principal"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvPrincipal"
-                        android:layout_width="0dp"
+
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="₹0"/>
+
+                        android:text="₹0"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Interest -->
+
+                <!-- INTEREST EARNED -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+
+                    android:layout_marginTop="13dp"
+
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
                         android:text="Interest Earned"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvInterest"
-                        android:layout_width="0dp"
+
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
+
                         android:text="₹0"
-                        android:textColor="#2E7D32"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/success"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Maturity -->
+
+                <!-- MATURITY AMOUNT -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+
+                    android:layout_marginTop="13dp"
+
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
                         android:text="Maturity Amount"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvMaturity"
-                        android:layout_width="0dp"
+
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
+
                         android:text="₹0"
-                        android:textColor="#1565C0"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/primary"
+                        android:textSize="17sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Tenure -->
+
+                <!-- TENURE -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+
+                    android:layout_marginTop="13dp"
+
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
                         android:text="Tenure"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvTenure"
-                        android:layout_width="0dp"
+
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="-"/>
+
+                        android:text="-"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Interest Rate -->
+
+                <!-- INTEREST RATE -->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+
+                    android:layout_marginTop="13dp"
+
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="130dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
                         android:text="Interest Rate"
-                        android:textStyle="bold"/>
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp" />
 
                     <TextView
                         android:id="@+id/tvRate"
-                        android:layout_width="0dp"
+
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="-"/>
+
+                        android:text="-"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -376,30 +604,48 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ========================= -->
-        <!-- Buttons -->
-        <!-- ========================= -->
+
+        <!-- ========================================================= -->
+        <!-- CALCULATE BUTTON                                          -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCalculate"
+
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="CALCULATE"
+
+            android:layout_marginTop="24dp"
+
+            android:text="Calculate Maturity"
             android:textAllCaps="false"
-            android:textSize="16sp"
-            app:cornerRadius="16dp"/>
+            android:textSize="15sp"
+            android:textStyle="bold"
+
+            app:cornerRadius="16dp" />
+
+
+        <!-- ========================================================= -->
+        <!-- RESET BUTTON                                               -->
+        <!-- ========================================================= -->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReset"
+
+            style="@style/Widget.Material3.Button.OutlinedButton"
+
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="24dp"
-            android:text="RESET"
+            android:layout_height="54dp"
+
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+
+            android:text="Reset"
             android:textAllCaps="false"
-            android:textSize="16sp"
-            app:cornerRadius="16dp"
-            style="@style/Widget.Material3.Button.OutlinedButton"/>
+            android:textSize="15sp"
+
+            app:cornerRadius="16dp" />
+
 
     </LinearLayout>
 

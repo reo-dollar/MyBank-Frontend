@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="#F8FAFC">
+    android:orientation="vertical"
+
+    android:background="@color/admin_background">
 
     <!-- ========================================================= -->
-    <!-- TOP APP BAR -->
+    <!-- TOP APP BAR                                                -->
     <!-- ========================================================= -->
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -19,40 +22,45 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
 
-        android:background="#FFFFFF"
-
+        android:background="@color/admin_card"
         android:elevation="3dp"
 
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="Customer Details"
-        app:titleTextColor="#111827" />
+        app:title="@string/admin_customer_details"
+        app:titleTextColor="@color/admin_text_primary" />
+
 
     <!-- ========================================================= -->
-    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT                                                -->
     <!-- ========================================================= -->
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+
+        android:layout_weight="1"
 
         android:fillViewport="true"
+        android:clipToPadding="false"
 
-        android:paddingTop="?attr/actionBarSize"
-
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/admin_background">
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:orientation="vertical"
 
-            android:padding="20dp">
+            android:paddingStart="18dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="32dp">
+
 
             <!-- ================================================= -->
-            <!-- CUSTOMER HEADER CARD -->
+            <!-- CUSTOMER PROFILE -->
             <!-- ================================================= -->
 
             <com.google.android.material.card.MaterialCardView
@@ -60,14 +68,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/admin_card"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="2dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
@@ -77,11 +84,11 @@
 
                     android:padding="24dp">
 
-                    <!-- ========================================= -->
-                    <!-- PROFILE ICON -->
-                    <!-- ========================================= -->
+                    <!-- AVATAR -->
 
                     <TextView
+                        android:id="@+id/tvCustomerAvatar"
+
                         android:layout_width="64dp"
                         android:layout_height="64dp"
 
@@ -89,15 +96,14 @@
 
                         android:gravity="center"
 
-                        android:text="C"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
 
-                        android:textColor="#FFFFFF"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
+                        tools:text="R" />
 
-                    <!-- ========================================= -->
-                    <!-- FULL NAME -->
-                    <!-- ========================================= -->
+
+                    <!-- NAME -->
 
                     <TextView
                         android:id="@+id/tvFullName"
@@ -109,17 +115,14 @@
 
                         android:gravity="center"
 
-                        android:text="Arman Mahendra Gupta"
+                        android:textColor="@color/admin_text_primary"
+                        android:textSize="21sp"
+                        android:textStyle="bold"
 
-                        android:textColor="#111827"
+                        tools:text="Rohit Vishwakarma" />
 
-                        android:textSize="22sp"
 
-                        android:textStyle="bold" />
-
-                    <!-- ========================================= -->
                     <!-- USERNAME -->
-                    <!-- ========================================= -->
 
                     <TextView
                         android:id="@+id/tvUsername"
@@ -131,15 +134,13 @@
 
                         android:gravity="center"
 
-                        android:text="@armangupta"
+                        android:textColor="@color/admin_primary"
+                        android:textSize="14sp"
 
-                        android:textColor="#2563EB"
+                        tools:text="@rohitvishwakarma" />
 
-                        android:textSize="14sp" />
 
-                    <!-- ========================================= -->
                     <!-- CUSTOMER ID -->
-                    <!-- ========================================= -->
 
                     <TextView
                         android:id="@+id/tvCustomerId"
@@ -147,59 +148,56 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
 
                         android:gravity="center"
 
-                        android:text="CUS000005"
+                        android:textColor="@color/admin_text_muted"
+                        android:textSize="13sp"
 
-                        android:textColor="#64748B"
-
-                        android:textSize="13sp" />
+                        tools:text="CUS000001" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
 
             <!-- ================================================= -->
             <!-- BASIC INFORMATION -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="Basic Information"
+                android:text="@string/admin_basic_information"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
                     <!-- DATE OF BIRTH -->
 
@@ -207,9 +205,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Date of Birth"
+                        android:text="@string/date_of_birth"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -220,22 +218,22 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="20 May 2003"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
 
-                    <!-- DIVIDER -->
+                        tools:text="2003-05-20" />
+
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
 
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="14dp"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="13dp"
 
-                        android:background="#E5E7EB" />
+                        android:background="@color/admin_divider" />
+
 
                     <!-- GENDER -->
 
@@ -243,9 +241,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Gender"
+                        android:text="@string/gender"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -256,55 +254,53 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="Male"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="Male" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
 
             <!-- ================================================= -->
             <!-- CONTACT INFORMATION -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="Contact Information"
+                android:text="@string/admin_contact_information"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
                     <!-- MOBILE -->
 
@@ -312,9 +308,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Mobile Number"
+                        android:text="@string/mobile_number"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -325,22 +321,22 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="9876543210"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
 
-                    <!-- DIVIDER -->
+                        tools:text="9876543211" />
+
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
 
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="14dp"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="13dp"
 
-                        android:background="#E5E7EB" />
+                        android:background="@color/admin_divider" />
+
 
                     <!-- EMAIL -->
 
@@ -348,9 +344,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Email Address"
+                        android:text="@string/email_address"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -361,55 +357,53 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="email@example.com"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="rohit.new@gmail.com" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
 
             <!-- ================================================= -->
             <!-- KYC INFORMATION -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="KYC Information"
+                android:text="@string/admin_kyc_information"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
                     <!-- AADHAAR -->
 
@@ -417,9 +411,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Aadhaar Number"
+                        android:text="@string/aadhaar_number"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -430,22 +424,22 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="XXXX XXXX 1234"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
 
-                    <!-- DIVIDER -->
+                        tools:text="XXXX-XXXX-9012" />
+
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
 
-                        android:layout_marginTop="14dp"
-                        android:layout_marginBottom="14dp"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="13dp"
 
-                        android:background="#E5E7EB" />
+                        android:background="@color/admin_divider" />
+
 
                     <!-- PAN -->
 
@@ -453,9 +447,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="PAN Number"
+                        android:text="@string/pan_number"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -466,55 +460,53 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="XXXXX1234X"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="ABC****34F" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
 
             <!-- ================================================= -->
             <!-- ADDRESS -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="Address"
+                android:text="@string/admin_address"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
                     <!-- ADDRESS -->
 
@@ -522,9 +514,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Address"
+                        android:text="@string/address"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -535,11 +527,12 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="Address"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="123 Main Street" />
+
 
                     <!-- CITY -->
 
@@ -547,11 +540,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="13dp"
 
-                        android:text="City"
+                        android:text="@string/city"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -562,11 +555,12 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="Mumbai"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="Mumbai" />
+
 
                     <!-- STATE -->
 
@@ -574,11 +568,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="13dp"
 
-                        android:text="State"
+                        android:text="@string/state"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -589,11 +583,12 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="Maharashtra"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="Maharashtra" />
+
 
                     <!-- PINCODE -->
 
@@ -601,11 +596,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="13dp"
 
-                        android:text="Pincode"
+                        android:text="@string/pincode"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -616,55 +611,53 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="400001"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="400053" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
 
             <!-- ================================================= -->
             <!-- ADDITIONAL INFORMATION -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="Additional Information"
+                android:text="@string/admin_additional_information"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
                     <!-- OCCUPATION -->
 
@@ -672,9 +665,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Occupation"
+                        android:text="@string/occupation"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -685,23 +678,24 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="Software Engineer"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
 
-                    <!-- CREATED AT -->
+                        tools:text="Software Engineer" />
+
+
+                    <!-- CUSTOMER SINCE -->
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:layout_marginTop="14dp"
+                        android:layout_marginTop="13dp"
 
-                        android:text="Customer Since"
+                        android:text="@string/customer_since"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -712,55 +706,53 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="14 August 2026"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="19 Jul 2026, 08:12 PM" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
 
             <!-- ================================================= -->
             <!-- ACCOUNT INFORMATION -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="Account Information"
+                android:text="@string/admin_account_information"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
                     <!-- ROLE -->
 
@@ -768,9 +760,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:text="Role"
+                        android:text="@string/role"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -781,11 +773,12 @@
 
                         android:layout_marginTop="3dp"
 
-                        android:text="USER"
-
-                        android:textColor="#111827"
+                        android:textColor="@color/admin_text_primary"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+
+                        tools:text="USER" />
+
 
                     <!-- USER STATUS -->
 
@@ -795,9 +788,9 @@
 
                         android:layout_marginTop="14dp"
 
-                        android:text="User Status"
+                        android:text="@string/user_status"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -815,13 +808,12 @@
                         android:paddingEnd="12dp"
                         android:paddingBottom="6dp"
 
-                        android:text="ACTIVE"
-
-                        android:textColor="#166534"
-
+                        android:textColor="@color/admin_success"
                         android:textSize="13sp"
+                        android:textStyle="bold"
 
-                        android:textStyle="bold" />
+                        tools:text="ACTIVE" />
+
 
                     <!-- ACCOUNT STATUS -->
 
@@ -831,9 +823,9 @@
 
                         android:layout_marginTop="14dp"
 
-                        android:text="Account Status"
+                        android:text="@string/account_status"
 
-                        android:textColor="#64748B"
+                        android:textColor="@color/admin_text_muted"
                         android:textSize="12sp" />
 
                     <TextView
@@ -851,105 +843,136 @@
                         android:paddingEnd="12dp"
                         android:paddingBottom="6dp"
 
-                        android:text="Account Enabled"
-
-                        android:textColor="#166534"
-
+                        android:textColor="@color/admin_success"
                         android:textSize="13sp"
+                        android:textStyle="bold"
 
-                        android:textStyle="bold" />
+                        tools:text="Account Enabled" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
+
             <!-- ================================================= -->
-            <!-- ADMIN ACTIONS -->
+            <!-- ACCOUNT ACTIONS -->
             <!-- ================================================= -->
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="9dp"
 
-                android:text="Account Actions"
+                android:text="@string/admin_account_actions"
 
-                android:textColor="#111827"
-
-                android:textSize="18sp"
-
+                android:textColor="@color/admin_text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold" />
+
 
             <com.google.android.material.card.MaterialCardView
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="10dp"
 
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:cardCornerRadius="16dp"
                 app:cardElevation="1dp"
-                app:strokeColor="#E5E7EB"
+                app:strokeColor="@color/admin_divider"
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:orientation="vertical"
 
-                    android:padding="18dp">
+                    android:padding="17dp">
 
-                    <Button
+                    <!-- ENABLE -->
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnEnableUser"
 
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
 
-                        android:text="Enable User"
+                        android:text="@string/enable_user"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
 
-                        android:textAllCaps="false" />
+                        android:visibility="gone"
 
-                    <Button
+                        app:backgroundTint="@color/admin_success"
+                        app:cornerRadius="24dp" />
+
+
+                    <!-- DISABLE -->
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDisableUser"
 
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
 
                         android:layout_marginTop="10dp"
 
-                        android:text="Disable User"
+                        android:text="@string/disable_user"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
 
-                        android:textAllCaps="false" />
+                        android:visibility="visible"
 
-                    <Button
+                        app:backgroundTint="@color/admin_primary"
+                        app:cornerRadius="24dp" />
+
+
+                    <!-- LOCK -->
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLockAccount"
 
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
 
                         android:layout_marginTop="10dp"
 
-                        android:text="Lock Account"
+                        android:text="@string/lock_account"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
 
-                        android:textAllCaps="false" />
+                        android:visibility="visible"
 
-                    <Button
+                        app:backgroundTint="@color/admin_error"
+                        app:cornerRadius="24dp" />
+
+
+                    <!-- UNLOCK -->
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnUnlockAccount"
 
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
 
                         android:layout_marginTop="10dp"
 
-                        android:text="Unlock Account"
+                        android:text="@string/unlock_account"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
 
-                        android:textAllCaps="false" />
+                        android:visibility="gone"
+
+                        app:backgroundTint="@color/admin_warning"
+                        app:cornerRadius="24dp" />
 
                 </LinearLayout>
 
@@ -959,8 +982,9 @@
 
     </androidx.core.widget.NestedScrollView>
 
+
     <!-- ========================================================= -->
-    <!-- LOADING -->
+    <!-- LOADING                                                     -->
     <!-- ========================================================= -->
 
     <ProgressBar
@@ -973,4 +997,4 @@
 
         android:visibility="gone" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

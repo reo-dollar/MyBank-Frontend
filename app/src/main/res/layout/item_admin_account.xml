@@ -3,17 +3,18 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    android:layout_marginBottom="14dp"
+    android:layout_marginBottom="12dp"
 
-    app:cardCornerRadius="18dp"
-    app:cardElevation="3dp"
-
-    app:strokeWidth="1dp"
-    app:strokeColor="#E5E7EB">
+    app:cardBackgroundColor="@color/admin_card"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeColor="@color/admin_divider"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +22,8 @@
 
         android:orientation="vertical"
 
-        android:padding="18dp">
+        android:padding="16dp">
+
 
         <!-- ================================================= -->
         <!-- ACCOUNT TYPE -->
@@ -33,11 +35,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:text="Savings Account"
+            android:textColor="@color/admin_text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
 
-            android:textColor="#111827"
-            android:textSize="19sp"
-            android:textStyle="bold" />
+            tools:text="SAVINGS" />
+
 
         <!-- ================================================= -->
         <!-- ACCOUNT NUMBER -->
@@ -49,15 +52,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="6dp"
 
-            android:text="Account No: 1000000001"
+            android:textColor="@color/admin_primary"
+            android:textSize="13sp"
 
-            android:textColor="#2563EB"
-            android:textSize="14sp" />
+            tools:text="Account No: 202600000001" />
+
 
         <!-- ================================================= -->
-        <!-- CUSTOMER -->
+        <!-- CUSTOMER NAME -->
         <!-- ================================================= -->
 
         <TextView
@@ -66,13 +70,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="10dp"
 
-            android:text="Arman Mahendra Gupta"
+            android:textColor="@color/admin_text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
 
-            android:textColor="#374151"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            tools:text="Rohit Vishwakarma" />
+
 
         <!-- ================================================= -->
         <!-- CUSTOMER ID -->
@@ -84,12 +89,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
 
-            android:text="Customer ID: CUS000005"
+            android:textColor="@color/admin_text_secondary"
+            android:textSize="12sp"
 
-            android:textColor="#6B7280"
-            android:textSize="14sp" />
+            tools:text="Customer ID: CUS000001" />
+
 
         <!-- ================================================= -->
         <!-- BALANCE -->
@@ -103,11 +109,12 @@
 
             android:layout_marginTop="12dp"
 
-            android:text="Balance: ₹45,000.00"
+            android:textColor="@color/admin_text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
 
-            android:textColor="#111827"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            tools:text="Balance: ₹11,254.00" />
+
 
         <!-- ================================================= -->
         <!-- STATUS -->
@@ -119,16 +126,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="8dp"
 
-            android:text="● ACTIVE"
+            android:textColor="@color/admin_success"
+            android:textSize="13sp"
+            android:textStyle="bold"
 
-            android:textColor="#16A34A"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            tools:text="● ACTIVE" />
+
 
         <!-- ================================================= -->
-        <!-- VIEW DETAILS -->
+        <!-- DETAILS -->
         <!-- ================================================= -->
 
         <TextView
@@ -137,13 +145,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="10dp"
 
-            android:text="Tap to view details →"
+            android:clickable="true"
+            android:focusable="true"
 
-            android:textColor="#2563EB"
+            android:text="@string/admin_view_account_details"
+
+            android:textColor="@color/admin_primary"
             android:textSize="13sp"
-            android:textStyle="bold" />
+
+            tools:text="Tap to view details →" />
 
     </LinearLayout>
 

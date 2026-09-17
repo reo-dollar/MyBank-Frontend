@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F4F7FB">
+    android:background="@color/admin_background">
 
     <!-- ====================================================== -->
     <!-- HEADER -->
@@ -19,26 +19,32 @@
         android:paddingTop="22dp"
         android:paddingEnd="24dp"
         android:paddingBottom="20dp"
-        android:background="#FFFFFF"
+        android:background="@color/admin_card"
         android:elevation="4dp">
+
+        <!-- BRAND -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MY BANK"
-            android:textColor="#2563EB"
+            android:text="@string/my_bank"
+            android:textColor="@color/admin_primary"
             android:textSize="15sp"
             android:textStyle="bold"
             android:letterSpacing="0.12" />
+
+        <!-- TITLE -->
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="User Management"
-            android:textColor="#111827"
+            android:textColor="@color/admin_text_primary"
             android:textSize="31sp"
             android:textStyle="bold" />
+
+        <!-- USER COUNT -->
 
         <TextView
             android:id="@+id/tvUserCount"
@@ -46,11 +52,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="0 users"
-            android:textColor="#64748B"
+            android:textColor="@color/admin_text_secondary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
     </LinearLayout>
+
 
     <!-- ====================================================== -->
     <!-- SEARCH -->
@@ -69,10 +76,11 @@
         android:inputType="text"
         android:paddingStart="18dp"
         android:paddingEnd="18dp"
-        android:textColor="#111827"
-        android:textColorHint="#64748B"
+        android:textColor="@color/admin_text_primary"
+        android:textColorHint="@color/admin_text_muted"
         android:textSize="15sp"
         android:singleLine="true" />
+
 
     <!-- ====================================================== -->
     <!-- LOADING -->
@@ -86,6 +94,7 @@
         android:layout_marginBottom="8dp"
         android:indeterminate="true" />
 
+
     <!-- ====================================================== -->
     <!-- USERS -->
     <!-- ====================================================== -->
@@ -95,7 +104,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:id="@+id/usersContainer"

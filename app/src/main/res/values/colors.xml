@@ -3,7 +3,7 @@
 <resources>
 
     <!-- ========================================================= -->
-    <!-- MyBank Light Theme Colors                                  -->
+    <!-- MyBank Light Theme Colors                                 -->
     <!-- ========================================================= -->
 
     <!-- Primary -->
@@ -29,16 +29,48 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
-    <!-- Admin -->
+
+    <!-- ========================================================= -->
+    <!-- ADMIN DASHBOARD                                           -->
+    <!-- ========================================================= -->
+
+    <!-- Background / Cards -->
     <color name="admin_background">#F4F7FB</color>
     <color name="admin_card">#FFFFFF</color>
-    <color name="admin_text_primary">#111827</color>
-    <color name="admin_text_secondary">#64748B</color>
+
+    <!-- Primary / Management -->
     <color name="admin_primary">#2563EB</color>
-    <color name="admin_customer">#0F766E</color>
-    <color name="admin_account">#4F46E5</color>
-    <color name="admin_transaction">#C2410C</color>
-    <color name="admin_loan">#7C3AED</color>
-    <color name="admin_logout">#DC2626</color>
+    <color name="admin_customer">#14B8A6</color>
+    <color name="admin_account">#F97316</color>
+    <color name="admin_transaction">#7C3AED</color>
+    <color name="admin_loan">#8B5CF6</color>
+    <color name="admin_logout">#EF4444</color>
+
+    <!-- Status -->
+    <color name="admin_success">#16A34A</color>
+    <color name="admin_error">#DC2626</color>
+
+    <!-- Text -->
+    <color name="admin_text_primary">#0F172A</color>
+    <color name="admin_text_secondary">#475569</color>
+    <color name="admin_text_muted">#94A3B8</color>
+
+    <!-- Divider -->
+    <color name="admin_divider">#E2E8F0</color>
+
+    <!-- Avatar -->
+    <color name="admin_avatar_background">#DBEAFE</color>
+
+    <!-- Overview Card Borders -->
+    <color name="admin_blue_stroke">#DBEAFE</color>
+    <color name="admin_green_stroke">#CCFBF1</color>
+    <color name="admin_orange_stroke">#FFEDD5</color>
+    <color name="admin_purple_stroke">#EDE9FE</color>
+
+    <color name="admin_warning">#EA580C</color>
+    <color name="admin_status_background">#DCFCE7</color>
+    <color name="text_muted">#94A3B8</color>
+
+
 
 </resources>

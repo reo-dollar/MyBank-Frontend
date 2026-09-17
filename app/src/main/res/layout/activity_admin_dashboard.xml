@@ -3,7 +3,6 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,63 +11,93 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:background="#F4F7FB">
+        android:background="@color/admin_background">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingTop="72dp"
-            android:paddingBottom="110dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="56dp"
+            android:paddingBottom="40dp">
 
-            <!-- ====================================================== -->
-            <!-- ADMIN HEADER -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- HEADER                                                    -->
+            <!-- ========================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp"
-                android:layout_marginBottom="16dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:layout_marginBottom="18dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="MY BANK"
-                    android:textColor="#2563EB"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.12" />
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tvAdminTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Admin Dashboard"
-                    android:textColor="#111827"
-                    android:textSize="28sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MY BANK"
+                        android:textColor="@color/admin_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.14" />
 
-                <TextView
-                    android:id="@+id/tvAdminStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Live banking statistics"
-                    android:textColor="#64748B"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/tvAdminTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Admin Dashboard"
+                        android:textColor="@color/admin_text_primary"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvAdminStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Live banking statistics"
+                        android:textColor="@color/admin_text_secondary"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <!-- ADMIN BADGE -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    app:cardCornerRadius="26dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="@color/admin_avatar_background"
+                    app:strokeWidth="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="A"
+                        android:textColor="@color/admin_primary"
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
 
-            <!-- ====================================================== -->
-            <!-- LOADING -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- LOADING                                                   -->
+            <!-- ========================================================= -->
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -79,55 +108,97 @@
                 android:indeterminate="true" />
 
 
-            <!-- ====================================================== -->
-            <!-- WELCOME CARD -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- WELCOME CARD                                               -->
+            <!-- ========================================================= -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="22dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/admin_primary"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="22dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WELCOME BACK"
+                        android:textColor="#BFDBFE"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.16" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="Administrator"
+                        android:textColor="#FFFFFF"
+                        android:textSize="26sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Monitor your banking system from one place."
+                        android:textColor="#DBEAFE"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="42dp"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="16dp"
+                        android:background="#FFFFFF" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ========================================================= -->
+            <!-- SYSTEM OVERVIEW                                           -->
+            <!-- ========================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
-                android:layout_marginBottom="20dp"
-                android:background="#1D4ED8"
-                android:elevation="4dp">
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Welcome, Administrator"
-                    android:textColor="#FFFFFF"
+                    android:layout_weight="1"
+                    android:text="System Overview"
+                    android:textColor="@color/admin_text_primary"
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Monitor your banking system from one place."
-                    android:textColor="#DBEAFE"
-                    android:textSize="13sp" />
+                    android:text="LIVE"
+                    android:textColor="@color/admin_success"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
 
             </LinearLayout>
 
 
-            <!-- ====================================================== -->
-            <!-- SYSTEM OVERVIEW -->
-            <!-- ====================================================== -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="System Overview"
-                android:textColor="#111827"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-
-            <!-- ====================================================== -->
-            <!-- ROW 1 -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- OVERVIEW ROW 1                                            -->
+            <!-- ========================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -136,681 +207,919 @@
                 android:weightSum="2"
                 android:layout_marginBottom="12dp">
 
-
                 <!-- USERS -->
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="18dp"
                     android:layout_marginEnd="6dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp">
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="@color/admin_card"
+                    app:strokeColor="@color/admin_blue_stroke"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="USERS"
-                        android:textColor="#64748B"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.08" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvTotalUsers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="0"
-                        android:textColor="#111827"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="4dp"
+                            android:background="@color/admin_primary" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Registered users"
-                        android:textColor="#94A3B8"
-                        android:textSize="11sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="USERS"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.1" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvTotalUsers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="0"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Registered users"
+                            android:textColor="@color/admin_text_muted"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
 
                 <!-- CUSTOMERS -->
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="18dp"
                     android:layout_marginStart="6dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp">
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="@color/admin_card"
+                    app:strokeColor="@color/admin_green_stroke"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="CUSTOMERS"
-                        android:textColor="#64748B"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.08" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvTotalCustomers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="0"
-                        android:textColor="#111827"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="4dp"
+                            android:background="@color/admin_success" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Registered customers"
-                        android:textColor="#94A3B8"
-                        android:textSize="11sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="CUSTOMERS"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.1" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvTotalCustomers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="0"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Registered customers"
+                            android:textColor="@color/admin_text_muted"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
 
-            <!-- ====================================================== -->
-            <!-- ROW 2 -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- OVERVIEW ROW 2                                            -->
+            <!-- ========================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                android:layout_marginBottom="22dp">
-
+                android:layout_marginBottom="24dp">
 
                 <!-- ACCOUNTS -->
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="18dp"
                     android:layout_marginEnd="6dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp">
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="@color/admin_card"
+                    app:strokeColor="@color/admin_orange_stroke"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="ACCOUNTS"
-                        android:textColor="#64748B"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.08" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvTotalAccounts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="0"
-                        android:textColor="#111827"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="4dp"
+                            android:background="@color/admin_account" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bank accounts"
-                        android:textColor="#94A3B8"
-                        android:textSize="11sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="ACCOUNTS"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.1" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvTotalAccounts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="0"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bank accounts"
+                            android:textColor="@color/admin_text_muted"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
 
                 <!-- TRANSACTIONS -->
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="18dp"
                     android:layout_marginStart="6dp"
-                    android:background="#FFFFFF"
-                    android:elevation="3dp">
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="@color/admin_card"
+                    app:strokeColor="@color/admin_purple_stroke"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="TRANSACTIONS"
-                        android:textColor="#64748B"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.08" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvTotalTransactions"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="0"
-                        android:textColor="#111827"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        <View
+                            android:layout_width="34dp"
+                            android:layout_height="4dp"
+                            android:background="@color/admin_transaction" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="All transactions"
-                        android:textColor="#94A3B8"
-                        android:textSize="11sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="TRANSACTIONS"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.1" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/tvTotalTransactions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="0"
+                            android:textColor="@color/admin_text_primary"
+                            android:textSize="30sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="All transactions"
+                            android:textColor="@color/admin_text_muted"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
 
-            <!-- ====================================================== -->
-            <!-- TRANSACTION ACTIVITY -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- TRANSACTION ACTIVITY                                     -->
+            <!-- ========================================================= -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Transaction Activity"
-                android:textColor="#111827"
-                android:textSize="20sp"
+                android:textColor="@color/admin_text_primary"
+                android:textSize="21sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="18dp"
-                android:layout_marginBottom="22dp"
-                android:background="#FFFFFF"
-                android:elevation="3dp">
-
-
-                <!-- DEPOSITS -->
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp">
+                    android:orientation="vertical"
+                    android:padding="18dp">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Deposits"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/tvTotalDeposits"
-                        android:layout_width="wrap_content"
+                    <!-- DEPOSITS -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#16A34A"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="14dp"
+                            android:background="@color/admin_success" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Deposits"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalDeposits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/admin_success"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/admin_divider" />
+
+
+                    <!-- WITHDRAWALS -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="14dp"
+                            android:background="@color/admin_error" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Withdrawals"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalWithdrawals"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/admin_error"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/admin_divider" />
+
+
+                    <!-- TRANSFERS -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="14dp"
+                            android:background="@color/admin_primary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Transfers"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalTransfers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/admin_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/admin_divider" />
+
+
+                    <!-- PAYMENTS -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="10dp">
+
+                        <View
+                            android:layout_width="5dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="14dp"
+                            android:background="@color/admin_transaction" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Payments"
+                            android:textColor="@color/admin_text_secondary"
+                            android:textSize="15sp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalPayments"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/admin_transaction"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E2E8F0" />
+            </com.google.android.material.card.MaterialCardView>
 
 
-                <!-- WITHDRAWALS -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Withdrawals"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalWithdrawals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#DC2626"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E2E8F0" />
-
-
-                <!-- TRANSFERS -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Transfers"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalTransfers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#2563EB"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E2E8F0" />
-
-
-                <!-- PAYMENTS -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="10dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Payments"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalPayments"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#9333EA"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <!-- ====================================================== -->
-            <!-- FINANCIAL SUMMARY -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- FINANCIAL SUMMARY                                        -->
+            <!-- ========================================================= -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
                 android:text="Financial Summary"
-                android:textColor="#111827"
-                android:textSize="20sp"
+                android:textColor="@color/admin_text_primary"
+                android:textSize="21sp"
                 android:textStyle="bold" />
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="28dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="3dp"
+                app:cardBackgroundColor="@color/admin_card"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+
+                    <!-- DEPOSIT -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Deposit Amount"
+                                android:textColor="@color/admin_text_secondary"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tvTotalDepositAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹ 0.00"
+                                android:textColor="@color/admin_success"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="70"
+                            android:max="100"
+                            android:progressTint="@color/admin_success" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/admin_divider" />
+
+
+                    <!-- WITHDRAWAL -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Withdrawal Amount"
+                                android:textColor="@color/admin_text_secondary"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tvTotalWithdrawalAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹ 0.00"
+                                android:textColor="@color/admin_error"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="35"
+                            android:max="100"
+                            android:progressTint="@color/admin_error" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/admin_divider" />
+
+
+                    <!-- TRANSFER -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Transfer Amount"
+                                android:textColor="@color/admin_text_secondary"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tvTotalTransferAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹ 0.00"
+                                android:textColor="@color/admin_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="25"
+                            android:max="100"
+                            android:progressTint="@color/admin_primary" />
+
+                    </LinearLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/admin_divider" />
+
+
+                    <!-- PAYMENT -->
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Payment Amount"
+                                android:textColor="@color/admin_text_secondary"
+                                android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/tvTotalPaymentAmount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="₹ 0.00"
+                                android:textColor="@color/admin_transaction"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ProgressBar
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="8dp"
+                            android:progress="45"
+                            android:max="100"
+                            android:progressTint="@color/admin_transaction" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- ========================================================= -->
+            <!-- ADMINISTRATION HEADER                                     -->
+            <!-- ========================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="18dp"
-                android:layout_marginBottom="20dp"
-                android:background="#FFFFFF"
-                android:elevation="3dp">
+                android:layout_marginBottom="14dp">
 
-
-                <!-- DEPOSIT AMOUNT -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:text="Administration"
+                    android:textColor="@color/admin_text_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Deposit Amount"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalDepositAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹ 0.00"
-                        android:textColor="#16A34A"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E2E8F0" />
-
-
-                <!-- WITHDRAWAL AMOUNT -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Withdrawal Amount"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalWithdrawalAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹ 0.00"
-                        android:textColor="#DC2626"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E2E8F0" />
-
-
-                <!-- TRANSFER AMOUNT -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Transfer Amount"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalTransferAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹ 0.00"
-                        android:textColor="#2563EB"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#E2E8F0" />
-
-
-                <!-- PAYMENT AMOUNT -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Payment Amount"
-                        android:textColor="#475569"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/tvTotalPaymentAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹ 0.00"
-                        android:textColor="#9333EA"
-                        android:textSize="17sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
+                    android:layout_marginTop="4dp"
+                    android:text="Manage and monitor your banking system"
+                    android:textColor="@color/admin_text_secondary"
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
 
-            <!-- ===================================================== -->
-            <!-- ADMINISTRATION -->
-            <!-- ===================================================== -->
+            <!-- ========================================================= -->
+            <!-- MANAGEMENT ROW 1                                         -->
+            <!-- ========================================================= -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="Administration"
-                android:textColor="@color/admin_text_primary"
-                android:textSize="28sp"
-                android:textStyle="bold" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Manage and monitor your banking system"
-                android:textColor="@color/admin_text_secondary"
-                android:textSize="14sp" />
+                android:layout_height="64dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- USER MANAGEMENT -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUserManagement"
+
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:layout_marginEnd="6dp"
+
+                    android:gravity="center"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+
+                    android:minHeight="0dp"
+
+                    android:text="USER MANAGEMENT"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+
+                    android:maxLines="2"
+                    android:ellipsize="none"
+
+                    app:backgroundTint="@color/admin_primary"
+                    app:cornerRadius="18dp"
+                    app:elevation="3dp" />
 
 
-            <!-- ===================================================== -->
-            <!-- USER MANAGEMENT -->
-            <!-- ===================================================== -->
+                <!-- CUSTOMER MANAGEMENT -->
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUserManagement"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCustomerManagement"
+
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:layout_marginStart="6dp"
+
+                    android:gravity="center"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+
+                    android:minHeight="0dp"
+
+                    android:text="CUSTOMER MANAGEMENT"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+
+                    android:maxLines="2"
+                    android:ellipsize="none"
+
+                    app:backgroundTint="@color/admin_customer"
+                    app:cornerRadius="18dp"
+                    app:elevation="3dp" />
+
+            </LinearLayout>
+
+
+            <!-- ========================================================= -->
+            <!-- MANAGEMENT ROW 2                                         -->
+            <!-- ========================================================= -->
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="18dp"
-                android:text="USER MANAGEMENT"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                app:backgroundTint="@color/admin_primary"
-                app:cornerRadius="18dp"
-                app:elevation="3dp"
-                app:iconGravity="textStart"
-                app:iconPadding="12dp"
-                app:iconTint="@android:color/white" />
+                android:layout_height="64dp"
 
-
-            <!-- ===================================================== -->
-            <!-- CUSTOMER MANAGEMENT -->
-            <!-- ===================================================== -->
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCustomerManagement"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
                 android:layout_marginTop="12dp"
-                android:text="CUSTOMER MANAGEMENT"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                app:backgroundTint="@color/admin_customer"
-                app:cornerRadius="18dp"
-                app:elevation="3dp"
-                app:iconGravity="textStart"
-                app:iconPadding="12dp"
-                app:iconTint="@android:color/white" />
+
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- ACCOUNT MANAGEMENT -->
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAccountManagement"
+
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:layout_marginEnd="6dp"
+
+                    android:gravity="center"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+
+                    android:minHeight="0dp"
+
+                    android:text="ACCOUNT MANAGEMENT"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+
+                    android:maxLines="2"
+                    android:ellipsize="none"
+
+                    app:backgroundTint="@color/admin_account"
+                    app:cornerRadius="18dp"
+                    app:elevation="3dp" />
 
 
-            <!-- ===================================================== -->
-            <!-- ACCOUNT MANAGEMENT -->
-            <!-- ===================================================== -->
+                <!-- TRANSACTION MANAGEMENT -->
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAccountManagement"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginTop="12dp"
-                android:text="ACCOUNT MANAGEMENT"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                app:backgroundTint="@color/admin_account"
-                app:cornerRadius="18dp"
-                app:elevation="3dp"
-                app:iconGravity="textStart"
-                app:iconPadding="12dp"
-                app:iconTint="@android:color/white" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTransactionManagement"
 
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
 
-            <!-- ===================================================== -->
-            <!-- TRANSACTION MANAGEMENT -->
-            <!-- ===================================================== -->
+                    android:layout_marginStart="6dp"
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnTransactionManagement"
-                android:layout_width="match_parent"
-                android:layout_height="62dp"
-                android:layout_marginTop="12dp"
-                android:text="TRANSACTION MANAGEMENT"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                app:backgroundTint="@color/admin_transaction"
-                app:cornerRadius="18dp"
-                app:elevation="4dp"
-                app:iconGravity="textStart"
-                app:iconPadding="12dp"
-                app:iconTint="@android:color/white" />
+                    android:gravity="center"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+
+                    android:minHeight="0dp"
+
+                    android:text="TRANSACTION MANAGEMENT"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+
+                    android:maxLines="2"
+                    android:ellipsize="none"
+
+                    app:backgroundTint="@color/admin_transaction"
+                    app:cornerRadius="18dp"
+                    app:elevation="3dp" />
+
+            </LinearLayout>
 
 
-            <!-- ===================================================== -->
-            <!-- LOAN MANAGEMENT -->
-            <!-- ===================================================== -->
+            <!-- ========================================================= -->
+            <!-- LOAN MANAGEMENT                                          -->
+            <!-- ========================================================= -->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLoanManagement"
+
                 android:layout_width="match_parent"
-                android:layout_height="62dp"
+                android:layout_height="64dp"
+
                 android:layout_marginTop="12dp"
+
+                android:gravity="center"
+
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+
+                android:minHeight="0dp"
+
                 android:text="LOAN MANAGEMENT"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.02"
+                android:textAllCaps="true"
+
                 app:backgroundTint="@color/admin_loan"
                 app:cornerRadius="18dp"
-                app:elevation="4dp"
-                app:iconGravity="textStart"
-                app:iconPadding="12dp"
-                app:iconTint="@android:color/white" />
+                app:elevation="3dp" />
 
 
-            <!-- ===================================================== -->
-            <!-- DIVIDER -->
-            <!-- ===================================================== -->
+            <!-- ========================================================= -->
+            <!-- DIVIDER                                                   -->
+            <!-- ========================================================= -->
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="28dp"
-                android:layout_marginBottom="16dp"
-                android:background="#DDE3EC" />
+                android:layout_marginBottom="18dp"
+                android:background="@color/admin_divider" />
 
 
-            <!-- ===================================================== -->
-            <!-- LOGOUT -->
-            <!-- ===================================================== -->
+            <!-- ========================================================= -->
+            <!-- LOGOUT                                                    -->
+            <!-- ========================================================= -->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAdminLogout"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="14dp"
                 android:text="LOGOUT"
-                android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.02"
+                android:letterSpacing="0.04"
                 app:backgroundTint="@color/admin_logout"
                 app:cornerRadius="18dp"
                 app:elevation="2dp" />
 
 
-            <!-- ====================================================== -->
-            <!-- FOOTER -->
-            <!-- ====================================================== -->
+            <!-- ========================================================= -->
+            <!-- FOOTER                                                    -->
+            <!-- ========================================================= -->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingTop="8dp"
-                android:paddingBottom="12dp"
                 android:text="My Bank • Secure Administration"
-                android:textColor="#94A3B8"
-                android:textSize="12sp" />
+                android:textColor="@color/admin_text_muted"
+                android:textSize="12sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="8dp" />
 
         </LinearLayout>
 

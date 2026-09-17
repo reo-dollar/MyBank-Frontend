@@ -327,12 +327,6 @@ public class QRScannerActivity extends AppCompatActivity {
                 );
 
 
-        btnTorch =
-                findViewById(
-                        R.id.btnTorch
-                );
-
-
         btnGallery =
                 findViewById(
                         R.id.btnGallery

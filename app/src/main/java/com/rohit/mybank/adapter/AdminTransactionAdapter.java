@@ -1,12 +1,12 @@
 package com.rohit.mybank.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rohit.mybank.R;
@@ -23,21 +23,6 @@ public class AdminTransactionAdapter
 
     private final List<AdminTransactionResponse> transactions;
 
-    private static final int COLOR_DARK =
-            Color.parseColor("#111827");
-
-    private static final int COLOR_GRAY =
-            Color.parseColor("#6B7280");
-
-    private static final int COLOR_BLUE =
-            Color.parseColor("#2563EB");
-
-    private static final int COLOR_GREEN =
-            Color.parseColor("#16A34A");
-
-    private static final int COLOR_RED =
-            Color.parseColor("#DC2626");
-
     private static final DateTimeFormatter OUTPUT_FORMAT =
             DateTimeFormatter.ofPattern(
                     "dd MMM yyyy, hh:mm a",
@@ -49,6 +34,10 @@ public class AdminTransactionAdapter
 
         this.transactions = transactions;
     }
+
+    // =========================================================
+    // CREATE VIEW HOLDER
+    // =========================================================
 
     @NonNull
     @Override
@@ -66,6 +55,10 @@ public class AdminTransactionAdapter
         return new TransactionViewHolder(view);
     }
 
+    // =========================================================
+    // BIND VIEW HOLDER
+    // =========================================================
+
     @Override
     public void onBindViewHolder(
             @NonNull TransactionViewHolder holder,
@@ -79,22 +72,80 @@ public class AdminTransactionAdapter
         }
 
         // =====================================================
+        // CONTEXT
+        // =====================================================
+
+        android.content.Context context =
+                holder.itemView.getContext();
+
+        // =====================================================
+        // COLORS
+        // =====================================================
+
+        int primaryColor =
+                ContextCompat.getColor(
+                        context,
+                        R.color.admin_text_primary
+                );
+
+        int secondaryColor =
+                ContextCompat.getColor(
+                        context,
+                        R.color.admin_text_secondary
+                );
+
+        int mutedColor =
+                ContextCompat.getColor(
+                        context,
+                        R.color.admin_text_muted
+                );
+
+        int primaryBlue =
+                ContextCompat.getColor(
+                        context,
+                        R.color.admin_primary
+                );
+
+        int successColor =
+                ContextCompat.getColor(
+                        context,
+                        R.color.admin_success
+                );
+
+        int errorColor =
+                ContextCompat.getColor(
+                        context,
+                        R.color.admin_error
+                );
+
+        // =====================================================
         // TYPE
         // =====================================================
 
         String type = transaction.getType();
 
-        if (type == null || type.trim().isEmpty()) {
+        if (isEmpty(type)) {
             type = "TRANSACTION";
         }
 
-        type = type.trim().toUpperCase(Locale.ENGLISH);
+        type = type.trim()
+                .toUpperCase(Locale.ENGLISH);
 
         holder.tvTransactionType.setText(type);
+
+        holder.tvTransactionType.setTextColor(
+                primaryColor
+        );
 
         // =====================================================
         // AMOUNT
         // =====================================================
+
+        Double amount = transaction.getAmount();
+
+        if (amount == null) {
+            amount = 0.0;
+        }
 
         NumberFormat formatter =
                 NumberFormat.getCurrencyInstance(
@@ -104,13 +155,53 @@ public class AdminTransactionAdapter
         formatter.setMinimumFractionDigits(2);
         formatter.setMaximumFractionDigits(2);
 
-        holder.tvTransactionAmount.setText(
-                formatter.format(transaction.getAmount())
-        );
+        double absoluteAmount =
+                Math.abs(amount);
 
-        holder.tvTransactionAmount.setTextColor(
-                COLOR_DARK
-        );
+        String formattedAmount =
+                formatter.format(absoluteAmount);
+
+        /*
+         * Bank transaction presentation:
+         *
+         * DEPOSIT                         → + amount
+         * TRANSFER / WITHDRAW / PAYMENT   → - amount
+         * RD / FD deposits                → - amount
+         *
+         * If the backend already provides a negative amount,
+         * Math.abs() prevents a double minus sign.
+         */
+
+        if (isDebitTransaction(type)) {
+
+            holder.tvTransactionAmount.setText(
+                    "- " + formattedAmount
+            );
+
+            holder.tvTransactionAmount.setTextColor(
+                    errorColor
+            );
+
+        } else if (isCreditTransaction(type)) {
+
+            holder.tvTransactionAmount.setText(
+                    "+ " + formattedAmount
+            );
+
+            holder.tvTransactionAmount.setTextColor(
+                    successColor
+            );
+
+        } else {
+
+            holder.tvTransactionAmount.setText(
+                    formattedAmount
+            );
+
+            holder.tvTransactionAmount.setTextColor(
+                    primaryColor
+            );
+        }
 
         // =====================================================
         // TRANSACTION ID
@@ -118,16 +209,25 @@ public class AdminTransactionAdapter
 
         Long id = transaction.getId();
 
+        String transactionId =
+                id == null
+                        ? "N/A"
+                        : String.valueOf(id);
+
         holder.tvTransactionId.setText(
-                "Transaction ID: #"
-                        + (id == null ? "N/A" : id)
+                "Transaction ID: #" + transactionId
+        );
+
+        holder.tvTransactionId.setTextColor(
+                secondaryColor
         );
 
         // =====================================================
         // FROM ACCOUNT
         // =====================================================
 
-        String from = transaction.getFromAcc();
+        String from =
+                transaction.getFromAcc();
 
         if (isEmpty(from)) {
 
@@ -155,7 +255,8 @@ public class AdminTransactionAdapter
         // TO ACCOUNT
         // =====================================================
 
-        String to = transaction.getToAcc();
+        String to =
+                transaction.getToAcc();
 
         if (isEmpty(to)) {
 
@@ -184,73 +285,87 @@ public class AdminTransactionAdapter
         );
 
         // =====================================================
-        // REMARKS
-        // =====================================================
-
-        String remarks = transaction.getRemarks();
-
-        if (isEmpty(remarks)) {
-            holder.tvRemarks.setText("No remarks");
-        } else {
-            holder.tvRemarks.setText(remarks);
-        }
-
-        holder.tvRemarks.setVisibility(View.VISIBLE);
-
-        // =====================================================
-        // TRANSACTION COLORS
+        // ACCOUNT COLORS
         // =====================================================
 
         if ("TRANSFER".equalsIgnoreCase(type)) {
 
             holder.tvFromAccount.setTextColor(
-                    COLOR_BLUE
+                    primaryBlue
             );
 
             holder.tvToAccount.setTextColor(
-                    COLOR_BLUE
+                    primaryBlue
             );
 
         } else if ("DEPOSIT".equalsIgnoreCase(type)) {
 
             holder.tvFromAccount.setTextColor(
-                    COLOR_GRAY
+                    secondaryColor
             );
 
             holder.tvToAccount.setTextColor(
-                    COLOR_GREEN
+                    successColor
             );
 
         } else if ("WITHDRAW".equalsIgnoreCase(type)) {
 
             holder.tvFromAccount.setTextColor(
-                    COLOR_RED
+                    errorColor
             );
 
             holder.tvToAccount.setTextColor(
-                    COLOR_GRAY
+                    secondaryColor
             );
 
         } else if ("PAYMENT".equalsIgnoreCase(type)) {
 
             holder.tvFromAccount.setTextColor(
-                    COLOR_RED
+                    errorColor
             );
 
             holder.tvToAccount.setTextColor(
-                    COLOR_DARK
+                    secondaryColor
             );
 
         } else {
 
             holder.tvFromAccount.setTextColor(
-                    COLOR_GRAY
+                    secondaryColor
             );
 
             holder.tvToAccount.setTextColor(
-                    COLOR_GRAY
+                    secondaryColor
             );
         }
+
+        // =====================================================
+        // REMARKS
+        // =====================================================
+
+        String remarks =
+                transaction.getRemarks();
+
+        if (isEmpty(remarks)) {
+
+            holder.tvRemarks.setText(
+                    "No remarks"
+            );
+
+        } else {
+
+            holder.tvRemarks.setText(
+                    remarks
+            );
+        }
+
+        holder.tvRemarks.setTextColor(
+                secondaryColor
+        );
+
+        holder.tvRemarks.setVisibility(
+                View.VISIBLE
+        );
 
         // =====================================================
         // TIMESTAMP
@@ -261,7 +376,15 @@ public class AdminTransactionAdapter
                         transaction.getTimestamp()
                 )
         );
+
+        holder.tvTimestamp.setTextColor(
+                mutedColor
+        );
     }
+
+    // =========================================================
+    // ITEM COUNT
+    // =========================================================
 
     @Override
     public int getItemCount() {
@@ -271,13 +394,60 @@ public class AdminTransactionAdapter
                 : transactions.size();
     }
 
+    // =========================================================
+    // CHECK EMPTY
+    // =========================================================
+
     private boolean isEmpty(String value) {
 
         return value == null
                 || value.trim().isEmpty();
     }
 
-    private String formatTimestamp(String timestamp) {
+    // =========================================================
+    // DEBIT TRANSACTION
+    // =========================================================
+
+    private boolean isDebitTransaction(String type) {
+
+        if (type == null) {
+            return false;
+        }
+
+        switch (type.toUpperCase(Locale.ENGLISH)) {
+
+            case "TRANSFER":
+            case "WITHDRAW":
+            case "PAYMENT":
+            case "RD_INSTALLMENT":
+            case "RECURRING_DEPOSIT":
+            case "FIXED_DEPOSIT":
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    // =========================================================
+    // CREDIT TRANSACTION
+    // =========================================================
+
+    private boolean isCreditTransaction(String type) {
+
+        if (type == null) {
+            return false;
+        }
+
+        return "DEPOSIT".equalsIgnoreCase(type);
+    }
+
+    // =========================================================
+    // FORMAT TIMESTAMP
+    // =========================================================
+
+    private String formatTimestamp(
+            String timestamp) {
 
         if (isEmpty(timestamp)) {
             return "Date unavailable";
@@ -300,18 +470,22 @@ public class AdminTransactionAdapter
         }
     }
 
-    static class TransactionViewHolder
+    // =========================================================
+    // VIEW HOLDER
+    // =========================================================
+
+    public static final class TransactionViewHolder
             extends RecyclerView.ViewHolder {
 
-        TextView tvTransactionType;
-        TextView tvTransactionAmount;
-        TextView tvTransactionId;
-        TextView tvFromAccount;
-        TextView tvToAccount;
-        TextView tvRemarks;
-        TextView tvTimestamp;
+        final TextView tvTransactionType;
+        final TextView tvTransactionAmount;
+        final TextView tvTransactionId;
+        final TextView tvFromAccount;
+        final TextView tvToAccount;
+        final TextView tvRemarks;
+        final TextView tvTimestamp;
 
-        TransactionViewHolder(
+        public TransactionViewHolder(
                 @NonNull View itemView) {
 
             super(itemView);

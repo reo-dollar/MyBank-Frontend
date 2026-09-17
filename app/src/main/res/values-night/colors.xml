@@ -41,4 +41,8 @@
     <color name="admin_loan">#A78BFA</color>
     <color name="admin_logout">#F87171</color>
 
+    <color name="admin_warning">#FB923C</color>
+    <color name="admin_status_background">#14532D</color>
+    <color name="text_muted">#94A3B8</color>
+
 </resources>

@@ -3,11 +3,15 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    android:layout_margin="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp"
 
     app:cardBackgroundColor="@color/surface"
     app:cardCornerRadius="16dp"
@@ -36,7 +40,9 @@
 
             android:textColor="@color/text_primary"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+
+            tools:text="TRANSFER" />
 
 
         <!-- ================================================= -->
@@ -52,7 +58,9 @@
             android:layout_marginTop="4dp"
 
             android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+
+            tools:text="Account: 202600000001" />
 
 
         <!-- ================================================= -->
@@ -68,7 +76,9 @@
             android:layout_marginTop="4dp"
 
             android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+
+            tools:text="DEBIT" />
 
 
         <!-- ================================================= -->
@@ -85,7 +95,9 @@
 
             android:textColor="@color/text_primary"
             android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+
+            tools:text="₹10,000.00" />
 
 
         <!-- ================================================= -->
@@ -101,7 +113,9 @@
             android:layout_marginTop="4dp"
 
             android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+
+            tools:text="16 Sep 2026, 03:55 PM" />
 
 
     </LinearLayout>

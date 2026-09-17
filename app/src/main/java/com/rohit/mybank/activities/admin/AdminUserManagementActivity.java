@@ -1,7 +1,6 @@
 package com.rohit.mybank.activities.admin;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.rohit.mybank.R;
 import com.rohit.mybank.activities.auth.LoginActivity;
@@ -33,59 +33,31 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 /**
  * =========================================================
  * ADMIN USER MANAGEMENT ACTIVITY
  * =========================================================
  *
  * Professional administration screen for managing users.
+ *
+ * UI supports:
+ * - Light mode
+ * - Dark mode
+ * - Dynamic user cards
+ * - Search
+ * - Enable / Disable user
+ * - Lock / Unlock account
+ *
+ * Existing API functionality is preserved.
  */
 public class AdminUserManagementActivity
         extends AppCompatActivity {
 
-    // =====================================================
-    // COLORS
-    // =====================================================
 
-    private static final int COLOR_BACKGROUND =
-            Color.rgb(244, 247, 251);
-
-    private static final int COLOR_WHITE =
-            Color.WHITE;
-
-    private static final int COLOR_PRIMARY =
-            Color.rgb(37, 99, 235);
-
-    private static final int COLOR_PRIMARY_DARK =
-            Color.rgb(17, 24, 39);
-
-    private static final int COLOR_LABEL =
-            Color.rgb(71, 85, 105);
-
-    private static final int COLOR_SECONDARY =
-            Color.rgb(100, 116, 139);
-
-    private static final int COLOR_BORDER =
-            Color.rgb(226, 232, 240);
-
-    private static final int COLOR_ACTIVE =
-            Color.rgb(22, 163, 74);
-
-    private static final int COLOR_DISABLED =
-            Color.rgb(220, 38, 38);
-
-    private static final int COLOR_LOCKED =
-            Color.rgb(234, 88, 12);
-
-    private static final int COLOR_DISABLE_BUTTON =
-            Color.rgb(37, 99, 235);
-
-    private static final int COLOR_LOCK_BUTTON =
-            Color.rgb(220, 38, 38);
-
-    // =====================================================
+    // =========================================================
     // VIEWS
-    // =====================================================
+    // =========================================================
 
     private EditText etSearchUsers;
 
@@ -95,24 +67,27 @@ public class AdminUserManagementActivity
 
     private LinearLayout usersContainer;
 
-    // =====================================================
+
+    // =========================================================
     // REPOSITORY
-    // =====================================================
+    // =========================================================
 
     private AdminUserRepository adminUserRepository;
 
     private SessionManager sessionManager;
 
-    // =====================================================
+
+    // =========================================================
     // DATA
-    // =====================================================
+    // =========================================================
 
     private List<AdminUserResponse> allUsers =
             new ArrayList<>();
 
-    // =====================================================
+
+    // =========================================================
     // ON CREATE
-    // =====================================================
+    // =========================================================
 
     @Override
     protected void onCreate(
@@ -137,9 +112,10 @@ public class AdminUserManagementActivity
         loadUsers();
     }
 
-    // =====================================================
+
+    // =========================================================
     // INITIALIZE VIEWS
-    // =====================================================
+    // =========================================================
 
     private void initializeViews() {
 
@@ -164,9 +140,10 @@ public class AdminUserManagementActivity
                 );
     }
 
-    // =====================================================
+
+    // =========================================================
     // LOAD USERS
-    // =====================================================
+    // =========================================================
 
     private void loadUsers() {
 
@@ -202,6 +179,7 @@ public class AdminUserManagementActivity
                                 }
                             }
 
+
                             @Override
                             public void onFailure(
                                     Call<List<AdminUserResponse>> call,
@@ -221,9 +199,10 @@ public class AdminUserManagementActivity
                 );
     }
 
-    // =====================================================
+
+    // =========================================================
     // DISPLAY USERS
-    // =====================================================
+    // =========================================================
 
     private void displayUsers(
             List<AdminUserResponse> users) {
@@ -236,6 +215,11 @@ public class AdminUserManagementActivity
                         ? " user"
                         : " users")
         );
+
+
+        // =====================================================
+        // EMPTY STATE
+        // =====================================================
 
         if (users.isEmpty()) {
 
@@ -251,14 +235,14 @@ public class AdminUserManagementActivity
             );
 
             emptyView.setTextColor(
-                    COLOR_SECONDARY
+                    color(R.color.admin_text_secondary)
             );
 
             emptyView.setPadding(
-                    20,
-                    60,
-                    20,
-                    60
+                    dp(20),
+                    dp(60),
+                    dp(20),
+                    dp(60)
             );
 
             usersContainer.addView(
@@ -268,15 +252,21 @@ public class AdminUserManagementActivity
             return;
         }
 
+
+        // =====================================================
+        // ADD USER CARDS
+        // =====================================================
+
         for (AdminUserResponse user : users) {
 
             addUserCard(user);
         }
     }
 
-    // =====================================================
+
+    // =========================================================
     // USER CARD
-    // =====================================================
+    // =========================================================
 
     private void addUserCard(
             AdminUserResponse user) {
@@ -289,18 +279,29 @@ public class AdminUserManagementActivity
         );
 
         card.setPadding(
-                20,
-                20,
-                20,
-                20
+                dp(16),
+                dp(16),
+                dp(16),
+                dp(16)
         );
 
         /*
-         * White card with subtle border.
+         * Theme-aware card background.
+         *
+         * Light mode:
+         * admin_card = white
+         *
+         * Dark mode:
+         * admin_card = dark surface
          */
         card.setBackground(
                 createCardBackground()
         );
+
+
+        // =====================================================
+        // CARD LAYOUT PARAMETERS
+        // =====================================================
 
         LinearLayout.LayoutParams cardParams =
                 new LinearLayout.LayoutParams(
@@ -312,41 +313,43 @@ public class AdminUserManagementActivity
                 0,
                 0,
                 0,
-                16
+                dp(12)
         );
 
         card.setLayoutParams(
                 cardParams
         );
 
-        // =================================================
+
+        // =====================================================
         // USERNAME
-        // =================================================
+        // =====================================================
 
         TextView username =
                 createTextView(
                         "Username: "
                                 + safe(user.getUsername()),
-                        19,
+                        17,
                         true
                 );
 
         username.setTextColor(
-                COLOR_PRIMARY_DARK
+                color(R.color.admin_text_primary)
         );
 
         username.setPadding(
                 0,
                 0,
                 0,
-                12
+                dp(8)
         );
 
         card.addView(username);
 
-        // =================================================
+
+        // =====================================================
         // NAME
-        // =================================================
+        // =====================================================
 
         card.addView(
                 createInfoRow(
@@ -355,9 +358,10 @@ public class AdminUserManagementActivity
                 )
         );
 
-        // =================================================
+
+        // =====================================================
         // CUSTOMER ID
-        // =================================================
+        // =====================================================
 
         card.addView(
                 createInfoRow(
@@ -366,9 +370,10 @@ public class AdminUserManagementActivity
                 )
         );
 
-        // =================================================
+
+        // =====================================================
         // EMAIL
-        // =================================================
+        // =====================================================
 
         card.addView(
                 createInfoRow(
@@ -377,9 +382,10 @@ public class AdminUserManagementActivity
                 )
         );
 
-        // =================================================
+
+        // =====================================================
         // MOBILE
-        // =================================================
+        // =====================================================
 
         if (user.getMobile() != null
                 && !user.getMobile().trim().isEmpty()) {
@@ -392,9 +398,10 @@ public class AdminUserManagementActivity
             );
         }
 
-        // =================================================
+
+        // =====================================================
         // ROLE
-        // =================================================
+        // =====================================================
 
         card.addView(
                 createInfoRow(
@@ -403,9 +410,10 @@ public class AdminUserManagementActivity
                 )
         );
 
-        // =================================================
+
+        // =====================================================
         // STATUS
-        // =================================================
+        // =====================================================
 
         LinearLayout statusRow =
                 createInfoRowContainer();
@@ -441,9 +449,10 @@ public class AdminUserManagementActivity
                 statusRow
         );
 
-        // =================================================
+
+        // =====================================================
         // BUTTON CONTAINER
-        // =================================================
+        // =====================================================
 
         LinearLayout buttonContainer =
                 new LinearLayout(this);
@@ -452,19 +461,27 @@ public class AdminUserManagementActivity
                 LinearLayout.VERTICAL
         );
 
-        buttonContainer.setPadding(
-                0,
-                16,
-                0,
-                0
+        LinearLayout.LayoutParams buttonContainerParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        buttonContainerParams.topMargin =
+                dp(10);
+
+        buttonContainer.setLayoutParams(
+                buttonContainerParams
         );
 
-        // =================================================
+
+        // =====================================================
         // ENABLE / DISABLE BUTTON
-        // =================================================
+        // =====================================================
 
         Button enableDisableButton =
                 createActionButton();
+
 
         if (user.isEnabled()) {
 
@@ -474,7 +491,7 @@ public class AdminUserManagementActivity
 
             enableDisableButton.setBackground(
                     createRoundedBackground(
-                            COLOR_DISABLE_BUTTON,
+                            color(R.color.admin_primary),
                             12
                     )
             );
@@ -497,7 +514,7 @@ public class AdminUserManagementActivity
 
             enableDisableButton.setBackground(
                     createRoundedBackground(
-                            COLOR_ACTIVE,
+                            color(R.color.admin_success),
                             12
                     )
             );
@@ -513,13 +530,15 @@ public class AdminUserManagementActivity
             );
         }
 
+
         buttonContainer.addView(
                 enableDisableButton
         );
 
-        // =================================================
+
+        // =====================================================
         // LOCK / UNLOCK BUTTON
-        // =================================================
+        // =====================================================
 
         Button lockButton =
                 createActionButton();
@@ -527,12 +546,12 @@ public class AdminUserManagementActivity
         LinearLayout.LayoutParams lockParams =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        52
+                        dp(44)
                 );
 
         lockParams.setMargins(
                 0,
-                10,
+                dp(8),
                 0,
                 0
         );
@@ -540,6 +559,7 @@ public class AdminUserManagementActivity
         lockButton.setLayoutParams(
                 lockParams
         );
+
 
         if (user.isAccountLocked()) {
 
@@ -549,7 +569,7 @@ public class AdminUserManagementActivity
 
             lockButton.setBackground(
                     createRoundedBackground(
-                            COLOR_ACTIVE,
+                            color(R.color.admin_success),
                             12
                     )
             );
@@ -572,7 +592,7 @@ public class AdminUserManagementActivity
 
             lockButton.setBackground(
                     createRoundedBackground(
-                            COLOR_LOCK_BUTTON,
+                            color(R.color.admin_error),
                             12
                     )
             );
@@ -588,6 +608,7 @@ public class AdminUserManagementActivity
             );
         }
 
+
         buttonContainer.addView(
                 lockButton
         );
@@ -596,14 +617,20 @@ public class AdminUserManagementActivity
                 buttonContainer
         );
 
+
+        // =====================================================
+        // ADD CARD TO CONTAINER
+        // =====================================================
+
         usersContainer.addView(
                 card
         );
     }
 
-    // =====================================================
+
+    // =========================================================
     // INFO ROW
-    // =====================================================
+    // =========================================================
 
     private LinearLayout createInfoRow(
             String label,
@@ -633,9 +660,10 @@ public class AdminUserManagementActivity
         return row;
     }
 
-    // =====================================================
+
+    // =========================================================
     // INFO ROW CONTAINER
-    // =====================================================
+    // =========================================================
 
     private LinearLayout createInfoRowContainer() {
 
@@ -652,17 +680,18 @@ public class AdminUserManagementActivity
 
         row.setPadding(
                 0,
-                5,
+                dp(4),
                 0,
-                5
+                dp(4)
         );
 
         return row;
     }
 
-    // =====================================================
+
+    // =========================================================
     // LABEL TEXT
-    // =====================================================
+    // =========================================================
 
     private TextView createLabelTextView(
             String text) {
@@ -670,17 +699,17 @@ public class AdminUserManagementActivity
         TextView textView =
                 createTextView(
                         text,
-                        14,
+                        13,
                         false
                 );
 
         textView.setTextColor(
-                COLOR_LABEL
+                color(R.color.admin_text_secondary)
         );
 
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(
-                        110,
+                        dp(100),
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
@@ -691,9 +720,10 @@ public class AdminUserManagementActivity
         return textView;
     }
 
-    // =====================================================
+
+    // =========================================================
     // VALUE TEXT
-    // =====================================================
+    // =========================================================
 
     private TextView createValueTextView(
             String text) {
@@ -701,12 +731,12 @@ public class AdminUserManagementActivity
         TextView textView =
                 createTextView(
                         text,
-                        15,
+                        14,
                         false
                 );
 
         textView.setTextColor(
-                COLOR_PRIMARY_DARK
+                color(R.color.admin_text_primary)
         );
 
         LinearLayout.LayoutParams params =
@@ -720,12 +750,21 @@ public class AdminUserManagementActivity
                 params
         );
 
+        /*
+         * Allow long values such as:
+         * - email
+         * - customer ID
+         * - mobile number
+         */
+        textView.setMaxLines(2);
+
         return textView;
     }
 
-    // =====================================================
+
+    // =========================================================
     // GENERIC TEXT VIEW
-    // =====================================================
+    // =========================================================
 
     private TextView createTextView(
             String text,
@@ -744,7 +783,7 @@ public class AdminUserManagementActivity
         );
 
         textView.setTextColor(
-                COLOR_PRIMARY_DARK
+                color(R.color.admin_text_primary)
         );
 
         textView.setAlpha(
@@ -762,9 +801,10 @@ public class AdminUserManagementActivity
         return textView;
     }
 
-    // =====================================================
+
+    // =========================================================
     // ACTION BUTTON
-    // =====================================================
+    // =========================================================
 
     private Button createActionButton() {
 
@@ -774,7 +814,7 @@ public class AdminUserManagementActivity
         LinearLayout.LayoutParams params =
                 new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        52
+                        dp(44)
                 );
 
         button.setLayoutParams(
@@ -782,11 +822,11 @@ public class AdminUserManagementActivity
         );
 
         button.setTextColor(
-                Color.WHITE
+                color(R.color.white)
         );
 
         button.setTextSize(
-                14
+                13
         );
 
         button.setTypeface(
@@ -803,11 +843,18 @@ public class AdminUserManagementActivity
         );
 
         button.setPadding(
-                12,
+                dp(8),
                 0,
-                12,
+                dp(8),
                 0
         );
+
+        /*
+         * Remove the default Button minimum inset/padding
+         * so our custom rounded background looks clean.
+         */
+        button.setMinHeight(0);
+        button.setMinWidth(0);
 
         button.setAlpha(
                 1.0f
@@ -816,56 +863,69 @@ public class AdminUserManagementActivity
         return button;
     }
 
-    // =====================================================
+
+    // =========================================================
     // CARD BACKGROUND
-    // =====================================================
+    // =========================================================
 
     private GradientDrawable createCardBackground() {
 
         GradientDrawable drawable =
                 new GradientDrawable();
 
+        /*
+         * IMPORTANT:
+         *
+         * Do NOT use Color.WHITE here.
+         *
+         * admin_card automatically resolves to:
+         *
+         * Light → #FFFFFF
+         * Dark  → #111827
+         */
         drawable.setColor(
-                COLOR_WHITE
+                color(R.color.admin_card)
         );
 
         drawable.setCornerRadius(
-                18
+                dp(16)
         );
 
         drawable.setStroke(
-                1,
-                COLOR_BORDER
+                dp(1),
+                color(R.color.admin_divider)
         );
 
         return drawable;
     }
 
-    // =====================================================
+
+    // =========================================================
     // ROUNDED BACKGROUND
-    // =====================================================
+    // =========================================================
 
     private GradientDrawable createRoundedBackground(
-            int color,
-            int radius) {
+            int backgroundColor,
+            int radiusDp) {
 
         GradientDrawable drawable =
                 new GradientDrawable();
 
         drawable.setColor(
-                color
+                backgroundColor
         );
 
         drawable.setCornerRadius(
-                radius
+                dp(radiusDp)
         );
 
         return drawable;
     }
 
-    // =====================================================
+
+    // =========================================================
     // CONFIRMATION DIALOG
-    // =====================================================
+    // =========================================================
 
     private void showConfirmationDialog(
             String title,
@@ -887,9 +947,10 @@ public class AdminUserManagementActivity
                 .show();
     }
 
-    // =====================================================
+
+    // =========================================================
     // ENABLE USER
-    // =====================================================
+    // =========================================================
 
     private void enableUser(
             AdminUserResponse user) {
@@ -907,9 +968,10 @@ public class AdminUserManagementActivity
                 );
     }
 
-    // =====================================================
+
+    // =========================================================
     // DISABLE USER
-    // =====================================================
+    // =========================================================
 
     private void disableUser(
             AdminUserResponse user) {
@@ -927,9 +989,10 @@ public class AdminUserManagementActivity
                 );
     }
 
-    // =====================================================
+
+    // =========================================================
     // LOCK USER
-    // =====================================================
+    // =========================================================
 
     private void lockUser(
             AdminUserResponse user) {
@@ -947,9 +1010,10 @@ public class AdminUserManagementActivity
                 );
     }
 
-    // =====================================================
+
+    // =========================================================
     // UNLOCK USER
-    // =====================================================
+    // =========================================================
 
     private void unlockUser(
             AdminUserResponse user) {
@@ -967,9 +1031,10 @@ public class AdminUserManagementActivity
                 );
     }
 
-    // =====================================================
+
+    // =========================================================
     // COMMON CALLBACK
-    // =====================================================
+    // =========================================================
 
     private Callback<AdminUserResponse>
     createStatusCallback(
@@ -1002,6 +1067,7 @@ public class AdminUserManagementActivity
                 }
             }
 
+
             @Override
             public void onFailure(
                     Call<AdminUserResponse> call,
@@ -1020,9 +1086,10 @@ public class AdminUserManagementActivity
         };
     }
 
-    // =====================================================
+
+    // =========================================================
     // SEARCH
-    // =====================================================
+    // =========================================================
 
     private void setupSearch() {
 
@@ -1037,6 +1104,7 @@ public class AdminUserManagementActivity
                             int after) {
                     }
 
+
                     @Override
                     public void onTextChanged(
                             CharSequence s,
@@ -1049,6 +1117,7 @@ public class AdminUserManagementActivity
                         );
                     }
 
+
                     @Override
                     public void afterTextChanged(
                             Editable s) {
@@ -1057,9 +1126,10 @@ public class AdminUserManagementActivity
         );
     }
 
-    // =====================================================
+
+    // =========================================================
     // FILTER USERS
-    // =====================================================
+    // =========================================================
 
     private void filterUsers(
             String query) {
@@ -1079,6 +1149,7 @@ public class AdminUserManagementActivity
 
             return;
         }
+
 
         List<AdminUserResponse> filteredUsers =
                 new ArrayList<>();
@@ -1116,14 +1187,16 @@ public class AdminUserManagementActivity
             }
         }
 
+
         displayUsers(
                 filteredUsers
         );
     }
 
-    // =====================================================
+
+    // =========================================================
     // SEARCH HELPER
-    // =====================================================
+    // =========================================================
 
     private boolean contains(
             String value,
@@ -1137,9 +1210,10 @@ public class AdminUserManagementActivity
                 .contains(query);
     }
 
-    // =====================================================
+
+    // =========================================================
     // STATUS
-    // =====================================================
+    // =========================================================
 
     private String getStatus(
             AdminUserResponse user) {
@@ -1157,29 +1231,37 @@ public class AdminUserManagementActivity
         return "ACTIVE";
     }
 
-    // =====================================================
+
+    // =========================================================
     // STATUS COLOR
-    // =====================================================
+    // =========================================================
 
     private int getStatusColor(
             AdminUserResponse user) {
 
         if (!user.isEnabled()) {
 
-            return COLOR_DISABLED;
+            return color(
+                    R.color.admin_error
+            );
         }
 
         if (user.isAccountLocked()) {
 
-            return COLOR_LOCKED;
+            return color(
+                    R.color.admin_orange_stroke
+            );
         }
 
-        return COLOR_ACTIVE;
+        return color(
+                R.color.admin_success
+        );
     }
 
-    // =====================================================
+
+    // =========================================================
     // SAFE STRING
-    // =====================================================
+    // =========================================================
 
     private String safe(
             String value) {
@@ -1193,9 +1275,40 @@ public class AdminUserManagementActivity
         return value;
     }
 
-    // =====================================================
+
+    // =========================================================
+    // COLOR HELPER
+    // =========================================================
+
+    private int color(
+            int colorResId) {
+
+        return ContextCompat.getColor(
+                this,
+                colorResId
+        );
+    }
+
+
+    // =========================================================
+    // DP HELPER
+    // =========================================================
+
+    private int dp(
+            int value) {
+
+        return Math.round(
+                value
+                        * getResources()
+                        .getDisplayMetrics()
+                        .density
+        );
+    }
+
+
+    // =========================================================
     // LOADING
-    // =====================================================
+    // =========================================================
 
     private void showLoading(
             boolean loading) {
@@ -1211,9 +1324,10 @@ public class AdminUserManagementActivity
         );
     }
 
-    // =====================================================
+
+    // =========================================================
     // HTTP ERROR
-    // =====================================================
+    // =========================================================
 
     private void handleHttpError(
             int code) {
@@ -1246,6 +1360,7 @@ public class AdminUserManagementActivity
             return;
         }
 
+
         if (code == 403) {
 
             Toast.makeText(
@@ -1256,6 +1371,7 @@ public class AdminUserManagementActivity
 
             return;
         }
+
 
         if (code == 404) {
 
@@ -1268,6 +1384,7 @@ public class AdminUserManagementActivity
             return;
         }
 
+
         Toast.makeText(
                 this,
                 "Request failed. HTTP " + code,
@@ -1275,9 +1392,10 @@ public class AdminUserManagementActivity
         ).show();
     }
 
-    // =====================================================
+
+    // =========================================================
     // ON RESUME
-    // =====================================================
+    // =========================================================
 
     @Override
     protected void onResume() {

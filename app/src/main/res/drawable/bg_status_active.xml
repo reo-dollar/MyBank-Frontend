@@ -3,12 +3,8 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="#DCFCE7" />
+    <solid android:color="@color/admin_status_background" />
 
     <corners android:radius="20dp" />
-
-    <stroke
-        android:width="1dp"
-        android:color="#BBF7D0" />
 
 </shape>

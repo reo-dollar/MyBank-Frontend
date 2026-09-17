@@ -14,6 +14,8 @@ import com.rohit.mybank.R;
 import com.rohit.mybank.model.admin.AdminAccountResponse;
 import com.rohit.mybank.repository.AdminAccountRepository;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +28,7 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_ACCOUNT_NUMBER = "accNo";
 
+
     // =========================================================
     // ACCOUNT VIEWS
     // =========================================================
@@ -37,6 +40,7 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
     private TextView tvBalance;
     private TextView tvStatus;
 
+
     // =========================================================
     // CUSTOMER VIEWS
     // =========================================================
@@ -47,11 +51,13 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
     private TextView tvMobile;
     private TextView tvEmail;
 
+
     // =========================================================
     // STATUS
     // =========================================================
 
     private TextView tvStatusBadge;
+
 
     // =========================================================
     // BUTTON
@@ -59,17 +65,20 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
 
     private Button btnViewTransactions;
 
+
     // =========================================================
     // LOADING
     // =========================================================
 
     private ProgressBar progressBar;
 
+
     // =========================================================
     // REPOSITORY
     // =========================================================
 
     private AdminAccountRepository repository;
+
 
     // =========================================================
     // ON CREATE
@@ -89,10 +98,16 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
         repository =
                 new AdminAccountRepository(this);
 
+
+        // =====================================================
+        // GET ACCOUNT NUMBER
+        // =====================================================
+
         String accNo =
                 getIntent().getStringExtra(
                         EXTRA_ACCOUNT_NUMBER
                 );
+
 
         // =====================================================
         // VALIDATE ACCOUNT NUMBER
@@ -103,7 +118,9 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
 
             Toast.makeText(
                     this,
-                    "Invalid account number.",
+                    getString(
+                            R.string.invalid_account_number
+                    ),
                     Toast.LENGTH_LONG
             ).show();
 
@@ -112,32 +129,37 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
             return;
         }
 
+
+        accNo = accNo.trim();
+
+
         // =====================================================
-        // VIEW TRANSACTIONS BUTTON
+        // VIEW TRANSACTIONS
         // =====================================================
 
         final String finalAccNo = accNo;
 
-        btnViewTransactions.setOnClickListener(
-                v -> openTransactionHistory(finalAccNo)
-        );
+        if (btnViewTransactions != null) {
+
+            btnViewTransactions.setOnClickListener(
+                    v -> openTransactionHistory(finalAccNo)
+            );
+        }
+
 
         // =====================================================
         // LOAD ACCOUNT
         // =====================================================
 
-        loadAccountDetails(accNo);
+        loadAccountDetails(finalAccNo);
     }
+
 
     // =========================================================
     // INITIALIZE VIEWS
     // =========================================================
 
     private void initializeViews() {
-
-        // -----------------------------------------------------
-        // Account information
-        // -----------------------------------------------------
 
         tvAccountNumber =
                 findViewById(
@@ -169,9 +191,6 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
                         R.id.tvStatus
                 );
 
-        // -----------------------------------------------------
-        // Customer information
-        // -----------------------------------------------------
 
         tvCustomerName =
                 findViewById(
@@ -198,33 +217,25 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
                         R.id.tvEmail
                 );
 
-        // -----------------------------------------------------
-        // Status
-        // -----------------------------------------------------
 
         tvStatusBadge =
                 findViewById(
                         R.id.tvStatusBadge
                 );
 
-        // -----------------------------------------------------
-        // View Transactions
-        // -----------------------------------------------------
 
         btnViewTransactions =
                 findViewById(
                         R.id.btnViewTransactions
                 );
 
-        // -----------------------------------------------------
-        // Loading
-        // -----------------------------------------------------
 
         progressBar =
                 findViewById(
                         R.id.progressBar
                 );
     }
+
 
     // =========================================================
     // LOAD ACCOUNT DETAILS
@@ -258,12 +269,15 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
 
                                     Toast.makeText(
                                             AdminAccountDetailsActivity.this,
-                                            "Unable to load account details. HTTP "
-                                                    + response.code(),
+                                            getString(
+                                                    R.string.admin_account_load_failed,
+                                                    response.code()
+                                            ),
                                             Toast.LENGTH_LONG
                                     ).show();
                                 }
                             }
+
 
                             @Override
                             public void onFailure(
@@ -274,7 +288,10 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
 
                                 Toast.makeText(
                                         AdminAccountDetailsActivity.this,
-                                        "Network Error: "
+                                        getString(
+                                                R.string.network_error
+                                        )
+                                                + ": "
                                                 + safeMessage(t),
                                         Toast.LENGTH_LONG
                                 ).show();
@@ -283,6 +300,7 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
                 );
     }
 
+
     // =========================================================
     // DISPLAY ACCOUNT DETAILS
     // =========================================================
@@ -290,71 +308,178 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
     private void displayAccountDetails(
             AdminAccountResponse account) {
 
+        if (account == null) {
+            return;
+        }
+
+
         // -----------------------------------------------------
         // ACCOUNT INFORMATION
         // -----------------------------------------------------
 
-        tvAccountNumber.setText(
-                safe(account.getAccNo())
-        );
+        if (tvAccountNumber != null) {
 
-        tvAccountType.setText(
-                safe(account.getAccountType())
-        );
+            tvAccountNumber.setText(
+                    safe(account.getAccNo())
+            );
+        }
 
-        tvBranch.setText(
-                safe(account.getBranchName())
-        );
 
-        tvIfsc.setText(
-                safe(account.getIfscCode())
-        );
+        if (tvAccountType != null) {
 
-        tvBalance.setText(
-                formatCurrency(
-                        account.getBalance()
-                )
-        );
+            tvAccountType.setText(
+                    safe(account.getAccountType())
+            );
+        }
 
-        tvStatus.setText(
-                safe(account.getStatus())
-        );
+
+        if (tvBranch != null) {
+
+            tvBranch.setText(
+                    safe(account.getBranchName())
+            );
+        }
+
+
+        if (tvIfsc != null) {
+
+            tvIfsc.setText(
+                    safe(account.getIfscCode())
+            );
+        }
+
+
+        if (tvBalance != null) {
+
+            tvBalance.setText(
+                    formatCurrency(
+                            account.getBalance()
+                    )
+            );
+        }
+
+
+        if (tvStatus != null) {
+
+            tvStatus.setText(
+                    safe(account.getStatus())
+            );
+        }
+
 
         // -----------------------------------------------------
         // CUSTOMER INFORMATION
         // -----------------------------------------------------
 
-        tvCustomerName.setText(
-                safe(account.getCustomerName())
-        );
+        if (tvCustomerName != null) {
 
-        tvCustomerId.setText(
-                safe(account.getCustomerId())
-        );
+            tvCustomerName.setText(
+                    safe(account.getCustomerName())
+            );
+        }
 
-        tvUsername.setText(
-                "@" + safe(account.getUsername())
-        );
 
-        tvMobile.setText(
-                safe(account.getMobile())
-        );
+        if (tvCustomerId != null) {
 
-        tvEmail.setText(
-                safe(account.getEmail())
-        );
+            tvCustomerId.setText(
+                    safe(account.getCustomerId())
+            );
+        }
+
+
+        if (tvUsername != null) {
+
+            String username =
+                    safe(account.getUsername());
+
+            if ("N/A".equals(username)) {
+
+                tvUsername.setText(
+                        getString(
+                                R.string.not_available
+                        )
+                );
+
+            } else {
+
+                tvUsername.setText(
+                        getString(
+                                R.string.admin_username_format,
+                                username
+                        )
+                );
+            }
+        }
+
+
+        if (tvMobile != null) {
+
+            tvMobile.setText(
+                    safe(account.getMobile())
+            );
+        }
+
+
+        if (tvEmail != null) {
+
+            tvEmail.setText(
+                    safe(account.getEmail())
+            );
+        }
+
 
         // -----------------------------------------------------
         // STATUS BADGE
         // -----------------------------------------------------
 
-        String status =
-                safe(account.getStatus());
-
-        tvStatusBadge.setText(
-                "● " + status.toUpperCase()
+        updateStatusBadge(
+                account.getStatus()
         );
     }
+
+
+    // =========================================================
+    // UPDATE STATUS BADGE
+    // =========================================================
+
+    private void updateStatusBadge(
+            String status) {
+
+        if (tvStatusBadge == null) {
+            return;
+        }
+
+
+        String safeStatus =
+                safe(status);
+
+
+        if ("N/A".equals(safeStatus)) {
+
+            tvStatusBadge.setText(
+                    getString(
+                            R.string.admin_status_unknown
+                    )
+            );
+
+            return;
+        }
+
+
+        String formattedStatus =
+                safeStatus.toUpperCase(
+                        Locale.ROOT
+                );
+
+
+        tvStatusBadge.setText(
+                getString(
+                        R.string.admin_status_badge,
+                        formattedStatus
+                )
+        );
+    }
+
 
     // =========================================================
     // OPEN TRANSACTION HISTORY
@@ -368,12 +493,15 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
 
             Toast.makeText(
                     this,
-                    "Invalid account number.",
+                    getString(
+                            R.string.invalid_account_number
+                    ),
                     Toast.LENGTH_SHORT
             ).show();
 
             return;
         }
+
 
         Intent intent =
                 new Intent(
@@ -381,13 +509,16 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
                         AdminAccountTransactionActivity.class
                 );
 
+
         intent.putExtra(
                 AdminAccountTransactionActivity.EXTRA_ACCOUNT_NUMBER,
-                accNo
+                accNo.trim()
         );
+
 
         startActivity(intent);
     }
+
 
     // =========================================================
     // CURRENCY
@@ -397,11 +528,12 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
             double amount) {
 
         return String.format(
-                java.util.Locale.getDefault(),
+                Locale.getDefault(),
                 "₹ %.2f",
                 amount
         );
     }
+
 
     // =========================================================
     // SAFE STRING
@@ -416,8 +548,9 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
             return "N/A";
         }
 
-        return value;
+        return value.trim();
     }
+
 
     // =========================================================
     // LOADING
@@ -434,7 +567,16 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
                             : View.GONE
             );
         }
+
+
+        if (btnViewTransactions != null) {
+
+            btnViewTransactions.setEnabled(
+                    !loading
+            );
+        }
     }
+
 
     // =========================================================
     // ERROR MESSAGE
@@ -447,7 +589,9 @@ public class AdminAccountDetailsActivity extends AppCompatActivity {
                 || t.getMessage() == null
                 || t.getMessage().trim().isEmpty()) {
 
-            return "Unable to connect to server.";
+            return getString(
+                    R.string.unable_to_connect_server
+            );
         }
 
         return t.getMessage();

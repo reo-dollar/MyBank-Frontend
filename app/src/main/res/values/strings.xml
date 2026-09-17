@@ -136,4 +136,147 @@
     <string name="content_description_close">Close</string>
     <string name="content_description_menu">Menu</string>
 
+
+    <!-- =========================================================
+         ADMIN DASHBOARD
+         ========================================================= -->
+
+    <string name="my_bank">MY BANK</string>
+    <string name="admin_dashboard">Admin Dashboard</string>
+    <string name="live_banking_statistics">Live banking statistics</string>
+    <string name="admin_view_customer_details">Tap to view details →</string>
+
+    <string name="admin_initial">A</string>
+
+    <string name="welcome_back">WELCOME BACK</string>
+    <string name="administrator">Administrator</string>
+    <string name="monitor_banking_system">Monitor your banking system from one place.</string>
+
+    <string name="system_overview">System Overview</string>
+    <string name="live">LIVE</string>
+
+    <string name="users">USERS</string>
+    <string name="registered_users">Registered users</string>
+
+    <string name="customers">CUSTOMERS</string>
+    <string name="registered_customers">Registered customers</string>
+
+    <string name="bank_accounts">Bank accounts</string>
+    <string name="all_transactions">All transactions</string>
+
+    <string name="transaction_activity">Transaction Activity</string>
+
+    <string name="deposits">Deposits</string>
+    <string name="withdrawals">Withdrawals</string>
+    <string name="transfers">Transfers</string>
+
+    <string name="financial_summary">Financial Summary</string>
+
+    <string name="deposit_amount">Deposit Amount</string>
+    <string name="withdrawal_amount">Withdrawal Amount</string>
+    <string name="transfer_amount">Transfer Amount</string>
+    <string name="payment_amount">Payment Amount</string>
+
+    <string name="zero">0</string>
+    <string name="zero_rupees">₹ 0.00</string>
+
+    <string name="administration">Administration</string>
+    <string name="manage_banking_system">Manage and monitor your banking system</string>
+
+    <string name="user_management">USER MANAGEMENT</string>
+    <string name="customer_management">CUSTOMER MANAGEMENT</string>
+    <string name="account_management">ACCOUNT MANAGEMENT</string>
+    <string name="transaction_management">TRANSACTION MANAGEMENT</string>
+    <string name="loan_management">LOAN MANAGEMENT</string>
+
+    <string name="secure_administration">My Bank • Secure Administration</string>
+
+    <!-- =========================================================
+     ADMIN CUSTOMER DETAILS
+     ========================================================= -->
+
+    <string name="admin_customer_details">Customer Details</string>
+
+    <string name="admin_basic_information">Basic Information</string>
+    <string name="admin_contact_information">Contact Information</string>
+    <string name="admin_kyc_information">KYC Information</string>
+    <string name="admin_address">Address</string>
+    <string name="admin_additional_information">Additional Information</string>
+    <string name="admin_account_information">Account Information</string>
+    <string name="admin_account_actions">Account Actions</string>
+
+    <string name="date_of_birth">Date of Birth</string>
+    <string name="gender">Gender</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="email_address">Email Address</string>
+    <string name="aadhaar_number">Aadhaar Number</string>
+    <string name="pan_number">PAN Number</string>
+    <string name="address">Address</string>
+    <string name="city">City</string>
+    <string name="state">State</string>
+    <string name="pincode">Pincode</string>
+    <string name="occupation">Occupation</string>
+    <string name="customer_since">Customer Since</string>
+    <string name="role">Role</string>
+    <string name="user_status">User Status</string>
+    <string name="account_status">Account Status</string>
+
+    <string name="enable_user">Enable User</string>
+    <string name="disable_user">Disable User</string>
+    <string name="lock_account">Lock Account</string>
+    <string name="unlock_account">Unlock Account</string>
+
+    <!-- ========================================================= -->
+    <!-- ADMIN ACCOUNT MANAGEMENT                                  -->
+    <!-- ========================================================= -->
+
+    <string name="admin_account_management">Account Management</string>
+    <string name="admin_manage_customer_accounts">Manage and monitor customer accounts</string>
+    <string name="admin_search_account">Search account, customer or ID</string>
+    <string name="admin_no_accounts_found">No accounts found</string>
+    <string name="admin_view_account_details">Tap to view details →</string>
+
+    <!-- ========================================================= -->
+    <!-- ACCOUNT DETAILS                                           -->
+    <!-- ========================================================= -->
+
+    <string name="account_details">Account Details</string>
+    <string name="complete_account_information">Complete account information</string>
+    <string name="account_information">Account Information</string>
+    <string name="account_type">Account Type</string>
+    <string name="branch">Branch</string>
+    <string name="ifsc_code">IFSC Code</string>
+    <string name="current_balance">Current Balance </string>
+    <string name="customer_information">Customer Information</string>
+    <string name="customer_name">Customer Name</string>
+    <string name="customer_id">Customer ID</string>
+    <string name="view_transactions">View Transactions</string>
+
+    <!-- ========================================================= -->
+    <!-- ADMIN ACCOUNT DETAILS                                    -->
+    <!-- ========================================================= -->
+
+    <string name="invalid_account_number">Invalid account number.</string>
+    <string name="admin_account_load_failed">Unable to load account details. HTTP %1$d</string>
+    <string name="not_available">N/A</string>
+    <string name="admin_username_format">@%1$s</string>
+    <string name="admin_status_unknown">● UNKNOWN </string>
+    <string name="admin_status_badge">● %1$s</string>
+    <string name="unable_to_connect_server">Unable to connect to server.</string>
+
+    <string name="admin_transaction_history">Transaction History</string>
+    <string name="account">Account</string>
+    <string name="load_more">Load More</string>
+    <string name="transactions_count">%1$d transactions</string>
+    <string name="admin_no_transactions">No transactions found.</string>
+    <string name="admin_account_number_not_provided">Account number not provided.</string>
+    <string name="admin_transaction_load_failed">Unable to load transactions. HTTP %1$d</string>
+    <string name="admin_network_error">Network Error: %1$s</string>
+    <string name="admin_unable_to_connect">Unable to connect to server.</string>
+
+    <string name="admin_all_transactions">All Transactions</string>
+    <string name="admin_loan_management">Loan Management</string>
+    <string name="admin_loan_management_subtitle">Review and manage customer loan applications</string>
+    <string name="admin_no_pending_loan_applications">No pending loan applications.</string>
+
 </resources>

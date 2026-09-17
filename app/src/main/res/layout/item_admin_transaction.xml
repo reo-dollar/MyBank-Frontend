@@ -3,14 +3,18 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    android:layout_marginBottom="12dp"
+    android:layout_marginTop="6dp"
+    android:layout_marginBottom="6dp"
 
+    app:cardBackgroundColor="@color/admin_card"
     app:cardCornerRadius="18dp"
     app:cardElevation="3dp"
+    app:strokeColor="@color/admin_divider"
     app:strokeWidth="1dp">
 
     <LinearLayout
@@ -19,6 +23,7 @@
 
         android:orientation="vertical"
         android:padding="16dp">
+
 
         <!-- ================================================= -->
         <!-- TOP ROW -->
@@ -31,29 +36,45 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
+
+            <!-- TRANSACTION TYPE -->
+
             <TextView
                 android:id="@+id/tvTransactionType"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
                 android:layout_weight="1"
 
-                android:text="TRANSFER"
-                android:textColor="#111827"
+                android:ellipsize="end"
+                android:maxLines="1"
+
+                android:textColor="@color/admin_text_primary"
                 android:textSize="17sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+
+                tools:text="TRANSFER" />
+
+
+            <!-- TRANSACTION AMOUNT -->
 
             <TextView
                 android:id="@+id/tvTransactionAmount"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:text="₹5,000.00"
-                android:textColor="#111827"
+                android:layout_marginStart="12dp"
+
+                android:textColor="@color/admin_error"
                 android:textSize="17sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+
+                tools:text="- ₹5,000.00" />
 
         </LinearLayout>
+
 
         <!-- ================================================= -->
         <!-- TRANSACTION ID -->
@@ -61,14 +82,17 @@
 
         <TextView
             android:id="@+id/tvTransactionId"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="8dp"
 
-            android:text="Transaction ID: #123"
-            android:textColor="#6B7280"
-            android:textSize="13sp"/>
+            android:textColor="@color/admin_text_secondary"
+            android:textSize="13sp"
+
+            tools:text="Transaction ID: #123" />
+
 
         <!-- ================================================= -->
         <!-- FROM -->
@@ -76,14 +100,17 @@
 
         <TextView
             android:id="@+id/tvFromAccount"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="10dp"
 
-            android:text="From: 202600000001"
-            android:textColor="#374151"
-            android:textSize="14sp"/>
+            android:textColor="@color/admin_primary"
+            android:textSize="14sp"
+
+            tools:text="From: 202600000001" />
+
 
         <!-- ================================================= -->
         <!-- TO -->
@@ -91,14 +118,17 @@
 
         <TextView
             android:id="@+id/tvToAccount"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="4dp"
 
-            android:text="To: 202600000002"
-            android:textColor="#374151"
-            android:textSize="14sp"/>
+            android:textColor="@color/admin_primary"
+            android:textSize="14sp"
+
+            tools:text="To: 202600000002" />
+
 
         <!-- ================================================= -->
         <!-- REMARKS -->
@@ -106,14 +136,17 @@
 
         <TextView
             android:id="@+id/tvRemarks"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="8dp"
 
-            android:text="Mobile Recharge - Airtel"
-            android:textColor="#6B7280"
-            android:textSize="13sp"/>
+            android:textColor="@color/admin_text_secondary"
+            android:textSize="13sp"
+
+            tools:text="Mobile Recharge - Airtel" />
+
 
         <!-- ================================================= -->
         <!-- TIMESTAMP -->
@@ -121,14 +154,16 @@
 
         <TextView
             android:id="@+id/tvTimestamp"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="6dp"
 
-            android:text="14 Aug 2026, 08:30 PM"
-            android:textColor="#9CA3AF"
-            android:textSize="12sp"/>
+            android:textColor="@color/admin_text_muted"
+            android:textSize="12sp"
+
+            tools:text="14 Aug 2026, 08:30 PM" />
 
     </LinearLayout>
 

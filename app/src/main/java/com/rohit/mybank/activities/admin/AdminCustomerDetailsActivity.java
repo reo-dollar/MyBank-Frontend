@@ -19,29 +19,33 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AdminCustomerDetailsActivity
-        extends AppCompatActivity {
+public class AdminCustomerDetailsActivity extends AppCompatActivity {
 
     // =========================================================
-    // CUSTOMER INFORMATION
+    // CUSTOMER HEADER
     // =========================================================
 
+    private TextView tvCustomerAvatar;
     private TextView tvFullName;
     private TextView tvUsername;
     private TextView tvCustomerId;
+
+    // =========================================================
+    // BASIC INFORMATION
+    // =========================================================
 
     private TextView tvDateOfBirth;
     private TextView tvGender;
 
     // =========================================================
-    // CONTACT
+    // CONTACT INFORMATION
     // =========================================================
 
     private TextView tvMobile;
     private TextView tvEmail;
 
     // =========================================================
-    // KYC
+    // KYC INFORMATION
     // =========================================================
 
     private TextView tvAadhaar;
@@ -57,14 +61,14 @@ public class AdminCustomerDetailsActivity
     private TextView tvPincode;
 
     // =========================================================
-    // OTHER
+    // ADDITIONAL INFORMATION
     // =========================================================
 
     private TextView tvOccupation;
     private TextView tvCreatedAt;
 
     // =========================================================
-    // USER STATUS
+    // ACCOUNT INFORMATION
     // =========================================================
 
     private TextView tvRole;
@@ -117,13 +121,21 @@ public class AdminCustomerDetailsActivity
                 R.layout.activity_admin_customer_details
         );
 
+        // -----------------------------------------------------
+        // INITIALIZE VIEWS
+        // -----------------------------------------------------
+
         initializeViews();
+
+        // -----------------------------------------------------
+        // INITIALIZE REPOSITORY
+        // -----------------------------------------------------
 
         repository =
                 new AdminCustomerRepository(this);
 
         // -----------------------------------------------------
-        // READ CUSTOMER ID FROM INTENT
+        // GET CUSTOMER ID
         // -----------------------------------------------------
 
         customerId =
@@ -138,6 +150,7 @@ public class AdminCustomerDetailsActivity
                     Toast.LENGTH_LONG
             ).show();
 
+            finish();
             return;
         }
 
@@ -162,74 +175,161 @@ public class AdminCustomerDetailsActivity
 
     private void initializeViews() {
 
+        // -----------------------------------------------------
+        // CUSTOMER HEADER
+        // -----------------------------------------------------
+
+        tvCustomerAvatar =
+                findViewById(
+                        R.id.tvCustomerAvatar
+                );
+
         tvFullName =
-                findViewById(R.id.tvFullName);
+                findViewById(
+                        R.id.tvFullName
+                );
 
         tvUsername =
-                findViewById(R.id.tvUsername);
+                findViewById(
+                        R.id.tvUsername
+                );
 
         tvCustomerId =
-                findViewById(R.id.tvCustomerId);
+                findViewById(
+                        R.id.tvCustomerId
+                );
+
+        // -----------------------------------------------------
+        // BASIC INFORMATION
+        // -----------------------------------------------------
 
         tvDateOfBirth =
-                findViewById(R.id.tvDateOfBirth);
+                findViewById(
+                        R.id.tvDateOfBirth
+                );
 
         tvGender =
-                findViewById(R.id.tvGender);
+                findViewById(
+                        R.id.tvGender
+                );
+
+        // -----------------------------------------------------
+        // CONTACT
+        // -----------------------------------------------------
 
         tvMobile =
-                findViewById(R.id.tvMobile);
+                findViewById(
+                        R.id.tvMobile
+                );
 
         tvEmail =
-                findViewById(R.id.tvEmail);
+                findViewById(
+                        R.id.tvEmail
+                );
+
+        // -----------------------------------------------------
+        // KYC
+        // -----------------------------------------------------
 
         tvAadhaar =
-                findViewById(R.id.tvAadhaar);
+                findViewById(
+                        R.id.tvAadhaar
+                );
 
         tvPan =
-                findViewById(R.id.tvPan);
+                findViewById(
+                        R.id.tvPan
+                );
+
+        // -----------------------------------------------------
+        // ADDRESS
+        // -----------------------------------------------------
 
         tvAddress =
-                findViewById(R.id.tvAddress);
+                findViewById(
+                        R.id.tvAddress
+                );
 
         tvCity =
-                findViewById(R.id.tvCity);
+                findViewById(
+                        R.id.tvCity
+                );
 
         tvState =
-                findViewById(R.id.tvState);
+                findViewById(
+                        R.id.tvState
+                );
 
         tvPincode =
-                findViewById(R.id.tvPincode);
+                findViewById(
+                        R.id.tvPincode
+                );
+
+        // -----------------------------------------------------
+        // ADDITIONAL INFORMATION
+        // -----------------------------------------------------
 
         tvOccupation =
-                findViewById(R.id.tvOccupation);
+                findViewById(
+                        R.id.tvOccupation
+                );
 
         tvCreatedAt =
-                findViewById(R.id.tvCreatedAt);
+                findViewById(
+                        R.id.tvCreatedAt
+                );
+
+        // -----------------------------------------------------
+        // ACCOUNT INFORMATION
+        // -----------------------------------------------------
 
         tvRole =
-                findViewById(R.id.tvRole);
+                findViewById(
+                        R.id.tvRole
+                );
 
         tvUserStatus =
-                findViewById(R.id.tvUserStatus);
+                findViewById(
+                        R.id.tvUserStatus
+                );
 
         tvAccountStatus =
-                findViewById(R.id.tvAccountStatus);
+                findViewById(
+                        R.id.tvAccountStatus
+                );
+
+        // -----------------------------------------------------
+        // ACTION BUTTONS
+        // -----------------------------------------------------
 
         btnEnableUser =
-                findViewById(R.id.btnEnableUser);
+                findViewById(
+                        R.id.btnEnableUser
+                );
 
         btnDisableUser =
-                findViewById(R.id.btnDisableUser);
+                findViewById(
+                        R.id.btnDisableUser
+                );
 
         btnLockAccount =
-                findViewById(R.id.btnLockAccount);
+                findViewById(
+                        R.id.btnLockAccount
+                );
 
         btnUnlockAccount =
-                findViewById(R.id.btnUnlockAccount);
+                findViewById(
+                        R.id.btnUnlockAccount
+                );
+
+        // -----------------------------------------------------
+        // PROGRESS
+        // -----------------------------------------------------
 
         progressBar =
-                findViewById(R.id.progressBar);
+                findViewById(
+                        R.id.progressBar
+                );
     }
 
     // =========================================================
@@ -237,6 +337,10 @@ public class AdminCustomerDetailsActivity
     // =========================================================
 
     private void setupActionButtons() {
+
+        // -----------------------------------------------------
+        // ENABLE USER
+        // -----------------------------------------------------
 
         if (btnEnableUser != null) {
 
@@ -249,6 +353,10 @@ public class AdminCustomerDetailsActivity
             );
         }
 
+        // -----------------------------------------------------
+        // DISABLE USER
+        // -----------------------------------------------------
+
         if (btnDisableUser != null) {
 
             btnDisableUser.setOnClickListener(
@@ -260,6 +368,10 @@ public class AdminCustomerDetailsActivity
             );
         }
 
+        // -----------------------------------------------------
+        // LOCK ACCOUNT
+        // -----------------------------------------------------
+
         if (btnLockAccount != null) {
 
             btnLockAccount.setOnClickListener(
@@ -270,6 +382,10 @@ public class AdminCustomerDetailsActivity
                     )
             );
         }
+
+        // -----------------------------------------------------
+        // UNLOCK ACCOUNT
+        // -----------------------------------------------------
 
         if (btnUnlockAccount != null) {
 
@@ -301,7 +417,12 @@ public class AdminCustomerDetailsActivity
                 )
                 .setPositiveButton(
                         "Confirm",
-                        (dialog, which) -> action.run()
+                        (dialog, which) -> {
+
+                            if (!isFinishing()) {
+                                action.run();
+                            }
+                        }
                 )
                 .show();
     }
@@ -367,33 +488,101 @@ public class AdminCustomerDetailsActivity
     private void displayCustomer(
             AdminCustomerResponse customer) {
 
-        tvFullName.setText(
-                safe(customer.getFullName())
+        if (customer == null) {
+            return;
+        }
+
+        // -----------------------------------------------------
+        // CUSTOMER AVATAR
+        // -----------------------------------------------------
+
+        setCustomerAvatar(
+                customer.getFullName()
         );
 
-        tvUsername.setText(
-                "@" + safe(customer.getUsername())
+        // -----------------------------------------------------
+        // FULL NAME
+        // -----------------------------------------------------
+
+        tvFullName.setText(
+                safe(
+                        customer.getFullName()
+                )
         );
+
+        // -----------------------------------------------------
+        // USERNAME
+        // -----------------------------------------------------
+
+        String username =
+                safe(customer.getUsername());
+
+        if (!username.equals("N/A")) {
+
+            tvUsername.setText(
+                    "@" + username
+            );
+
+        } else {
+
+            tvUsername.setText(
+                    "N/A"
+            );
+        }
+
+        // -----------------------------------------------------
+        // CUSTOMER ID
+        // -----------------------------------------------------
 
         tvCustomerId.setText(
-                safe(customer.getCustomerId())
+                safe(
+                        customer.getCustomerId()
+                )
         );
+
+        // -----------------------------------------------------
+        // DATE OF BIRTH
+        // -----------------------------------------------------
 
         tvDateOfBirth.setText(
-                safe(customer.getDateOfBirth())
+                safe(
+                        customer.getDateOfBirth()
+                )
         );
+
+        // -----------------------------------------------------
+        // GENDER
+        // -----------------------------------------------------
 
         tvGender.setText(
-                safe(customer.getGender())
+                safe(
+                        customer.getGender()
+                )
         );
+
+        // -----------------------------------------------------
+        // MOBILE
+        // -----------------------------------------------------
 
         tvMobile.setText(
-                safe(customer.getMobile())
+                safe(
+                        customer.getMobile()
+                )
         );
 
+        // -----------------------------------------------------
+        // EMAIL
+        // -----------------------------------------------------
+
         tvEmail.setText(
-                safe(customer.getEmail())
+                safe(
+                        customer.getEmail()
+                )
         );
+
+        // -----------------------------------------------------
+        // AADHAAR
+        // -----------------------------------------------------
 
         tvAadhaar.setText(
                 safe(
@@ -401,41 +590,121 @@ public class AdminCustomerDetailsActivity
                 )
         );
 
+        // -----------------------------------------------------
+        // PAN
+        // -----------------------------------------------------
+
         tvPan.setText(
                 safe(
                         customer.getMaskedPanNumber()
                 )
         );
 
+        // -----------------------------------------------------
+        // ADDRESS
+        // -----------------------------------------------------
+
         tvAddress.setText(
-                safe(customer.getAddress())
+                safe(
+                        customer.getAddress()
+                )
         );
+
+        // -----------------------------------------------------
+        // CITY
+        // -----------------------------------------------------
 
         tvCity.setText(
-                safe(customer.getCity())
+                safe(
+                        customer.getCity()
+                )
         );
+
+        // -----------------------------------------------------
+        // STATE
+        // -----------------------------------------------------
 
         tvState.setText(
-                safe(customer.getState())
+                safe(
+                        customer.getState()
+                )
         );
+
+        // -----------------------------------------------------
+        // PINCODE
+        // -----------------------------------------------------
 
         tvPincode.setText(
-                safe(customer.getPincode())
+                safe(
+                        customer.getPincode()
+                )
         );
+
+        // -----------------------------------------------------
+        // OCCUPATION
+        // -----------------------------------------------------
 
         tvOccupation.setText(
-                safe(customer.getOccupation())
+                safe(
+                        customer.getOccupation()
+                )
         );
+
+        // -----------------------------------------------------
+        // CUSTOMER SINCE
+        // -----------------------------------------------------
 
         tvCreatedAt.setText(
-                safe(customer.getCreatedAt())
+                safe(
+                        customer.getCreatedAt()
+                )
         );
+
+        // -----------------------------------------------------
+        // ROLE
+        // -----------------------------------------------------
 
         tvRole.setText(
-                safe(customer.getUserRole())
+                safe(
+                        customer.getUserRole()
+                )
         );
 
+        // -----------------------------------------------------
+        // STATUS
+        // -----------------------------------------------------
+
         updateStatus(customer);
+    }
+
+    // =========================================================
+    // CUSTOMER AVATAR
+    // =========================================================
+
+    private void setCustomerAvatar(String fullName) {
+
+        if (tvCustomerAvatar == null) {
+            return;
+        }
+
+        if (fullName == null
+                || fullName.trim().isEmpty()) {
+
+            tvCustomerAvatar.setText("C");
+            return;
+        }
+
+        String trimmedName =
+                fullName.trim();
+
+        String initial =
+                trimmedName
+                        .substring(0, 1)
+                        .toUpperCase();
+
+        tvCustomerAvatar.setText(
+                initial
+        );
     }
 
     // =========================================================
@@ -455,26 +724,32 @@ public class AdminCustomerDetailsActivity
                         customer.getAccountLocked()
                 );
 
-        // -----------------------------------------------------
+        // =====================================================
         // USER STATUS
-        // -----------------------------------------------------
+        // =====================================================
 
         if (locked) {
 
-            tvUserStatus.setText("LOCKED");
+            tvUserStatus.setText(
+                    "LOCKED"
+            );
 
         } else if (enabled) {
 
-            tvUserStatus.setText("ACTIVE");
+            tvUserStatus.setText(
+                    "ACTIVE"
+            );
 
         } else {
 
-            tvUserStatus.setText("DISABLED");
+            tvUserStatus.setText(
+                    "DISABLED"
+            );
         }
 
-        // -----------------------------------------------------
+        // =====================================================
         // ACCOUNT STATUS
-        // -----------------------------------------------------
+        // =====================================================
 
         if (locked) {
 
@@ -495,9 +770,9 @@ public class AdminCustomerDetailsActivity
             );
         }
 
-        // -----------------------------------------------------
-        // BUTTON VISIBILITY
-        // -----------------------------------------------------
+        // =====================================================
+        // ENABLE BUTTON
+        // =====================================================
 
         if (btnEnableUser != null) {
 
@@ -508,6 +783,10 @@ public class AdminCustomerDetailsActivity
             );
         }
 
+        // =====================================================
+        // DISABLE BUTTON
+        // =====================================================
+
         if (btnDisableUser != null) {
 
             btnDisableUser.setVisibility(
@@ -517,6 +796,10 @@ public class AdminCustomerDetailsActivity
             );
         }
 
+        // =====================================================
+        // LOCK BUTTON
+        // =====================================================
+
         if (btnLockAccount != null) {
 
             btnLockAccount.setVisibility(
@@ -525,6 +808,10 @@ public class AdminCustomerDetailsActivity
                             : View.VISIBLE
             );
         }
+
+        // =====================================================
+        // UNLOCK BUTTON
+        // =====================================================
 
         if (btnUnlockAccount != null) {
 
@@ -788,7 +1075,9 @@ public class AdminCustomerDetailsActivity
             return;
         }
 
-        loadCustomer(customerId);
+        loadCustomer(
+                customerId
+        );
     }
 
     // =========================================================
@@ -865,16 +1154,6 @@ public class AdminCustomerDetailsActivity
     private void handleHttpError(int code) {
 
         if (code == 401) {
-
-            /*
-             * IMPORTANT:
-             *
-             * Do NOT finish this Activity here.
-             *
-             * Previously this method called finish(), which
-             * could make the app appear to jump back to the
-             * previous screen.
-             */
 
             Toast.makeText(
                     this,
@@ -964,6 +1243,6 @@ public class AdminCustomerDetailsActivity
             return "N/A";
         }
 
-        return value;
+        return value.trim();
     }
 }

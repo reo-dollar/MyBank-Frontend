@@ -3,13 +3,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
     android:orientation="vertical"
 
-    android:background="#F8F9FC">
+    android:background="@color/admin_background">
+
 
     <!-- ===================================================== -->
     <!-- HEADER -->
@@ -26,15 +28,15 @@
         android:paddingEnd="20dp"
         android:paddingBottom="16dp"
 
-        android:background="#FFFFFF">
+        android:background="@color/admin_card">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:text="Account Management"
+            android:text="@string/admin_account_management"
 
-            android:textColor="#111827"
+            android:textColor="@color/admin_text_primary"
             android:textSize="25sp"
             android:textStyle="bold" />
 
@@ -44,12 +46,13 @@
 
             android:layout_marginTop="5dp"
 
-            android:text="Manage and monitor customer accounts"
+            android:text="@string/admin_manage_customer_accounts"
 
-            android:textColor="#6B7280"
+            android:textColor="@color/admin_text_secondary"
             android:textSize="14sp" />
 
     </LinearLayout>
+
 
     <!-- ===================================================== -->
     <!-- SEARCH -->
@@ -65,13 +68,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
 
-        android:hint="Search account, customer or ID"
+        android:hint="@string/admin_search_account"
 
         app:boxBackgroundMode="outline"
+
         app:boxCornerRadiusTopStart="14dp"
         app:boxCornerRadiusTopEnd="14dp"
         app:boxCornerRadiusBottomStart="14dp"
-        app:boxCornerRadiusBottomEnd="14dp">
+        app:boxCornerRadiusBottomEnd="14dp"
+
+        app:boxStrokeColor="@color/admin_primary"
+
+        app:hintTextColor="@color/admin_text_secondary">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSearch"
@@ -81,9 +89,15 @@
 
             android:inputType="text"
 
-            android:singleLine="true" />
+            android:singleLine="true"
+
+            android:textColor="@color/admin_text_primary"
+            android:textColorHint="@color/admin_text_muted"
+
+            android:textSize="14sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- ===================================================== -->
     <!-- PROGRESS -->
@@ -99,7 +113,10 @@
 
         android:layout_marginTop="12dp"
 
+        android:indeterminateTint="@color/admin_primary"
+
         android:visibility="gone" />
+
 
     <!-- ===================================================== -->
     <!-- EMPTY MESSAGE -->
@@ -115,12 +132,13 @@
 
         android:padding="30dp"
 
-        android:text="No accounts found"
+        android:text="@string/admin_no_accounts_found"
 
-        android:textColor="#6B7280"
+        android:textColor="@color/admin_text_secondary"
         android:textSize="15sp"
 
         android:visibility="gone" />
+
 
     <!-- ===================================================== -->
     <!-- ACCOUNT LIST -->
@@ -139,6 +157,10 @@
         android:paddingStart="20dp"
         android:paddingTop="14dp"
         android:paddingEnd="20dp"
-        android:paddingBottom="20dp" />
+        android:paddingBottom="20dp"
+
+        android:scrollbars="vertical"
+
+        tools:listitem="@layout/item_admin_account" />
 
 </LinearLayout>

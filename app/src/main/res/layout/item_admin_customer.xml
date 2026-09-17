@@ -12,18 +12,25 @@
     android:clickable="true"
     android:focusable="true"
 
-    app:cardCornerRadius="18dp"
-    app:cardElevation="3dp"
-    app:rippleColor="#1A2563EB"
-    app:strokeColor="#E5E7EB"
+    app:cardBackgroundColor="@color/admin_card"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:rippleColor="@color/admin_blue_stroke"
+    app:strokeColor="@color/admin_divider"
     app:strokeWidth="1dp">
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:orientation="vertical"
-        android:padding="18dp">
+
+        android:paddingStart="18dp"
+        android:paddingTop="17dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="17dp">
+
 
         <!-- ===================================================== -->
         <!-- CUSTOMER NAME -->
@@ -35,11 +42,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:text="Arman Mahendra Gupta"
+            android:text="Customer Name"
 
-            android:textColor="#111827"
-            android:textSize="19sp"
-            android:textStyle="bold" />
+            android:textColor="@color/admin_text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+
+            android:maxLines="2"
+            android:ellipsize="end" />
+
 
         <!-- ===================================================== -->
         <!-- USERNAME -->
@@ -53,78 +64,100 @@
 
             android:layout_marginTop="4dp"
 
-            android:text="@armangupta"
+            android:text="Username"
 
-            android:textColor="#2563EB"
-            android:textSize="14sp" />
+            android:textColor="@color/admin_primary"
+            android:textSize="14sp"
+
+            android:maxLines="1"
+            android:ellipsize="end" />
+
 
         <!-- ===================================================== -->
-        <!-- CUSTOMER ID -->
+        <!-- CUSTOMER INFORMATION -->
         <!-- ===================================================== -->
 
-        <TextView
-            android:id="@+id/tvCustomerId"
-
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="13dp"
 
-            android:text="Customer ID: CUS000005"
+            android:orientation="vertical">
 
-            android:textColor="#4B5563"
-            android:textSize="14sp" />
 
-        <!-- ===================================================== -->
-        <!-- EMAIL -->
-        <!-- ===================================================== -->
+            <!-- CUSTOMER ID -->
 
-        <TextView
-            android:id="@+id/tvCustomerEmail"
+            <TextView
+                android:id="@+id/tvCustomerId"
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-            android:layout_marginTop="7dp"
+                android:text="Customer ID"
 
-            android:text="email@example.com"
+                android:textColor="@color/admin_text_secondary"
+                android:textSize="14sp"
 
-            android:textColor="#4B5563"
-            android:textSize="14sp" />
+                android:maxLines="2"
+                android:ellipsize="end" />
 
-        <!-- ===================================================== -->
-        <!-- MOBILE -->
-        <!-- ===================================================== -->
 
-        <TextView
-            android:id="@+id/tvCustomerMobile"
+            <!-- EMAIL -->
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/tvCustomerEmail"
 
-            android:layout_marginTop="7dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-            android:text="9876543210"
+                android:layout_marginTop="6dp"
 
-            android:textColor="#4B5563"
-            android:textSize="14sp" />
+                android:text="Email address"
 
-        <!-- ===================================================== -->
-        <!-- ROLE -->
-        <!-- ===================================================== -->
+                android:textColor="@color/admin_text_secondary"
+                android:textSize="14sp"
 
-        <TextView
-            android:id="@+id/tvCustomerRole"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
 
-            android:layout_marginTop="7dp"
+            <!-- MOBILE -->
 
-            android:text="Role: USER"
+            <TextView
+                android:id="@+id/tvCustomerMobile"
 
-            android:textColor="#4B5563"
-            android:textSize="14sp" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="6dp"
+
+                android:text="Mobile number"
+
+                android:textColor="@color/admin_text_secondary"
+                android:textSize="14sp"
+
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+
+            <!-- ROLE -->
+
+            <TextView
+                android:id="@+id/tvCustomerRole"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="6dp"
+
+                android:text="Role"
+
+                android:textColor="@color/admin_text_secondary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
 
         <!-- ===================================================== -->
         <!-- STATUS -->
@@ -133,16 +166,17 @@
         <TextView
             android:id="@+id/tvCustomerStatus"
 
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="10dp"
 
-            android:text="● ACTIVE"
+            android:text="Status"
 
-            android:textColor="#16A34A"
+            android:textColor="@color/admin_success"
             android:textSize="14sp"
             android:textStyle="bold" />
+
 
         <!-- ===================================================== -->
         <!-- VIEW DETAILS -->
@@ -154,13 +188,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="13dp"
 
-            android:text="Tap to view details →"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
 
-            android:textColor="#2563EB"
+            android:text="@string/admin_view_customer_details"
+
+            android:textColor="@color/admin_primary"
             android:textSize="13sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+
+            android:clickable="true"
+            android:focusable="true" />
 
     </LinearLayout>
 
