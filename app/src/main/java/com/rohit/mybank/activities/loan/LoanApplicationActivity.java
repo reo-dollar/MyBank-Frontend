@@ -3,15 +3,16 @@ package com.rohit.mybank.activities.loan;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.rohit.mybank.R;
 import com.rohit.mybank.api.LoanApi;
 import com.rohit.mybank.api.RetrofitClient;
 import com.rohit.mybank.databinding.ActivityLoanApplicationBinding;
+import com.rohit.mybank.model.account.AccountResponse;
 import com.rohit.mybank.model.loan.LoanApplicationRequest;
 import com.rohit.mybank.model.loan.LoanResponse;
 import com.rohit.mybank.model.loan.LoanType;
@@ -64,7 +65,13 @@ public class LoanApplicationActivity extends AppCompatActivity {
         );
 
         // =====================================================
-        // LOAN TYPES
+        // LOAD CUSTOMER ACCOUNT
+        // =====================================================
+
+        loadMyAccount();
+
+        // =====================================================
+        // LOAN TYPE SPINNER
         // =====================================================
 
         setupLoanTypeSpinner();
@@ -80,6 +87,120 @@ public class LoanApplicationActivity extends AppCompatActivity {
         binding.btnApplyLoan.setOnClickListener(
                 v -> submitLoanApplication()
         );
+    }
+
+    // =========================================================
+    // LOAD MY ACCOUNT
+    // =========================================================
+
+    private void loadMyAccount() {
+
+        binding.tvAccountNumber.setText(
+                "Loading..."
+        );
+
+        loanApi
+                .getMyAccount()
+                .enqueue(
+                        new Callback<AccountResponse>() {
+
+                            @Override
+                            public void onResponse(
+                                    Call<AccountResponse> call,
+                                    Response<AccountResponse> response
+                            ) {
+
+                                if (
+                                        response.isSuccessful()
+                                                &&
+                                                response.body() != null
+                                ) {
+
+                                    AccountResponse account =
+                                            response.body();
+
+                                    String accountNumber =
+                                            account.getAccNo();
+
+                                    if (
+                                            accountNumber != null
+                                                    &&
+                                                    !accountNumber
+                                                            .trim()
+                                                            .isEmpty()
+                                    ) {
+
+                                        binding.tvAccountNumber.setText(
+                                                accountNumber
+                                        );
+
+                                    } else {
+
+                                        binding.tvAccountNumber.setText(
+                                                "Not available"
+                                        );
+                                    }
+
+                                    return;
+                                }
+
+                                handleAccountError(
+                                        response.code()
+                                );
+                            }
+
+                            @Override
+                            public void onFailure(
+                                    Call<AccountResponse> call,
+                                    Throwable throwable
+                            ) {
+
+                                binding.tvAccountNumber.setText(
+                                        "Unable to load"
+                                );
+
+                                Toast.makeText(
+                                        LoanApplicationActivity.this,
+                                        "Unable to load account details.",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                            }
+                        }
+                );
+    }
+
+    // =========================================================
+    // ACCOUNT ERROR
+    // =========================================================
+
+    private void handleAccountError(
+            int responseCode
+    ) {
+
+        if (responseCode == 401) {
+
+            binding.tvAccountNumber.setText(
+                    "Session expired"
+            );
+
+            Toast.makeText(
+                    this,
+                    "Session expired. Please login again.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+        } else if (responseCode == 404) {
+
+            binding.tvAccountNumber.setText(
+                    "Account not found"
+            );
+
+        } else {
+
+            binding.tvAccountNumber.setText(
+                    "Unable to load"
+            );
+        }
     }
 
     // =========================================================
@@ -109,6 +230,84 @@ public class LoanApplicationActivity extends AppCompatActivity {
         binding.spinnerLoanType.setAdapter(
                 adapter
         );
+
+        // =====================================================
+        // CHANGE INTEREST RATE
+        // =====================================================
+
+        binding.spinnerLoanType.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id
+                    ) {
+
+                        updateInterestRate(
+                                position
+                        );
+                    }
+
+                    @Override
+                    public void onNothingSelected(
+                            AdapterView<?> parent
+                    ) {
+
+                        binding.tvInterestRate.setText(
+                                "11.50%"
+                        );
+                    }
+                }
+        );
+
+        // =====================================================
+        // DEFAULT RATE
+        // =====================================================
+
+        binding.tvInterestRate.setText(
+                "11.50%"
+        );
+    }
+
+    // =========================================================
+    // UPDATE INTEREST RATE
+    // =========================================================
+
+    private void updateInterestRate(
+            int position
+    ) {
+
+        String interestRate;
+
+        switch (position) {
+
+            case 1:
+                // HOME
+                interestRate = "8.50%";
+                break;
+
+            case 2:
+                // EDUCATION
+                interestRate = "7.50%";
+                break;
+
+            case 3:
+                // VEHICLE
+                interestRate = "9.00%";
+                break;
+
+            default:
+                // PERSONAL
+                interestRate = "11.50%";
+                break;
+        }
+
+        binding.tvInterestRate.setText(
+                interestRate
+        );
     }
 
     // =========================================================
@@ -118,31 +317,11 @@ public class LoanApplicationActivity extends AppCompatActivity {
     private void submitLoanApplication() {
 
         // =====================================================
-        // READ ACCOUNT NUMBER
-        // =====================================================
-
-        String accountNumber =
-                binding.etAccountNumber
-                        .getText()
-                        .toString()
-                        .trim();
-
-        // =====================================================
         // READ LOAN AMOUNT
         // =====================================================
 
         String loanAmountText =
                 binding.etLoanAmount
-                        .getText()
-                        .toString()
-                        .trim();
-
-        // =====================================================
-        // READ INTEREST RATE
-        // =====================================================
-
-        String interestRateText =
-                binding.etInterestRate
                         .getText()
                         .toString()
                         .trim();
@@ -168,21 +347,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
                         .trim();
 
         // =====================================================
-        // VALIDATE ACCOUNT NUMBER
-        // =====================================================
-
-        if (TextUtils.isEmpty(accountNumber)) {
-
-            binding.etAccountNumber.setError(
-                    "Account number is required"
-            );
-
-            binding.etAccountNumber.requestFocus();
-
-            return;
-        }
-
-        // =====================================================
         // VALIDATE LOAN AMOUNT
         // =====================================================
 
@@ -193,21 +357,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
             );
 
             binding.etLoanAmount.requestFocus();
-
-            return;
-        }
-
-        // =====================================================
-        // VALIDATE INTEREST RATE
-        // =====================================================
-
-        if (TextUtils.isEmpty(interestRateText)) {
-
-            binding.etInterestRate.setError(
-                    "Interest rate is required"
-            );
-
-            binding.etInterestRate.requestFocus();
 
             return;
         }
@@ -243,12 +392,10 @@ public class LoanApplicationActivity extends AppCompatActivity {
         }
 
         // =====================================================
-        // PARSE NUMERIC VALUES
+        // PARSE VALUES
         // =====================================================
 
         double loanAmount;
-
-        double interestRate;
 
         int tenureMonths;
 
@@ -257,11 +404,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
             loanAmount =
                     Double.parseDouble(
                             loanAmountText
-                    );
-
-            interestRate =
-                    Double.parseDouble(
-                            interestRateText
                     );
 
             tenureMonths =
@@ -295,17 +437,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
             return;
         }
 
-        if (interestRate < 0) {
-
-            binding.etInterestRate.setError(
-                    "Interest rate cannot be negative"
-            );
-
-            binding.etInterestRate.requestFocus();
-
-            return;
-        }
-
         if (tenureMonths <= 0) {
 
             binding.etTenure.setError(
@@ -318,7 +449,7 @@ public class LoanApplicationActivity extends AppCompatActivity {
         }
 
         // =====================================================
-        // GET SELECTED LOAN TYPE
+        // GET LOAN TYPE
         // =====================================================
 
         int selectedPosition =
@@ -349,13 +480,19 @@ public class LoanApplicationActivity extends AppCompatActivity {
         // =====================================================
         // CREATE REQUEST
         // =====================================================
+        //
+        // Account number NOT sent.
+        // Interest rate NOT sent.
+        //
+        // Backend determines both from the authenticated user
+        // and selected loan type.
+        //
+        // =====================================================
 
         LoanApplicationRequest request =
                 new LoanApplicationRequest(
-                        accountNumber,
                         loanType,
                         loanAmount,
-                        interestRate,
                         tenureMonths,
                         purpose
                 );
@@ -383,10 +520,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
 
                                 setLoading(false);
 
-                                // ---------------------------------
-                                // SUCCESS
-                                // ---------------------------------
-
                                 if (
                                         response.isSuccessful()
                                                 &&
@@ -399,10 +532,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
 
                                     return;
                                 }
-
-                                // ---------------------------------
-                                // SERVER ERROR
-                                // ---------------------------------
 
                                 handleServerError(
                                         response
@@ -477,7 +606,7 @@ public class LoanApplicationActivity extends AppCompatActivity {
         } else if (response.code() == 404) {
 
             message =
-                    "Account not found.";
+                    "Customer account not found.";
 
         } else if (response.code() == 409) {
 
@@ -498,7 +627,7 @@ public class LoanApplicationActivity extends AppCompatActivity {
     }
 
     // =========================================================
-    // LOADING STATE
+    // LOADING
     // =========================================================
 
     private void setLoading(

@@ -1,5 +1,6 @@
 package com.rohit.mybank.api;
 
+import com.rohit.mybank.model.account.AccountResponse;
 import com.rohit.mybank.model.loan.EMIPaymentResponse;
 import com.rohit.mybank.model.loan.LoanApplicationRequest;
 import com.rohit.mybank.model.loan.LoanCalculatorRequest;
@@ -41,6 +42,23 @@ public interface LoanApi {
 
 
     // =========================================================
+    // GET MY ACCOUNT
+    // =========================================================
+    //
+    // Backend:
+    //
+    // GET /accounts/me
+    //
+    // Returns the account belonging to the
+    // currently authenticated customer.
+    //
+    // =========================================================
+
+    @GET("accounts/me")
+    Call<AccountResponse> getMyAccount();
+
+
+    // =========================================================
     // GET MY LOANS
     // =========================================================
 
@@ -71,18 +89,6 @@ public interface LoanApi {
     // =========================================================
     // EMI SCHEDULE
     // =========================================================
-    //
-    // IMPORTANT:
-    //
-    // Backend controller:
-    //
-    // GET /loans/{loanNumber}/schedule
-    //
-    // NOT:
-    //
-    // /emi-schedule
-    //
-    // =========================================================
 
     @GET("loans/{loanNumber}/schedule")
     Call<List<LoanEMIResponse>> getEMISchedule(
@@ -93,12 +99,6 @@ public interface LoanApi {
     // =========================================================
     // EMI PAYMENT HISTORY
     // =========================================================
-    //
-    // Backend controller:
-    //
-    // GET /loans/{loanNumber}/payment-history
-    //
-    // =========================================================
 
     @GET("loans/{loanNumber}/payment-history")
     Call<List<LoanEMIPaymentHistoryResponse>> getLoanPaymentHistory(
@@ -108,12 +108,6 @@ public interface LoanApi {
 
     // =========================================================
     // PAY EMI
-    // =========================================================
-    //
-    // Keep this only if your backend has:
-    //
-    // POST /loans/{loanNumber}/emis/{emiNumber}/pay
-    //
     // =========================================================
 
     @POST("loans/{loanNumber}/emis/{emiNumber}/pay")

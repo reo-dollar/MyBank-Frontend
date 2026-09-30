@@ -264,32 +264,70 @@
 
 
         <!-- ========================================================= -->
-        <!-- INTEREST RATE                                              -->
+        <!-- FIXED INTEREST RATE                                        -->
         <!-- ========================================================= -->
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutInterest"
-
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:hint="Interest Rate"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
-            app:suffixText="%">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etInterest"
-
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:imeOptions="actionNext" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_weight="1"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:text="Interest Rate"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tvFixedInterestRate"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="3dp"
+
+                        android:text="7.00% p.a."
+                        android:textColor="@color/text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Fixed by MyBank"
+                    android:textColor="@color/success"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <!-- ========================================================= -->
@@ -452,7 +490,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="₹0"
+                        android:text="₹0.00"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -487,7 +525,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="₹0"
+                        android:text="₹0.00"
                         android:textColor="@color/success"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -523,7 +561,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="₹0"
+                        android:text="₹0.00"
                         android:textColor="@color/primary"
                         android:textSize="17sp"
                         android:textStyle="bold" />
@@ -593,7 +631,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
-                        android:text="-"
+                        android:text="7.00%"
                         android:textColor="@color/text_primary"
                         android:textSize="14sp"
                         android:textStyle="bold" />

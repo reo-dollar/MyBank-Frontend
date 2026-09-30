@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.rohit.mybank.api.RetrofitClient;
 import com.rohit.mybank.databinding.ActivityLoanCalculatorBinding;
 import com.rohit.mybank.model.loan.LoanCalculatorRequest;
 import com.rohit.mybank.model.loan.LoanCalculatorResponse;
+import com.rohit.mybank.model.loan.LoanType;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -21,7 +23,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoanCalculatorActivity extends AppCompatActivity {
+
+public class LoanCalculatorActivity
+        extends AppCompatActivity {
+
 
     // =========================================================
     // CONSTANTS
@@ -35,6 +40,9 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
     public static final String EXTRA_TENURE_MONTHS =
             "tenure_months";
+
+    public static final String EXTRA_LOAN_TYPE =
+            "loan_type";
 
 
     // =========================================================
@@ -52,7 +60,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
     // =========================================================
-    // LAST CALCULATED VALUES
+    // CALCULATED VALUES
     // =========================================================
 
     private double calculatedLoanAmount;
@@ -61,15 +69,33 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
     private int calculatedTenureMonths;
 
+    private LoanType calculatedLoanType;
+
+
+    // =========================================================
+    // LOAN TYPES
+    // =========================================================
+
+    private final String[] loanTypeNames = {
+
+            "Personal Loan",
+            "Home Loan",
+            "Education Loan",
+            "Vehicle Loan"
+    };
+
 
     // =========================================================
     // ON CREATE
     // =========================================================
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(
+            Bundle savedInstanceState
+    ) {
 
         super.onCreate(savedInstanceState);
+
 
         // =====================================================
         // VIEW BINDING
@@ -86,7 +112,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // INITIALIZE API
+        // API
         // =====================================================
 
         loanApi =
@@ -109,6 +135,13 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
+        // SETUP LOAN TYPE
+        // =====================================================
+
+        setupLoanType();
+
+
+        // =====================================================
         // LISTENERS
         // =====================================================
 
@@ -117,10 +150,145 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
     // =========================================================
+    // SETUP LOAN TYPE
+    // =========================================================
+
+    private void setupLoanType() {
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        loanTypeNames
+                );
+
+
+        binding.actLoanType.setAdapter(
+                adapter
+        );
+
+
+        // -----------------------------------------------------
+        // DEFAULT
+        // -----------------------------------------------------
+
+        binding.actLoanType.setText(
+                loanTypeNames[0],
+                false
+        );
+
+
+        updateInterestRate(
+                0
+        );
+
+
+        // -----------------------------------------------------
+        // SELECTION
+        // -----------------------------------------------------
+
+        binding.actLoanType.setOnItemClickListener(
+                (parent, view, position, id) -> {
+
+                    updateInterestRate(
+                            position
+                    );
+
+
+                    // Hide an old result because
+                    // the calculation has changed.
+
+                    binding.resultCard.setVisibility(
+                            View.GONE
+                    );
+                }
+        );
+    }
+
+
+    // =========================================================
+    // UPDATE INTEREST RATE
+    // =========================================================
+
+    private void updateInterestRate(
+            int position
+    ) {
+
+        LoanType loanType;
+
+        double rate;
+
+
+        switch (position) {
+
+            case 1:
+
+                loanType =
+                        LoanType.HOME;
+
+                rate =
+                        8.50;
+
+                break;
+
+
+            case 2:
+
+                loanType =
+                        LoanType.EDUCATION;
+
+                rate =
+                        7.50;
+
+                break;
+
+
+            case 3:
+
+                loanType =
+                        LoanType.VEHICLE;
+
+                rate =
+                        9.00;
+
+                break;
+
+
+            default:
+
+                loanType =
+                        LoanType.PERSONAL;
+
+                rate =
+                        11.50;
+
+                break;
+        }
+
+
+        calculatedLoanType =
+                loanType;
+
+        calculatedInterestRate =
+                rate;
+
+
+        binding.tvInterestRate.setText(
+                String.format(
+                        Locale.US,
+                        "%.2f%% p.a.",
+                        rate
+                )
+        );
+    }
+
+
+    // =========================================================
     // LISTENERS
     // =========================================================
 
     private void setupListeners() {
+
 
         // =====================================================
         // BACK
@@ -132,7 +300,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // CALCULATE EMI
+        // CALCULATE
         // =====================================================
 
         binding.btnCalculate.setOnClickListener(
@@ -174,8 +342,9 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
     private void calculateLoan() {
 
+
         // =====================================================
-        // READ LOAN AMOUNT
+        // LOAN AMOUNT
         // =====================================================
 
         String amountText =
@@ -186,18 +355,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // READ INTEREST RATE
-        // =====================================================
-
-        String interestRateText =
-                binding.etInterestRate
-                        .getText()
-                        .toString()
-                        .trim();
-
-
-        // =====================================================
-        // READ TENURE
+        // TENURE
         // =====================================================
 
         String tenureText =
@@ -211,7 +369,11 @@ public class LoanCalculatorActivity extends AppCompatActivity {
         // VALIDATE AMOUNT
         // =====================================================
 
-        if (TextUtils.isEmpty(amountText)) {
+        if (
+                TextUtils.isEmpty(
+                        amountText
+                )
+        ) {
 
             binding.etLoanAmount.setError(
                     "Enter loan amount"
@@ -224,26 +386,14 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // VALIDATE INTEREST RATE
-        // =====================================================
-
-        if (TextUtils.isEmpty(interestRateText)) {
-
-            binding.etInterestRate.setError(
-                    "Enter interest rate"
-            );
-
-            binding.etInterestRate.requestFocus();
-
-            return;
-        }
-
-
-        // =====================================================
         // VALIDATE TENURE
         // =====================================================
 
-        if (TextUtils.isEmpty(tenureText)) {
+        if (
+                TextUtils.isEmpty(
+                        tenureText
+                )
+        ) {
 
             binding.etTenure.setError(
                     "Enter tenure"
@@ -261,8 +411,6 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
         double loanAmount;
 
-        double interestRate;
-
         int tenureMonths;
 
 
@@ -273,10 +421,6 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                             amountText
                     );
 
-            interestRate =
-                    Double.parseDouble(
-                            interestRateText
-                    );
 
             tenureMonths =
                     Integer.parseInt(
@@ -296,7 +440,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // BUSINESS VALIDATION
+        // VALIDATE AMOUNT
         // =====================================================
 
         if (loanAmount <= 0) {
@@ -311,17 +455,9 @@ public class LoanCalculatorActivity extends AppCompatActivity {
         }
 
 
-        if (interestRate < 0) {
-
-            binding.etInterestRate.setError(
-                    "Interest rate cannot be negative"
-            );
-
-            binding.etInterestRate.requestFocus();
-
-            return;
-        }
-
+        // =====================================================
+        // VALIDATE TENURE
+        // =====================================================
 
         if (tenureMonths <= 0) {
 
@@ -336,29 +472,44 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // SAVE INPUT VALUES
-        //
-        // These will be passed to LoanApplicationActivity.
+        // MAKE SURE LOAN TYPE EXISTS
+        // =====================================================
+
+        if (calculatedLoanType == null) {
+
+            calculatedLoanType =
+                    LoanType.PERSONAL;
+
+            calculatedInterestRate =
+                    11.50;
+        }
+
+
+        // =====================================================
+        // SAVE CALCULATED VALUES
         // =====================================================
 
         calculatedLoanAmount =
                 loanAmount;
-
-        calculatedInterestRate =
-                interestRate;
 
         calculatedTenureMonths =
                 tenureMonths;
 
 
         // =====================================================
-        // CREATE REQUEST
+        // CREATE CALCULATOR REQUEST
+        // =====================================================
+        //
+        // The user does NOT type the interest rate.
+        //
+        // The selected loan type determines it automatically.
+        //
         // =====================================================
 
         LoanCalculatorRequest request =
                 new LoanCalculatorRequest(
                         loanAmount,
-                        interestRate,
+                        calculatedInterestRate,
                         tenureMonths
                 );
 
@@ -367,7 +518,9 @@ public class LoanCalculatorActivity extends AppCompatActivity {
         // START LOADING
         // =====================================================
 
-        setLoading(true);
+        setLoading(
+                true
+        );
 
 
         // =====================================================
@@ -375,7 +528,9 @@ public class LoanCalculatorActivity extends AppCompatActivity {
         // =====================================================
 
         loanApi
-                .calculateLoan(request)
+                .calculateLoan(
+                        request
+                )
                 .enqueue(
                         new Callback<LoanCalculatorResponse>() {
 
@@ -385,12 +540,10 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                                     Response<LoanCalculatorResponse> response
                             ) {
 
-                                setLoading(false);
+                                setLoading(
+                                        false
+                                );
 
-
-                                // =================================
-                                // SUCCESS
-                                // =================================
 
                                 if (
                                         response.isSuccessful()
@@ -406,13 +559,9 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                                 }
 
 
-                                // =================================
-                                // ERROR
-                                // =================================
-
                                 showError(
-                                        "Unable to calculate loan. " +
-                                                "Please try again."
+                                        "Unable to calculate loan. "
+                                                + "Please try again."
                                 );
                             }
 
@@ -423,11 +572,14 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                                     Throwable throwable
                             ) {
 
-                                setLoading(false);
+                                setLoading(
+                                        false
+                                );
+
 
                                 showError(
-                                        "Network error. " +
-                                                "Please check your connection."
+                                        "Network error. "
+                                                + "Please check your connection."
                                 );
                             }
                         }
@@ -436,12 +588,13 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
     // =========================================================
-    // SHOW CALCULATION RESULT
+    // SHOW RESULT
     // =========================================================
 
     private void showCalculationResult(
             LoanCalculatorResponse response
     ) {
+
 
         // =====================================================
         // EMI
@@ -477,7 +630,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // SHOW RESULT CARD
+        // SHOW RESULT
         // =====================================================
 
         binding.resultCard.setVisibility(
@@ -492,6 +645,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
     private void openLoanApplication() {
 
+
         // =====================================================
         // SAFETY CHECK
         // =====================================================
@@ -502,6 +656,8 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                         calculatedInterestRate < 0
                         ||
                         calculatedTenureMonths <= 0
+                        ||
+                        calculatedLoanType == null
         ) {
 
             Toast.makeText(
@@ -534,10 +690,12 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                 calculatedLoanAmount
         );
 
+
         intent.putExtra(
                 EXTRA_INTEREST_RATE,
                 calculatedInterestRate
         );
+
 
         intent.putExtra(
                 EXTRA_TENURE_MONTHS,
@@ -545,16 +703,24 @@ public class LoanCalculatorActivity extends AppCompatActivity {
         );
 
 
+        intent.putExtra(
+                EXTRA_LOAN_TYPE,
+                calculatedLoanType.name()
+        );
+
+
         // =====================================================
-        // START APPLICATION
+        // OPEN APPLICATION
         // =====================================================
 
-        startActivity(intent);
+        startActivity(
+                intent
+        );
     }
 
 
     // =========================================================
-    // LOADING STATE
+    // LOADING
     // =========================================================
 
     private void setLoading(
@@ -567,8 +733,24 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                     View.VISIBLE
             );
 
+
             binding.btnCalculate.setEnabled(
                     false
+            );
+
+
+            binding.btnMyLoans.setEnabled(
+                    false
+            );
+
+
+            binding.btnApplyLoan.setEnabled(
+                    false
+            );
+
+
+            binding.btnCalculate.setText(
+                    "Calculating..."
             );
 
         } else {
@@ -577,8 +759,24 @@ public class LoanCalculatorActivity extends AppCompatActivity {
                     View.GONE
             );
 
+
             binding.btnCalculate.setEnabled(
                     true
+            );
+
+
+            binding.btnMyLoans.setEnabled(
+                    true
+            );
+
+
+            binding.btnApplyLoan.setEnabled(
+                    true
+            );
+
+
+            binding.btnCalculate.setText(
+                    "Calculate EMI"
             );
         }
     }
@@ -601,7 +799,7 @@ public class LoanCalculatorActivity extends AppCompatActivity {
 
 
     // =========================================================
-    // CURRENCY FORMAT
+    // CURRENCY
     // =========================================================
 
     private String formatCurrency(
@@ -626,5 +824,18 @@ public class LoanCalculatorActivity extends AppCompatActivity {
         return formatter.format(
                 amount
         );
+    }
+
+
+    // =========================================================
+    // DESTROY
+    // =========================================================
+
+    @Override
+    protected void onDestroy() {
+
+        super.onDestroy();
+
+        binding = null;
     }
 }

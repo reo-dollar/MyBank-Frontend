@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
 import com.rohit.mybank.R;
+import com.rohit.mybank.dialog.PinVerificationDialog;
 import com.rohit.mybank.model.recurringdeposit.RDResponse;
 import com.rohit.mybank.repository.RecurringDepositRepository;
 
@@ -26,17 +27,20 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
     private TextView tvRDNumber;
     private MaterialButton btnCloseRD;
 
+
     // ============================================================
     // Repository
     // ============================================================
 
     private RecurringDepositRepository repository;
 
+
     // ============================================================
     // Data
     // ============================================================
 
     private String rdNumber;
+
 
     // ============================================================
     // Lifecycle
@@ -61,6 +65,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         validateRDNumber();
     }
 
+
     // ============================================================
     // Initialize Repository
     // ============================================================
@@ -70,6 +75,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         repository =
                 new RecurringDepositRepository(this);
     }
+
 
     // ============================================================
     // Initialize Views
@@ -83,6 +89,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         btnCloseRD =
                 findViewById(R.id.btnCloseRD);
     }
+
 
     // ============================================================
     // Load RD Number From Intent
@@ -110,6 +117,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         }
     }
 
+
     // ============================================================
     // Validate RD Number
     // ============================================================
@@ -130,6 +138,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         }
     }
 
+
     // ============================================================
     // Setup Listeners
     // ============================================================
@@ -140,6 +149,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 v -> showConfirmationDialog()
         );
     }
+
 
     // ============================================================
     // Confirmation Dialog
@@ -158,6 +168,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
             return;
         }
 
+
         new AlertDialog.Builder(this)
 
                 .setTitle(
@@ -173,10 +184,18 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                                 + "closed prematurely."
                 )
 
+                // =================================================
+                // IMPORTANT
+                // =================================================
+                // DO NOT directly call closeRecurringDeposit().
+                //
+                // First verify Transaction PIN.
+                // =================================================
+
                 .setPositiveButton(
-                        "Yes, Close RD",
+                        "Yes, Continue",
                         (dialog, which) ->
-                                closeRecurringDeposit()
+                                showTransactionPinDialog()
                 )
 
                 .setNegativeButton(
@@ -188,6 +207,62 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
 
                 .show();
     }
+
+
+    // ============================================================
+    // TRANSACTION PIN VERIFICATION
+    // ============================================================
+
+    private void showTransactionPinDialog() {
+
+        if (TextUtils.isEmpty(rdNumber)) {
+
+            Toast.makeText(
+                    this,
+                    "Invalid RD Number.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        PinVerificationDialog.show(
+                PrematureCloseRDActivity.this,
+
+                new PinVerificationDialog.OnPinVerifiedListener() {
+
+                    @Override
+                    public void onSuccess() {
+
+                        // =================================================
+                        // PIN VERIFIED
+                        // =================================================
+                        //
+                        // ONLY NOW perform the premature-close API call.
+                        // =================================================
+
+                        closeRecurringDeposit();
+                    }
+
+
+                    @Override
+                    public void onFailure() {
+
+                        // =================================================
+                        // PIN VERIFICATION FAILED
+                        // =================================================
+
+                        Toast.makeText(
+                                PrematureCloseRDActivity.this,
+                                "Transaction PIN verification failed.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
+
 
     // ============================================================
     // Premature Close RD
@@ -206,26 +281,17 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
             return;
         }
 
+
+        // ============================================================
         // Prevent duplicate requests
+        // ============================================================
+
         btnCloseRD.setEnabled(false);
 
-        /*
-         * IMPORTANT
-         *
-         * Backend endpoint:
-         *
-         * POST
-         * /payments/recurring-deposit/
-         * premature-close/{rdNumber}
-         *
-         * Example:
-         *
-         * POST
-         * /payments/recurring-deposit/
-         * premature-close/RD2026000002
-         *
-         * No JSON request body is required.
-         */
+
+        // ============================================================
+        // API CALL
+        // ============================================================
 
         repository
                 .prematureCloseRecurringDeposit(
@@ -237,9 +303,15 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(
                                     Call<RDResponse> call,
-                                    Response<RDResponse> response) {
+                                    Response<RDResponse> response
+                            ) {
 
                                 btnCloseRD.setEnabled(true);
+
+
+                                // =================================================
+                                // SUCCESS
+                                // =================================================
 
                                 if (response.isSuccessful()
                                         && response.body() != null) {
@@ -251,7 +323,13 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                                             result
                                     );
 
-                                } else {
+                                }
+
+                                // =================================================
+                                // SERVER ERROR
+                                // =================================================
+
+                                else {
 
                                     showServerError(
                                             response
@@ -259,10 +337,12 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                                 }
                             }
 
+
                             @Override
                             public void onFailure(
                                     Call<RDResponse> call,
-                                    Throwable t) {
+                                    Throwable t
+                            ) {
 
                                 btnCloseRD.setEnabled(true);
 
@@ -271,6 +351,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                         }
                 );
     }
+
 
     // ============================================================
     // Success Dialog
@@ -282,15 +363,19 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         StringBuilder message =
                 new StringBuilder();
 
+
         message.append(
                 "Recurring Deposit closed successfully."
         );
 
+
         message.append("\n\n");
+
 
         message.append(
                 "RD Number : "
         );
+
 
         message.append(
                 safeText(
@@ -298,11 +383,14 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 )
         );
 
+
         message.append("\n");
+
 
         message.append(
                 "Account Number : "
         );
+
 
         message.append(
                 safeText(
@@ -310,11 +398,14 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 )
         );
 
+
         message.append("\n\n");
+
 
         message.append(
                 "Total Deposit : ₹"
         );
+
 
         message.append(
                 safeText(
@@ -322,11 +413,14 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 )
         );
 
+
         message.append("\n");
+
 
         message.append(
                 "Maturity Amount : ₹"
         );
+
 
         message.append(
                 safeText(
@@ -334,17 +428,21 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 )
         );
 
+
         message.append("\n\n");
+
 
         message.append(
                 "Status : "
         );
+
 
         message.append(
                 safeText(
                         result.getStatus()
                 )
         );
+
 
         new AlertDialog.Builder(
                 PrematureCloseRDActivity.this
@@ -375,6 +473,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 .show();
     }
 
+
     // ============================================================
     // Server Error
     // ============================================================
@@ -388,6 +487,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         int statusCode =
                 response.code();
 
+
         try {
 
             if (response.errorBody() != null) {
@@ -396,7 +496,8 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                         response.errorBody().string();
 
                 if (!TextUtils.isEmpty(
-                        serverError)) {
+                        serverError
+                )) {
 
                     errorMessage =
                             serverError.trim();
@@ -406,12 +507,14 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         } catch (Exception e) {
 
             if (!TextUtils.isEmpty(
-                    e.getMessage())) {
+                    e.getMessage()
+            )) {
 
                 errorMessage =
                         e.getMessage();
             }
         }
+
 
         String finalMessage =
                 "HTTP "
@@ -419,12 +522,14 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                         + "\n\n"
                         + errorMessage;
 
+
         Toast.makeText(
                 PrematureCloseRDActivity.this,
                 finalMessage,
                 Toast.LENGTH_LONG
         ).show();
     }
+
 
     // ============================================================
     // Network Error
@@ -436,13 +541,16 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
         String errorMessage =
                 "Network error occurred.";
 
+
         if (throwable != null
                 && !TextUtils.isEmpty(
-                throwable.getMessage())) {
+                throwable.getMessage()
+        )) {
 
             errorMessage =
                     throwable.getMessage();
         }
+
 
         Toast.makeText(
                 PrematureCloseRDActivity.this,
@@ -451,6 +559,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
                 Toast.LENGTH_LONG
         ).show();
     }
+
 
     // ============================================================
     // Safe Text
@@ -463,6 +572,7 @@ public class PrematureCloseRDActivity extends AppCompatActivity {
 
             return "-";
         }
+
 
         return String.valueOf(value);
     }

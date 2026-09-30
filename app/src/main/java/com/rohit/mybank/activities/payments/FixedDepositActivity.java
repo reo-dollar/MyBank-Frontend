@@ -17,6 +17,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
 import com.rohit.mybank.R;
 import com.rohit.mybank.activities.pin.VerifyTransactionPinActivity;
 import com.rohit.mybank.model.fixeddeposit.CreateFixedDepositRequest;
@@ -33,8 +34,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class FixedDepositActivity extends AppCompatActivity {
+
+    //==================================================
+    // FIXED MYBANK FD INTEREST RATE
+    //==================================================
+
+    private static final double FIXED_FD_INTEREST_RATE = 7.00;
 
 
     //==================================================
@@ -49,7 +55,6 @@ public class FixedDepositActivity extends AppCompatActivity {
     //==================================================
 
     private TextInputLayout layoutPrincipal;
-    private TextInputLayout layoutInterest;
     private TextInputLayout layoutTenure;
     private TextInputLayout layoutTenureType;
     private TextInputLayout layoutInterestType;
@@ -61,7 +66,6 @@ public class FixedDepositActivity extends AppCompatActivity {
     //==================================================
 
     private TextInputEditText etPrincipal;
-    private TextInputEditText etInterest;
     private TextInputEditText etTenure;
 
 
@@ -120,13 +124,11 @@ public class FixedDepositActivity extends AppCompatActivity {
                     "Months"
             );
 
-
     private final List<String> interestTypes =
             Arrays.asList(
                     "Simple",
                     "Compound"
             );
-
 
     private final List<String> compoundingTypes =
             Arrays.asList(
@@ -216,16 +218,12 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private void initializeViews() {
 
-
         //==================================================
         // Input Layouts
         //==================================================
 
         layoutPrincipal =
                 findViewById(R.id.layoutPrincipal);
-
-        layoutInterest =
-                findViewById(R.id.layoutInterest);
 
         layoutTenure =
                 findViewById(R.id.layoutTenure);
@@ -246,9 +244,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
         etPrincipal =
                 findViewById(R.id.etPrincipal);
-
-        etInterest =
-                findViewById(R.id.etInterest);
 
         etTenure =
                 findViewById(R.id.etTenure);
@@ -307,7 +302,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private void setupDropdowns() {
 
-
         //==================================================
         // Tenure Type
         //==================================================
@@ -319,7 +313,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                         tenureTypes
                 );
 
-
         actTenureType.setAdapter(tenureAdapter);
 
         actTenureType.setText(
@@ -327,11 +320,7 @@ public class FixedDepositActivity extends AppCompatActivity {
                 false
         );
 
-
-        // IMPORTANT:
-        // Set initial suffix based on default value
         updateTenureSuffix();
-
 
         actTenureType.setOnItemClickListener(
                 (parent, view, position, id) -> {
@@ -339,13 +328,8 @@ public class FixedDepositActivity extends AppCompatActivity {
                     tenureType =
                             tenureTypes.get(position);
 
-
-                    // Update "Years" / "Months"
-                    // inside the Tenure field
                     updateTenureSuffix();
 
-
-                    // Update summary
                     updateSummary();
 
                 }
@@ -363,7 +347,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                         interestTypes
                 );
 
-
         actInterestType.setAdapter(interestAdapter);
 
         actInterestType.setText(
@@ -371,13 +354,11 @@ public class FixedDepositActivity extends AppCompatActivity {
                 false
         );
 
-
         actInterestType.setOnItemClickListener(
                 (parent, view, position, id) -> {
 
                     interestType =
                             interestTypes.get(position);
-
 
                     updateSummary();
 
@@ -396,7 +377,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                         compoundingTypes
                 );
 
-
         actCompounding.setAdapter(compoundingAdapter);
 
         actCompounding.setText(
@@ -404,13 +384,11 @@ public class FixedDepositActivity extends AppCompatActivity {
                 false
         );
 
-
         actCompounding.setOnItemClickListener(
                 (parent, view, position, id) -> {
 
                     compounding =
                             compoundingTypes.get(position);
-
 
                     updateSummary();
 
@@ -455,7 +433,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                             int start,
                             int count,
                             int after) {
-
                     }
 
 
@@ -474,15 +451,12 @@ public class FixedDepositActivity extends AppCompatActivity {
                     @Override
                     public void afterTextChanged(
                             Editable s) {
-
                     }
 
                 };
 
 
         etPrincipal.addTextChangedListener(watcher);
-
-        etInterest.addTextChangedListener(watcher);
 
         etTenure.addTextChangedListener(watcher);
 
@@ -499,15 +473,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                 etPrincipal.getText() == null
                         ? ""
                         : etPrincipal
-                        .getText()
-                        .toString()
-                        .trim();
-
-
-        String rate =
-                etInterest.getText() == null
-                        ? ""
-                        : etInterest
                         .getText()
                         .toString()
                         .trim();
@@ -551,13 +516,14 @@ public class FixedDepositActivity extends AppCompatActivity {
 
 
         //==================================================
-        // Interest Rate
+        // FIXED INTEREST RATE
         //==================================================
 
         tvRate.setText(
-                rate.isEmpty()
-                        ? "-"
-                        : rate + " %"
+                String.format(
+                        "%.2f%%",
+                        FIXED_FD_INTEREST_RATE
+                )
         );
 
 
@@ -577,7 +543,6 @@ public class FixedDepositActivity extends AppCompatActivity {
         //==================================================
 
         if (principal.isEmpty()
-                || rate.isEmpty()
                 || tenure.isEmpty()) {
 
             tvInterest.setText("₹0.00");
@@ -616,8 +581,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
         layoutPrincipal.setError(null);
 
-        layoutInterest.setError(null);
-
         layoutTenure.setError(null);
 
 
@@ -625,15 +588,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                 etPrincipal.getText() == null
                         ? ""
                         : etPrincipal
-                        .getText()
-                        .toString()
-                        .trim();
-
-
-        String rate =
-                etInterest.getText() == null
-                        ? ""
-                        : etInterest
                         .getText()
                         .toString()
                         .trim();
@@ -664,21 +618,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
 
         //==================================================
-        // Interest
-        //==================================================
-
-        if (rate.isEmpty()) {
-
-            layoutInterest.setError(
-                    "Please enter interest rate"
-            );
-
-            return false;
-
-        }
-
-
-        //==================================================
         // Tenure
         //==================================================
 
@@ -698,9 +637,6 @@ public class FixedDepositActivity extends AppCompatActivity {
             double p =
                     Double.parseDouble(principal);
 
-            double r =
-                    Double.parseDouble(rate);
-
             double t =
                     Double.parseDouble(tenure);
 
@@ -713,21 +649,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
                 layoutPrincipal.setError(
                         "Amount must be greater than zero"
-                );
-
-                return false;
-
-            }
-
-
-            //==================================================
-            // Interest Validation
-            //==================================================
-
-            if (r <= 0) {
-
-                layoutInterest.setError(
-                        "Interest rate must be greater than zero"
                 );
 
                 return false;
@@ -782,13 +703,12 @@ public class FixedDepositActivity extends AppCompatActivity {
                 );
 
 
+        //==================================================
+        // USE FIXED MYBANK RATE
+        //==================================================
+
         double rate =
-                Double.parseDouble(
-                        etInterest
-                                .getText()
-                                .toString()
-                                .trim()
-                );
+                FIXED_FD_INTEREST_RATE;
 
 
         double tenure =
@@ -801,8 +721,7 @@ public class FixedDepositActivity extends AppCompatActivity {
 
 
         //==================================================
-        // IMPORTANT:
-        // Convert Months to Years for calculation
+        // Convert Months to Years
         //==================================================
 
         if (tenureType.equalsIgnoreCase("Months")) {
@@ -827,7 +746,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                     (principal * rate * tenure)
                             / 100;
 
-
             maturity =
                     principal + interest;
 
@@ -843,7 +761,6 @@ public class FixedDepositActivity extends AppCompatActivity {
             int frequency =
                     getCompoundingFrequency();
 
-
             maturity =
                     principal *
                             Math.pow(
@@ -854,7 +771,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                                             ),
                                     frequency * tenure
                             );
-
 
             interest =
                     maturity - principal;
@@ -885,7 +801,6 @@ public class FixedDepositActivity extends AppCompatActivity {
     //==================================================
 
     private void calculateFD() {
-
 
         //==================================================
         // Get Current Dropdown Values
@@ -940,10 +855,6 @@ public class FixedDepositActivity extends AppCompatActivity {
         }
 
 
-        //==================================================
-        // Make Sure Suffix Is Correct
-        //==================================================
-
         updateTenureSuffix();
 
 
@@ -972,12 +883,8 @@ public class FixedDepositActivity extends AppCompatActivity {
                                         .trim()
                         ),
 
-                        Double.parseDouble(
-                                etInterest
-                                        .getText()
-                                        .toString()
-                                        .trim()
-                        ),
+                        // FIXED RATE
+                        FIXED_FD_INTEREST_RATE,
 
                         Double.parseDouble(
                                 etTenure
@@ -1008,11 +915,9 @@ public class FixedDepositActivity extends AppCompatActivity {
                                     Call<FixedDepositResponse> call,
                                     Response<FixedDepositResponse> response) {
 
-
                                 if (response.isSuccessful()
                                         && response.body() != null
                                         && response.body().isSuccess()) {
-
 
                                     //==================================
                                     // Update Interest
@@ -1048,9 +953,7 @@ public class FixedDepositActivity extends AppCompatActivity {
                                             response.body()
                                     );
 
-
                                 } else {
-
 
                                     String message =
                                             "Calculation Failed";
@@ -1107,24 +1010,16 @@ public class FixedDepositActivity extends AppCompatActivity {
         switch (compounding) {
 
             case "Monthly":
-
                 return 12;
 
-
             case "Quarterly":
-
                 return 4;
 
-
             case "Half-Yearly":
-
                 return 2;
 
-
             case "Yearly":
-
             default:
-
                 return 1;
 
         }
@@ -1138,14 +1033,11 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private void resetForm() {
 
-
         //==================================================
         // Clear Errors
         //==================================================
 
         layoutPrincipal.setError(null);
-
-        layoutInterest.setError(null);
 
         layoutTenure.setError(null);
 
@@ -1155,8 +1047,6 @@ public class FixedDepositActivity extends AppCompatActivity {
         //==================================================
 
         etPrincipal.setText("");
-
-        etInterest.setText("");
 
         etTenure.setText("");
 
@@ -1195,8 +1085,7 @@ public class FixedDepositActivity extends AppCompatActivity {
 
 
         //==================================================
-        // IMPORTANT:
-        // Restore Tenure suffix to Years
+        // Restore Tenure Suffix
         //==================================================
 
         updateTenureSuffix();
@@ -1214,7 +1103,12 @@ public class FixedDepositActivity extends AppCompatActivity {
 
         tvTenure.setText("-");
 
-        tvRate.setText("-");
+        tvRate.setText(
+                String.format(
+                        "%.2f%%",
+                        FIXED_FD_INTEREST_RATE
+                )
+        );
 
 
         //==================================================
@@ -1232,7 +1126,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private void showResultDialog(
             FixedDepositResponse response) {
-
 
         StringBuilder builder =
                 new StringBuilder();
@@ -1268,14 +1161,18 @@ public class FixedDepositActivity extends AppCompatActivity {
                 );
 
 
+        //==================================================
+        // FIXED RATE
+        //==================================================
+
         builder.append(
                         "\n\nInterest Rate : "
                 )
                 .append(
-                        etInterest
-                                .getText()
-                                .toString()
-                                .trim()
+                        String.format(
+                                "%.2f",
+                                FIXED_FD_INTEREST_RATE
+                        )
                 )
                 .append("%");
 
@@ -1346,7 +1243,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private void verifyTransactionPin() {
 
-
         Intent intent =
                 new Intent(
                         FixedDepositActivity.this,
@@ -1382,7 +1278,6 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private void performFixedDeposit() {
 
-
         double principal =
                 Double.parseDouble(
                         etPrincipal
@@ -1392,13 +1287,12 @@ public class FixedDepositActivity extends AppCompatActivity {
                 );
 
 
+        //==================================================
+        // ALWAYS USE FIXED MYBANK RATE
+        //==================================================
+
         double rate =
-                Double.parseDouble(
-                        etInterest
-                                .getText()
-                                .toString()
-                                .trim()
-                );
+                FIXED_FD_INTEREST_RATE;
 
 
         int tenure =
@@ -1441,19 +1335,15 @@ public class FixedDepositActivity extends AppCompatActivity {
                                     Call<CreateFixedDepositResponse> call,
                                     Response<CreateFixedDepositResponse> response) {
 
-
                                 if (response.isSuccessful()
                                         && response.body() != null
                                         && response.body().isSuccess()) {
-
 
                                     showSuccessDialog(
                                             response.body()
                                     );
 
-
                                 } else {
-
 
                                     String message =
                                             "Unable to create Fixed Deposit.";
@@ -1499,7 +1389,6 @@ public class FixedDepositActivity extends AppCompatActivity {
                                     Call<CreateFixedDepositResponse> call,
                                     Throwable t) {
 
-
                                 new AlertDialog.Builder(
                                         FixedDepositActivity.this
                                 )
@@ -1534,7 +1423,6 @@ public class FixedDepositActivity extends AppCompatActivity {
     private void showSuccessDialog(
             CreateFixedDepositResponse response) {
 
-
         StringBuilder builder =
                 new StringBuilder();
 
@@ -1568,6 +1456,18 @@ public class FixedDepositActivity extends AppCompatActivity {
                                 response.getPrincipal()
                         )
                 );
+
+
+        builder.append(
+                        "\n\nInterest Rate : "
+                )
+                .append(
+                        String.format(
+                                "%.2f",
+                                FIXED_FD_INTEREST_RATE
+                        )
+                )
+                .append("%");
 
 
         builder.append(

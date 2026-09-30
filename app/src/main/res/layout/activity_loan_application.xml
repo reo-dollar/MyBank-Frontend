@@ -118,25 +118,64 @@
                 <!-- ACCOUNT NUMBER -->
                 <!-- ========================================= -->
 
-                <com.google.android.material.textfield.TextInputLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
                     android:layout_marginBottom="14dp"
 
-                    android:hint="Account Number">
+                    app:cardBackgroundColor="@color/background"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etAccountNumber"
+                    app:strokeColor="?attr/colorOutline"
+                    app:strokeWidth="1dp">
 
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
 
-                        android:inputType="text"
+                        android:gravity="center_vertical"
 
-                        android:maxLines="1" />
+                        android:orientation="horizontal"
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:padding="14dp">
+
+
+                        <!-- ACCOUNT LABEL -->
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
+                            android:layout_weight="1"
+
+                            android:text="Account Number"
+
+                            android:textColor="@color/text_secondary"
+
+                            android:textSize="14sp" />
+
+
+                        <!-- ACCOUNT NUMBER -->
+
+                        <TextView
+                            android:id="@+id/tvAccountNumber"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:text="Loading..."
+
+                            android:textColor="@color/text_primary"
+
+                            android:textSize="15sp"
+
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
 
                 <!-- ========================================= -->
@@ -166,6 +205,70 @@
 
 
                 <!-- ========================================= -->
+                <!-- INTEREST RATE INFORMATION -->
+                <!-- ========================================= -->
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginBottom="14dp"
+
+                    app:cardBackgroundColor="@color/background"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+
+                    app:strokeColor="?attr/colorOutline"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:gravity="center_vertical"
+
+                        android:orientation="horizontal"
+
+                        android:padding="14dp">
+
+
+                        <!-- INTEREST RATE LABEL -->
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+
+                            android:layout_weight="1"
+
+                            android:text="Interest Rate"
+
+                            android:textColor="@color/text_secondary"
+
+                            android:textSize="14sp" />
+
+
+                        <!-- INTEREST RATE -->
+
+                        <TextView
+                            android:id="@+id/tvInterestRate"
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:text="11.50%"
+
+                            android:textColor="@color/text_primary"
+
+                            android:textSize="16sp"
+
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <!-- ========================================= -->
                 <!-- LOAN AMOUNT -->
                 <!-- ========================================= -->
 
@@ -179,31 +282,6 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etLoanAmount"
-
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:inputType="numberDecimal"
-
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <!-- ========================================= -->
-                <!-- INTEREST RATE -->
-                <!-- ========================================= -->
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:layout_marginBottom="14dp"
-
-                    android:hint="Annual Interest Rate (%)">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etInterestRate"
 
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -278,7 +356,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
 
-                    android:text="Apply for Loan"
+                    android:text="Confirm &amp; Apply for Loan"
 
                     android:textAllCaps="false"
 
