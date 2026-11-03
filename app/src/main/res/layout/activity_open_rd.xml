@@ -13,6 +13,7 @@
 
     tools:context=".activities.payments.recurringdeposit.OpenRDActivity">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,10 +75,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="text"
+                android:inputType="none"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:clickable="false"
+                android:longClickable="false"
+                android:cursorVisible="false"
+                android:importantForAutofill="no"
 
                 android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary" />
+                android:textColorHint="@color/text_secondary"
+                tools:text="123456789012" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -114,9 +122,10 @@
 
         <!-- ================================================= -->
         <!-- INTEREST RATE -->
+        <!-- FIXED BY MYBANK -->
         <!-- ================================================= -->
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/layoutInterestRate"
 
             android:layout_width="match_parent"
@@ -124,22 +133,93 @@
 
             android:layout_marginTop="16dp"
 
-            android:hint="Interest Rate (%)"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
-            app:boxBackgroundMode="outline">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etInterestRate"
-
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="numberDecimal"
+                android:orientation="vertical"
 
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary" />
+                android:paddingStart="14dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="10dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Interest Rate Label -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Interest Rate"
+
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+
+                <!-- Rate + Fixed Text -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="2dp"
+
+                    android:gravity="center_vertical"
+
+                    android:orientation="horizontal">
+
+                    <!-- Fixed Interest Rate -->
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etInterestRate"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
+                        android:background="@android:color/transparent"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:clickable="false"
+                        android:inputType="none"
+
+                        android:paddingStart="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingBottom="0dp"
+
+                        android:text="7.00% p.a."
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+
+                    <!-- Fixed By MyBank -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="8dp"
+
+                        android:text="Fixed by MyBank"
+
+                        android:textColor="#16A34A"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <!-- ================================================= -->
@@ -282,7 +362,7 @@
 
                     android:layout_marginTop="8dp"
 
-                    android:text="• Interest is calculated according to the selected tenure and prevailing bank rate."
+                    android:text="• Interest is calculated at the fixed bank rate of 7.00% per annum."
 
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp" />

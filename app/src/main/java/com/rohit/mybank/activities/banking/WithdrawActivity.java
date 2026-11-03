@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
@@ -21,6 +22,8 @@ import com.rohit.mybank.model.withdraw.WithdrawResponse;
 import com.rohit.mybank.repository.DashboardRepository;
 import com.rohit.mybank.repository.WithdrawRepository;
 import com.rohit.mybank.utils.CurrencyUtil;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -74,9 +77,7 @@ public class WithdrawActivity extends AppCompatActivity {
     // =========================================================
 
     @Override
-    protected void onCreate(
-            Bundle savedInstanceState
-    ) {
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
@@ -213,8 +214,7 @@ public class WithdrawActivity extends AppCompatActivity {
 
                                 Toast.makeText(
                                         WithdrawActivity.this,
-                                        "Network Error : "
-                                                + t.getMessage(),
+                                        "Network error. Please check your connection.",
                                         Toast.LENGTH_SHORT
                                 ).show();
                             }
@@ -340,8 +340,8 @@ public class WithdrawActivity extends AppCompatActivity {
 
 
         // =========================================================
-// TRANSACTION PIN
-// =========================================================
+        // TRANSACTION PIN
+        // =========================================================
 
         PinVerificationDialog.showForTransactionPin(
                 WithdrawActivity.this,
@@ -356,6 +356,7 @@ public class WithdrawActivity extends AppCompatActivity {
                                 transactionPin
                         );
                     }
+
 
                     @Override
                     public void onFailure() {
@@ -417,11 +418,9 @@ public class WithdrawActivity extends AppCompatActivity {
         );
 
 
-        /*
-         * THIS WAS THE MISSING FIELD.
-         *
-         * Without this, backend validation returns HTTP 400.
-         */
+        // -----------------------------------------------------
+        // TRANSACTION PIN
+        // -----------------------------------------------------
 
         request.setTransactionPin(
                 transactionPin
@@ -534,40 +533,16 @@ public class WithdrawActivity extends AppCompatActivity {
 
 
                                 // =================================
-                                // SERVER ERROR
+                                // SERVER / BUSINESS ERROR
                                 // =================================
 
                                 String errorMessage =
-                                        "Withdrawal failed.";
+                                        getErrorMessage(response);
 
-
-                                try {
-
-                                    if (
-                                            response.errorBody() != null
-                                    ) {
-
-                                        errorMessage =
-                                                response
-                                                        .errorBody()
-                                                        .string();
-                                    }
-
-                                } catch (IOException e) {
-
-                                    errorMessage =
-                                            "Withdrawal failed.";
-                                }
-
-
-                                Toast.makeText(
-                                        WithdrawActivity.this,
-                                        "HTTP "
-                                                + response.code()
-                                                + "\n"
-                                                + errorMessage,
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                showErrorDialog(
+                                        "Withdrawal Failed",
+                                        errorMessage
+                                );
                             }
 
 
@@ -590,14 +565,110 @@ public class WithdrawActivity extends AppCompatActivity {
                                 );
 
 
-                                Toast.makeText(
-                                        WithdrawActivity.this,
-                                        "Network Error : "
-                                                + t.getMessage(),
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                if (!call.isCanceled() && !isFinishing() && !isDestroyed()) {
+                                    showErrorDialog(
+                                            "Withdrawal Failed",
+                                            "Network error. Please check your internet connection."
+                                    );
+                                }
                             }
                         }
                 );
+    }
+
+
+    // =========================================================
+    // EXTRACT ERROR MESSAGE
+    // =========================================================
+
+    private String getErrorMessage(Response<?> response) {
+        String defaultMessage = "Withdrawal failed. Please try again.";
+
+        if (response == null || response.errorBody() == null) {
+            return defaultMessage;
+        }
+
+        try {
+            String errorBody = response.errorBody().string();
+
+            if (TextUtils.isEmpty(errorBody)) {
+                return defaultMessage;
+            }
+
+            String message = extractMessageFromErrorBody(errorBody);
+            if (TextUtils.isEmpty(message)) {
+                return defaultMessage;
+            }
+
+            return normalizeWithdrawalError(message);
+
+        } catch (IOException e) {
+            return defaultMessage;
+        }
+    }
+
+    private String extractMessageFromErrorBody(String errorBody) {
+        String body = errorBody == null ? "" : errorBody.trim();
+
+        if (TextUtils.isEmpty(body)) {
+            return "";
+        }
+
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+
+            String[] fields = {"message", "error", "detail", "description"};
+            for (String field : fields) {
+                if (jsonObject.has(field) && !jsonObject.isNull(field)) {
+                    Object value = jsonObject.get(field);
+                    if (value instanceof String) {
+                        String message = ((String) value).trim();
+                        if (!TextUtils.isEmpty(message)
+                                && !"Bad Request".equalsIgnoreCase(message)
+                                && !"Internal Server Error".equalsIgnoreCase(message)) {
+                            return message;
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // The response may be plain text instead of JSON.
+        }
+
+        // Use a readable plain-text response when the server provides one.
+        if (!body.startsWith("{") && !body.startsWith("[")
+                && body.length() <= 500) {
+            return body;
+        }
+
+        return "";
+    }
+
+    private String normalizeWithdrawalError(String message) {
+        String normalized = message.trim().toLowerCase(java.util.Locale.ROOT);
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient account balance")
+                || normalized.contains("not enough balance")
+                || normalized.contains("low balance")) {
+            return "Insufficient balance.";
+        }
+
+        return message.trim();
+    }
+
+    private void showErrorDialog(String title, String message) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(TextUtils.isEmpty(message)
+                        ? "Withdrawal failed. Please try again."
+                        : message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 }

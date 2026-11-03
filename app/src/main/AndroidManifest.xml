@@ -262,6 +262,10 @@
             android:name=".activities.payments.FixedDepositActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".activities.payments.MyFDActivity"
+            android:exported="false" />
+
 
         <!-- ================================================== -->
         <!-- QR -->
@@ -278,6 +282,8 @@
         <activity
             android:name=".activities.qr.QrRecipientActivity"
             android:exported="false" />
+
+
 
 
         <!-- ================================================== -->
@@ -374,9 +380,9 @@
             android:name=".activities.cards.DebitCardActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".activities.cards.MyCardActivity"
-            android:exported="false" />
+        <!-- ================================================== -->
+        <!-- QR -->
+        <!-- ================================================== -->
 
         <activity
             android:name=".activities.qr.QrRecipientActivity"

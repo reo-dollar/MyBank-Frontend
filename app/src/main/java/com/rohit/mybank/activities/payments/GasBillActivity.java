@@ -596,28 +596,15 @@ public class GasBillActivity extends AppCompatActivity {
                         restoreViews();
 
                         if (!response.isSuccessful()) {
-
-                            Toast.makeText(
-                                    GasBillActivity.this,
-                                    "Server Error : "
-                                            + response.code(),
-                                    Toast.LENGTH_LONG
-                            ).show();
-
+                            showPaymentErrorDialog(extractPaymentError(response));
                             return;
-
                         }
 
                         if (response.body() == null) {
-
-                            Toast.makeText(
-                                    GasBillActivity.this,
-                                    "Empty server response.",
-                                    Toast.LENGTH_LONG
-                            ).show();
-
+                            showPaymentErrorDialog(
+                                    "Unable to process gas cylinder booking. Please try again."
+                            );
                             return;
-
                         }
 
                         GasBillResponse billResponse =
@@ -635,15 +622,9 @@ public class GasBillActivity extends AppCompatActivity {
 
                         } else {
 
-                            Toast.makeText(
-
-                                    GasBillActivity.this,
-
-                                    billResponse.getMessage(),
-
-                                    Toast.LENGTH_LONG
-
-                            ).show();
+                            showPaymentErrorDialog(
+                                    normalizePaymentError(billResponse.getMessage())
+                            );
 
                         }
 
@@ -656,21 +637,136 @@ public class GasBillActivity extends AppCompatActivity {
 
                         restoreViews();
 
-                        Toast.makeText(
+                        if (call.isCanceled()) {
+                            return;
+                        }
 
-                                GasBillActivity.this,
-
-                                "Network Error\n\n"
-                                        + t.getMessage(),
-
-                                Toast.LENGTH_LONG
-
-                        ).show();
+                        showPaymentErrorDialog(
+                                "Unable to connect to the server. Please try again."
+                        );
 
                     }
 
                 });
 
+    }
+
+
+    // =====================================================
+    // Extract error message from unsuccessful HTTP response
+    // =====================================================
+
+    private String extractPaymentError(Response<GasBillResponse> response) {
+
+        String message = null;
+
+        try {
+            if (response.errorBody() != null) {
+                message = extractMessageFromBody(response.errorBody().string());
+            }
+        } catch (java.io.IOException ignored) {
+            // Use safe fallback below.
+        }
+
+        String normalized = normalizePaymentError(message);
+
+        if (!"Unable to process gas cylinder booking. Please try again."
+                .equals(normalized)) {
+            return normalized;
+        }
+
+        if (response.code() == 401 || response.code() == 403) {
+            return "Your session may have expired. Please log in again.";
+        }
+
+        return "Unable to process gas cylinder booking. Please try again.";
+    }
+
+    // =====================================================
+    // Extract JSON or plain-text error message
+    // =====================================================
+
+    private String extractMessageFromBody(String body) {
+
+        if (TextUtils.isEmpty(body)) {
+            return null;
+        }
+
+        String trimmed = body.trim();
+
+        if (!trimmed.startsWith("{")) {
+            return trimmed;
+        }
+
+        try {
+            org.json.JSONObject json = new org.json.JSONObject(trimmed);
+
+            String[] keys = {"message", "error", "detail", "description"};
+
+            for (String key : keys) {
+                if (json.has(key) && !json.isNull(key)) {
+                    String value = json.optString(key, "").trim();
+                    if (!value.isEmpty()) {
+                        return value;
+                    }
+                }
+            }
+        } catch (org.json.JSONException ignored) {
+            // Use safe fallback below.
+        }
+
+        return null;
+    }
+
+    // =====================================================
+    // Normalize payment errors
+    // =====================================================
+
+    private String normalizePaymentError(String message) {
+
+        if (TextUtils.isEmpty(message)) {
+            return "Unable to process gas cylinder booking. Please try again.";
+        }
+
+        String normalized = message.trim().toLowerCase(java.util.Locale.ROOT);
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient funds")
+                || normalized.contains("not enough balance")
+                || normalized.contains("not enough funds")
+                || normalized.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        if (normalized.contains("internal server error")
+                || normalized.contains("server error")
+                || normalized.contains("stacktrace")
+                || normalized.contains("exception")
+                || normalized.matches(".*\\b5\\d\\d\\b.*")) {
+            return "Unable to process gas cylinder booking. Please try again.";
+        }
+
+        return message.trim();
+    }
+
+    // =====================================================
+    // Persistent payment error dialog
+    // =====================================================
+
+    private void showPaymentErrorDialog(String message) {
+
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        String safeMessage = normalizePaymentError(message);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Booking Failed")
+                .setMessage(safeMessage)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     // =====================================================

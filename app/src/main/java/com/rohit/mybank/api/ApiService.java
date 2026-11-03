@@ -79,6 +79,7 @@ import com.rohit.mybank.model.qr.QrResolveResponse;
 import retrofit2.http.Query;
 import com.rohit.mybank.model.qr.QrPaymentRequest;
 import com.rohit.mybank.model.qr.QrPaymentResponse;
+import com.rohit.mybank.model.fixeddeposit.MyFixedDepositResponse;
 
 /*
  * ============================================================
@@ -548,11 +549,9 @@ public interface ApiService {
     Call<InsurancePaymentResponse> payInsurance(
             @Body InsurancePaymentRequest request
     );
-
-
     // =========================================================
-    // FIXED DEPOSIT
-    // =========================================================
+// FIXED DEPOSIT
+// =========================================================
 
     /**
      * FD CALCULATOR
@@ -574,6 +573,25 @@ public interface ApiService {
     Call<CreateFixedDepositResponse> createFixedDeposit(
             @Body CreateFixedDepositRequest request
     );
+
+
+    /**
+     * =========================================================
+     * MY FIXED DEPOSITS
+     * =========================================================
+     *
+     * GET /api/fd/my
+     *
+     * Returns all fixed deposits belonging to the
+     * currently authenticated customer.
+     *
+     * The backend determines the customer from
+     * the JWT token.
+     *
+     * =========================================================
+     */
+    @GET("api/fd/my")
+    Call<List<MyFixedDepositResponse>> getMyFixedDeposits();
 
 
     // =========================================================
@@ -826,6 +844,8 @@ public interface ApiService {
     Call<QrPaymentResponse> payUsingQr(
             @Body QrPaymentRequest request
     );
+
+
 
 }
 

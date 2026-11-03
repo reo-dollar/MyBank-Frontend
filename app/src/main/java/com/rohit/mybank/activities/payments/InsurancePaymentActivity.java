@@ -629,35 +629,15 @@ public class InsurancePaymentActivity extends AppCompatActivity {
                                 );
 
                                 if (!response.isSuccessful()) {
-
-                                    Toast.makeText(
-
-                                            InsurancePaymentActivity.this,
-
-                                            "HTTP Error : " + response.code(),
-
-                                            Toast.LENGTH_LONG
-
-                                    ).show();
-
+                                    showPaymentErrorDialog(extractPaymentError(response));
                                     return;
-
                                 }
 
                                 if (response.body() == null) {
-
-                                    Toast.makeText(
-
-                                            InsurancePaymentActivity.this,
-
-                                            "Empty server response.",
-
-                                            Toast.LENGTH_LONG
-
-                                    ).show();
-
+                                    showPaymentErrorDialog(
+                                            "Unable to process insurance payment. Please try again."
+                                    );
                                     return;
-
                                 }
 
                                 InsurancePaymentResponse insuranceResponse =
@@ -671,15 +651,9 @@ public class InsurancePaymentActivity extends AppCompatActivity {
 
                                 } else {
 
-                                    Toast.makeText(
-
-                                            InsurancePaymentActivity.this,
-
-                                            insuranceResponse.getMessage(),
-
-                                            Toast.LENGTH_LONG
-
-                                    ).show();
+                                    showPaymentErrorDialog(
+                                            normalizePaymentError(insuranceResponse.getMessage())
+                                    );
 
                                 }
 
@@ -698,16 +672,13 @@ public class InsurancePaymentActivity extends AppCompatActivity {
                                         "PAY INSURANCE PREMIUM"
                                 );
 
-                                Toast.makeText(
+                                if (call.isCanceled()) {
+                                    return;
+                                }
 
-                                        InsurancePaymentActivity.this,
-
-                                        "Network Error\n"
-                                                + t.getMessage(),
-
-                                        Toast.LENGTH_LONG
-
-                                ).show();
+                                showPaymentErrorDialog(
+                                        "Unable to connect to the server. Please try again."
+                                );
 
                             }
 
@@ -716,6 +687,124 @@ public class InsurancePaymentActivity extends AppCompatActivity {
                 );
 
     }
+
+    // =====================================================
+    // Extract error message from unsuccessful HTTP response
+    // =====================================================
+
+    private String extractPaymentError(Response<InsurancePaymentResponse> response) {
+
+        String message = null;
+
+        try {
+            if (response.errorBody() != null) {
+                message = extractMessageFromBody(response.errorBody().string());
+            }
+        } catch (java.io.IOException ignored) {
+            // Use safe fallback below.
+        }
+
+        String normalized = normalizePaymentError(message);
+
+        if (!"Unable to process insurance payment. Please try again."
+                .equals(normalized)) {
+            return normalized;
+        }
+
+        if (response.code() == 401 || response.code() == 403) {
+            return "Your session may have expired. Please log in again.";
+        }
+
+        return "Unable to process insurance payment. Please try again.";
+    }
+
+    // =====================================================
+    // Extract JSON or plain-text error message
+    // =====================================================
+
+    private String extractMessageFromBody(String body) {
+
+        if (TextUtils.isEmpty(body)) {
+            return null;
+        }
+
+        String trimmed = body.trim();
+
+        if (!trimmed.startsWith("{")) {
+            return trimmed;
+        }
+
+        try {
+            org.json.JSONObject json = new org.json.JSONObject(trimmed);
+
+            String[] keys = {"message", "error", "detail", "description"};
+
+            for (String key : keys) {
+                if (json.has(key) && !json.isNull(key)) {
+                    String value = json.optString(key, "").trim();
+                    if (!value.isEmpty()) {
+                        return value;
+                    }
+                }
+            }
+        } catch (org.json.JSONException ignored) {
+            // Use safe fallback below.
+        }
+
+        return null;
+    }
+
+    // =====================================================
+    // Normalize payment errors
+    // =====================================================
+
+    private String normalizePaymentError(String message) {
+
+        if (TextUtils.isEmpty(message)) {
+            return "Unable to process insurance payment. Please try again.";
+        }
+
+        String normalized = message.trim().toLowerCase(java.util.Locale.ROOT);
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient funds")
+                || normalized.contains("not enough balance")
+                || normalized.contains("not enough funds")
+                || normalized.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        if (normalized.contains("internal server error")
+                || normalized.contains("server error")
+                || normalized.contains("stacktrace")
+                || normalized.contains("exception")
+                || normalized.matches(".*\\b5\\d\\d\\b.*")) {
+            return "Unable to process insurance payment. Please try again.";
+        }
+
+        return message.trim();
+    }
+
+    // =====================================================
+    // Persistent payment error dialog
+    // =====================================================
+
+    private void showPaymentErrorDialog(String message) {
+
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        String safeMessage = normalizePaymentError(message);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Payment Failed")
+                .setMessage(safeMessage)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     // =====================================================
 // Payment Success
 // =====================================================

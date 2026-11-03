@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
@@ -22,6 +23,8 @@ import com.rohit.mybank.model.transfer.TransferResponse;
 import com.rohit.mybank.repository.DashboardRepository;
 import com.rohit.mybank.repository.TransferRepository;
 import com.rohit.mybank.utils.CurrencyUtil;
+
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -136,11 +139,14 @@ public class TransferActivity extends AppCompatActivity {
                                     Response<DashboardResponse> response
                             ) {
 
-                                if (response.isSuccessful()
-                                        && response.body() != null) {
+                                if (
+                                        response.isSuccessful()
+                                                && response.body() != null
+                                ) {
 
                                     DashboardResponse dashboard =
                                             response.body();
+
 
                                     // ---------------------------------
                                     // ACCOUNT NUMBER
@@ -152,6 +158,7 @@ public class TransferActivity extends AppCompatActivity {
                                     tvFromAccount.setText(
                                             fromAccount
                                     );
+
 
                                     // ---------------------------------
                                     // BALANCE
@@ -182,8 +189,7 @@ public class TransferActivity extends AppCompatActivity {
 
                                 Toast.makeText(
                                         TransferActivity.this,
-                                        "Network Error : "
-                                                + t.getMessage(),
+                                        "Network error. Please check your internet connection.",
                                         Toast.LENGTH_SHORT
                                 ).show();
                             }
@@ -321,8 +327,10 @@ public class TransferActivity extends AppCompatActivity {
         // CHECK FINITE VALUE
         // =====================================================
 
-        if (Double.isNaN(amount)
-                || Double.isInfinite(amount)) {
+        if (
+                Double.isNaN(amount)
+                        || Double.isInfinite(amount)
+        ) {
 
             etAmount.setError(
                     "Invalid amount"
@@ -377,9 +385,9 @@ public class TransferActivity extends AppCompatActivity {
                 receiverAccount;
 
 
-        // =========================================================
-// TRANSACTION PIN VERIFICATION
-// =========================================================
+        // =====================================================
+        // TRANSACTION PIN VERIFICATION
+        // =====================================================
 
         PinVerificationDialog.showForTransactionPin(
                 TransferActivity.this,
@@ -396,7 +404,9 @@ public class TransferActivity extends AppCompatActivity {
                         // PIN VERIFIED
                         // =================================================
 
-                        if (TextUtils.isEmpty(transactionPin)) {
+                        if (
+                                TextUtils.isEmpty(transactionPin)
+                        ) {
 
                             Toast.makeText(
                                     TransferActivity.this,
@@ -406,6 +416,7 @@ public class TransferActivity extends AppCompatActivity {
 
                             return;
                         }
+
 
                         // =================================================
                         // PERFORM TRANSFER
@@ -418,10 +429,10 @@ public class TransferActivity extends AppCompatActivity {
                         );
                     }
 
+
                     @Override
                     public void onFailure() {
 
-                        // PIN verification failed.
                         // PinVerificationDialog handles the error message.
                     }
                 }
@@ -440,27 +451,50 @@ public class TransferActivity extends AppCompatActivity {
     ) {
 
         // =====================================================
+        // TRANSACTION PIN SAFETY CHECK
+        // =====================================================
+
+        if (
+                TextUtils.isEmpty(transactionPin)
+                        || !transactionPin.matches("\\d{6}")
+        ) {
+
+            Toast.makeText(
+                    this,
+                    "Invalid Transaction PIN.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        // =====================================================
         // CREATE REQUEST
         // =====================================================
 
         TransferRequest request =
                 new TransferRequest();
 
+
         request.setFromAcc(
                 fromAccount
         );
+
 
         request.setToAcc(
                 receiverAccount
         );
 
+
         request.setAmount(
                 amount
         );
 
-        // IMPORTANT:
-        // Send the verified transaction PIN
-        // to the backend.
+
+        // =====================================================
+        // TRANSACTION PIN
+        // =====================================================
 
         request.setTransactionPin(
                 transactionPin
@@ -508,8 +542,10 @@ public class TransferActivity extends AppCompatActivity {
                                 // SUCCESS
                                 // =================================
 
-                                if (response.isSuccessful()
-                                        && response.body() != null) {
+                                if (
+                                        response.isSuccessful()
+                                                && response.body() != null
+                                ) {
 
                                     TransferResponse transfer =
                                             response.body();
@@ -519,7 +555,10 @@ public class TransferActivity extends AppCompatActivity {
                                     // UPDATE BALANCE
                                     // -----------------------------
 
-                                    if (transfer.getFromAccount() != null) {
+                                    if (
+                                            transfer.getFromAccount()
+                                                    != null
+                                    ) {
 
                                         tvBalance.setText(
                                                 CurrencyUtil.format(
@@ -562,10 +601,12 @@ public class TransferActivity extends AppCompatActivity {
                                                     DashboardActivity.class
                                             );
 
+
                                     intent.addFlags(
                                             Intent.FLAG_ACTIVITY_CLEAR_TOP
                                                     | Intent.FLAG_ACTIVITY_SINGLE_TOP
                                     );
+
 
                                     startActivity(intent);
 
@@ -576,39 +617,16 @@ public class TransferActivity extends AppCompatActivity {
 
 
                                 // =================================
-                                // SERVER ERROR
+                                // SERVER / BUSINESS ERROR
                                 // =================================
 
-                                String error =
-                                        "Transfer failed.";
+                                String errorMessage =
+                                        getErrorMessage(response);
 
-                                try {
-
-                                    if (response.errorBody()
-                                            != null) {
-
-                                        error =
-                                                response.errorBody()
-                                                        .string();
-                                    }
-
-                                } catch (Exception e) {
-
-                                    if (e.getMessage() != null
-                                            && !e.getMessage()
-                                            .isEmpty()) {
-
-                                        error =
-                                                e.getMessage();
-                                    }
-                                }
-
-
-                                Toast.makeText(
-                                        TransferActivity.this,
-                                        error,
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                showErrorDialog(
+                                        "Transfer Failed",
+                                        errorMessage
+                                );
                             }
 
 
@@ -631,15 +649,112 @@ public class TransferActivity extends AppCompatActivity {
                                 );
 
 
-                                Toast.makeText(
-                                        TransferActivity.this,
-                                        "Network Error : "
-                                                + t.getMessage(),
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                if (!call.isCanceled() && !isFinishing() && !isDestroyed()) {
+                                    showErrorDialog(
+                                            "Transfer Failed",
+                                            "Network error. Please check your internet connection."
+                                    );
+                                }
                             }
                         }
                 );
+    }
+
+
+    // =========================================================
+    // EXTRACT BACKEND ERROR MESSAGE
+    // =========================================================
+
+    private String getErrorMessage(Response<?> response) {
+        String defaultMessage = "Transfer failed. Please try again.";
+
+        if (response == null || response.errorBody() == null) {
+            return defaultMessage;
+        }
+
+        try {
+            String errorBody = response.errorBody().string();
+
+            if (TextUtils.isEmpty(errorBody)) {
+                return defaultMessage;
+            }
+
+            String message = extractMessageFromErrorBody(errorBody);
+            if (TextUtils.isEmpty(message)) {
+                return defaultMessage;
+            }
+
+            return normalizeTransferError(message);
+
+        } catch (java.io.IOException e) {
+            return defaultMessage;
+        }
+    }
+
+    private String extractMessageFromErrorBody(String errorBody) {
+        String body = errorBody == null ? "" : errorBody.trim();
+
+        if (TextUtils.isEmpty(body)) {
+            return "";
+        }
+
+        try {
+            JSONObject jsonObject = new JSONObject(body);
+            String[] fields = {"message", "error", "detail", "description"};
+
+            for (String field : fields) {
+                if (jsonObject.has(field) && !jsonObject.isNull(field)) {
+                    Object value = jsonObject.get(field);
+
+                    if (value instanceof String) {
+                        String message = ((String) value).trim();
+
+                        if (!TextUtils.isEmpty(message)
+                                && !"Bad Request".equalsIgnoreCase(message)
+                                && !"Internal Server Error".equalsIgnoreCase(message)) {
+                            return message;
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+            // The response may be plain text rather than JSON.
+        }
+
+        if (!body.startsWith("{") && !body.startsWith("[")
+                && body.length() <= 500) {
+            return body;
+        }
+
+        return "";
+    }
+
+    private String normalizeTransferError(String message) {
+        String normalized = message.trim().toLowerCase(java.util.Locale.ROOT);
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient account balance")
+                || normalized.contains("not enough balance")
+                || normalized.contains("low balance")) {
+            return "Insufficient balance.";
+        }
+
+        return message.trim();
+    }
+
+    private void showErrorDialog(String title, String message) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(TextUtils.isEmpty(message)
+                        ? "Transfer failed. Please try again."
+                        : message)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 
 
@@ -652,12 +767,14 @@ public class TransferActivity extends AppCompatActivity {
 
         super.onDestroy();
 
+
         if (progressBar != null) {
 
             progressBar.setVisibility(
                     View.GONE
             );
         }
+
 
         if (btnTransfer != null) {
 

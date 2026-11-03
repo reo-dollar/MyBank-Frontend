@@ -67,9 +67,6 @@ public class LoanEMIScheduleActivity
     // =========================================================
     // VIEWS
     // =========================================================
-
-    private ImageButton btnBack;
-
     private TextView tvTitle;
 
     private TextView tvLoanNumber;
@@ -173,18 +170,7 @@ public class LoanEMIScheduleActivity
         // -----------------------------------------------------
         // INITIALIZE RECYCLER VIEW
         // -----------------------------------------------------
-
         initializeRecyclerView();
-
-
-        // -----------------------------------------------------
-        // BACK BUTTON
-        // -----------------------------------------------------
-
-        btnBack.setOnClickListener(
-                v -> finish()
-        );
-
 
         // -----------------------------------------------------
         // INITIAL STATE
@@ -212,13 +198,6 @@ public class LoanEMIScheduleActivity
     // =========================================================
 
     private void initializeViews() {
-
-        btnBack =
-                findViewById(
-                        R.id.btnBack
-                );
-
-
         tvTitle =
                 findViewById(
                         R.id.tvTitle

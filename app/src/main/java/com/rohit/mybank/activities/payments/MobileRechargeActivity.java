@@ -2,10 +2,13 @@ package com.rohit.mybank.activities.payments;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -14,17 +17,22 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.rohit.mybank.R;
+import com.rohit.mybank.activities.pin.VerifyTransactionPinActivity;
 import com.rohit.mybank.callback.PaymentCallback;
 import com.rohit.mybank.databinding.ActivityMobileRechargeBinding;
-import com.rohit.mybank.repository.MobileRechargeRepository;
-import com.rohit.mybank.utils.PaymentSecurityHelper;
-import com.rohit.mybank.activities.pin.VerifyTransactionPinActivity;
 import com.rohit.mybank.model.recharge.MobileRechargeRequest;
 import com.rohit.mybank.model.recharge.MobileRechargeResponse;
+import com.rohit.mybank.repository.MobileRechargeRepository;
+import com.rohit.mybank.utils.PaymentSecurityHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,9 +40,17 @@ import retrofit2.Response;
 
 public class MobileRechargeActivity extends AppCompatActivity {
 
+    // ============================================================
+    // VIEWS AND REPOSITORY
+    // ============================================================
+
     private ActivityMobileRechargeBinding binding;
 
     private MobileRechargeRepository repository;
+
+    // ============================================================
+    // RECHARGE DATA
+    // ============================================================
 
     private String mobile = "";
 
@@ -44,11 +60,15 @@ public class MobileRechargeActivity extends AppCompatActivity {
 
     private double rechargeAmount = 0;
 
+    private boolean rechargeInProgress = false;
+
+    // ============================================================
+    // TRANSACTION PIN VERIFICATION
+    // ============================================================
+
     private final ActivityResultLauncher<Intent> pinVerificationLauncher =
             registerForActivityResult(
-
                     new ActivityResultContracts.StartActivityForResult(),
-
                     result -> {
 
                         if (result.getResultCode() != RESULT_OK) {
@@ -76,12 +96,13 @@ public class MobileRechargeActivity extends AppCompatActivity {
                                     "Transaction PIN verification failed.",
                                     Toast.LENGTH_SHORT
                             ).show();
-
                         }
-
                     }
-
             );
+
+    // ============================================================
+    // ON CREATE
+    // ============================================================
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,12 +110,13 @@ public class MobileRechargeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         binding =
-                ActivityMobileRechargeBinding.inflate(getLayoutInflater());
+                ActivityMobileRechargeBinding.inflate(
+                        getLayoutInflater()
+                );
 
         setContentView(binding.getRoot());
 
-        repository =
-                new MobileRechargeRepository(this);
+        repository = new MobileRechargeRepository(this);
 
         initializeViews();
 
@@ -103,110 +125,88 @@ public class MobileRechargeActivity extends AppCompatActivity {
         loadCircles();
 
         setupListeners();
-
     }
+
+    // ============================================================
+    // INITIALIZE VIEWS
+    // ============================================================
 
     private void initializeViews() {
 
-        binding.toolbar.setNavigationOnClickListener(v -> finish());
+        binding.toolbar.setNavigationOnClickListener(
+                v -> finish()
+        );
 
         binding.btnRecharge.setEnabled(false);
 
+        binding.progressBar.setVisibility(View.GONE);
     }
-    // =====================================================
-// Load Operators
-// =====================================================
+
+    // ============================================================
+    // LOAD OPERATORS
+    // ============================================================
 
     private void loadOperators() {
 
         List<String> operators = Arrays.asList(
-
                 "Select Operator",
-
                 "Airtel",
-
                 "Jio",
-
                 "Vi",
-
                 "BSNL",
-
                 "MTNL"
-
         );
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(
-
-                        this,
-
-                        android.R.layout.simple_dropdown_item_1line,
-
-                        operators
-
-                );
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                operators
+        );
 
         binding.actOperator.setAdapter(adapter);
-
     }
 
-// =====================================================
-// Load Circles
-// =====================================================
+    // ============================================================
+    // LOAD CIRCLES
+    // ============================================================
 
     private void loadCircles() {
 
         List<String> circles = Arrays.asList(
-
                 "Select Circle",
-
                 "Maharashtra",
-
                 "Delhi",
-
                 "Gujarat",
-
                 "Karnataka",
-
                 "Tamil Nadu",
-
                 "Kerala",
-
                 "Punjab",
-
                 "Rajasthan",
-
                 "Uttar Pradesh",
-
                 "Madhya Pradesh",
-
                 "West Bengal"
-
         );
 
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(
-
-                        this,
-
-                        android.R.layout.simple_dropdown_item_1line,
-
-                        circles
-
-                );
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                circles
+        );
 
         binding.actCircle.setAdapter(adapter);
-
     }
 
-// =====================================================
-// Listeners
-// =====================================================
+    // ============================================================
+    // SETUP LISTENERS
+    // ============================================================
 
     private void setupListeners() {
 
-        binding.etMobileNumber.addTextChangedListener(
+        // --------------------------------------------------------
+        // MOBILE NUMBER LISTENER
+        // --------------------------------------------------------
 
+        binding.etMobileNumber.addTextChangedListener(
                 new TextWatcher() {
 
                     @Override
@@ -216,7 +216,6 @@ public class MobileRechargeActivity extends AppCompatActivity {
                             int count,
                             int after
                     ) {
-
                     }
 
                     @Override
@@ -226,7 +225,6 @@ public class MobileRechargeActivity extends AppCompatActivity {
                             int before,
                             int count
                     ) {
-
                     }
 
                     @Override
@@ -234,16 +232,18 @@ public class MobileRechargeActivity extends AppCompatActivity {
                             Editable editable
                     ) {
 
+                        binding.layoutMobileNumber.setError(null);
+
                         updateSummary();
-
                     }
-
                 }
-
         );
+
+        // --------------------------------------------------------
+        // AMOUNT LISTENER
+        // --------------------------------------------------------
 
         binding.etAmount.addTextChangedListener(
-
                 new TextWatcher() {
 
                     @Override
@@ -253,7 +253,6 @@ public class MobileRechargeActivity extends AppCompatActivity {
                             int count,
                             int after
                     ) {
-
                     }
 
                     @Override
@@ -263,7 +262,6 @@ public class MobileRechargeActivity extends AppCompatActivity {
                             int before,
                             int count
                     ) {
-
                     }
 
                     @Override
@@ -271,49 +269,53 @@ public class MobileRechargeActivity extends AppCompatActivity {
                             Editable editable
                     ) {
 
+                        binding.layoutAmount.setError(null);
+
                         updateSummary();
-
                     }
-
                 }
-
         );
+
+        // --------------------------------------------------------
+        // OPERATOR LISTENER
+        // --------------------------------------------------------
 
         binding.actOperator.setOnItemClickListener(
-
-                (parent, view, position, id) ->
-
-                        updateSummary()
-
+                (parent, view, position, id) -> updateSummary()
         );
+
+        // --------------------------------------------------------
+        // CIRCLE LISTENER
+        // --------------------------------------------------------
 
         binding.actCircle.setOnItemClickListener(
-
-                (parent, view, position, id) ->
-
-                        updateSummary()
-
+                (parent, view, position, id) -> updateSummary()
         );
 
-        binding.btnRecharge.setOnClickListener(
+        // --------------------------------------------------------
+        // RECHARGE BUTTON
+        // --------------------------------------------------------
 
-                v -> {
+        binding.btnRecharge.setOnClickListener(v -> {
 
-                    if (validateInput()) {
+            if (rechargeInProgress) {
+                return;
+            }
 
-                        showConfirmation();
+            updateSummary();
 
-                    }
+            if (validateInput()) {
 
-                }
+                hideKeyboard();
 
-        );
-
+                showConfirmation();
+            }
+        });
     }
 
-// =====================================================
-// Update Summary
-// =====================================================
+    // ============================================================
+    // UPDATE RECHARGE SUMMARY
+    // ============================================================
 
     private void updateSummary() {
 
@@ -325,14 +327,21 @@ public class MobileRechargeActivity extends AppCompatActivity {
 
         rechargeAmount = 0;
 
+        // --------------------------------------------------------
+        // MOBILE NUMBER
+        // --------------------------------------------------------
+
         if (binding.etMobileNumber.getText() != null) {
 
             mobile = binding.etMobileNumber
                     .getText()
                     .toString()
                     .trim();
-
         }
+
+        // --------------------------------------------------------
+        // OPERATOR
+        // --------------------------------------------------------
 
         if (binding.actOperator.getText() != null) {
 
@@ -340,8 +349,11 @@ public class MobileRechargeActivity extends AppCompatActivity {
                     .getText()
                     .toString()
                     .trim();
-
         }
+
+        // --------------------------------------------------------
+        // CIRCLE
+        // --------------------------------------------------------
 
         if (binding.actCircle.getText() != null) {
 
@@ -349,22 +361,41 @@ public class MobileRechargeActivity extends AppCompatActivity {
                     .getText()
                     .toString()
                     .trim();
-
         }
 
-        if (binding.etAmount.getText() != null &&
-                !binding.etAmount.getText().toString().trim().isEmpty()) {
+        // --------------------------------------------------------
+        // RECHARGE AMOUNT
+        // --------------------------------------------------------
 
-            rechargeAmount = Double.parseDouble(
+        if (binding.etAmount.getText() != null) {
 
-                    binding.etAmount
-                            .getText()
-                            .toString()
-                            .trim()
+            String amountText = binding.etAmount
+                    .getText()
+                    .toString()
+                    .trim();
 
-            );
+            if (!amountText.isEmpty()) {
 
+                try {
+
+                    rechargeAmount = Double.parseDouble(amountText);
+
+                    if (Double.isNaN(rechargeAmount)
+                            || Double.isInfinite(rechargeAmount)) {
+
+                        rechargeAmount = 0;
+                    }
+
+                } catch (NumberFormatException ignored) {
+
+                    rechargeAmount = 0;
+                }
+            }
         }
+
+        // --------------------------------------------------------
+        // SUMMARY VIEWS
+        // --------------------------------------------------------
 
         binding.tvSummaryMobile.setText(mobile);
 
@@ -373,26 +404,39 @@ public class MobileRechargeActivity extends AppCompatActivity {
         binding.tvSummaryCircle.setText(circle);
 
         binding.tvSummaryAmount.setText(
-
-                "₹" + rechargeAmount
-
+                String.format(
+                        Locale.getDefault(),
+                        "₹%.2f",
+                        rechargeAmount
+                )
         );
+
+        // --------------------------------------------------------
+        // BUTTON STATE
+        // --------------------------------------------------------
+
+        boolean validInput =
+                mobile.matches("\\d{10}")
+                        && !operator.isEmpty()
+                        && !operator.equals("Select Operator")
+                        && !circle.isEmpty()
+                        && !circle.equals("Select Circle")
+                        && rechargeAmount > 0;
 
         binding.btnRecharge.setEnabled(
-
-                !mobile.isEmpty()
-                        && !operator.equals("Select Operator")
-                        && !circle.equals("Select Circle")
-                        && rechargeAmount > 0
-
+                validInput && !rechargeInProgress
         );
-
     }
-    // =====================================================
-// Validate Input
-// =====================================================
+
+    // ============================================================
+    // VALIDATE INPUT
+    // ============================================================
 
     private boolean validateInput() {
+
+        // --------------------------------------------------------
+        // MOBILE NUMBER
+        // --------------------------------------------------------
 
         if (mobile.isEmpty()) {
 
@@ -400,81 +444,98 @@ public class MobileRechargeActivity extends AppCompatActivity {
                     "Enter Mobile Number"
             );
 
+            binding.etMobileNumber.requestFocus();
+
             return false;
-
         }
-
-        binding.layoutMobileNumber.setError(null);
 
         if (!mobile.matches("\\d{10}")) {
 
             binding.layoutMobileNumber.setError(
-                    "Enter Valid 10-digit Mobile Number"
+                    "Enter valid 10-digit mobile number"
             );
 
-            return false;
+            binding.etMobileNumber.requestFocus();
 
+            return false;
         }
+
+        binding.layoutMobileNumber.setError(null);
+
+        // --------------------------------------------------------
+        // OPERATOR
+        // --------------------------------------------------------
 
         if (operator.isEmpty()
                 || operator.equals("Select Operator")) {
 
             Toast.makeText(
                     this,
-                    "Select Operator",
+                    "Please select an operator.",
                     Toast.LENGTH_SHORT
             ).show();
 
-            return false;
+            binding.actOperator.requestFocus();
 
+            binding.actOperator.showDropDown();
+
+            return false;
         }
+
+        // --------------------------------------------------------
+        // CIRCLE
+        // --------------------------------------------------------
 
         if (circle.isEmpty()
                 || circle.equals("Select Circle")) {
 
             Toast.makeText(
                     this,
-                    "Select Circle",
+                    "Please select a telecom circle.",
                     Toast.LENGTH_SHORT
             ).show();
 
-            return false;
+            binding.actCircle.requestFocus();
 
+            binding.actCircle.showDropDown();
+
+            return false;
         }
 
-        if (rechargeAmount <= 0) {
+        // --------------------------------------------------------
+        // AMOUNT
+        // --------------------------------------------------------
+
+        if (rechargeAmount <= 0
+                || Double.isNaN(rechargeAmount)
+                || Double.isInfinite(rechargeAmount)) {
 
             binding.layoutAmount.setError(
-                    "Enter Recharge Amount"
+                    "Enter a valid recharge amount"
             );
 
-            return false;
+            binding.etAmount.requestFocus();
 
+            return false;
         }
 
         binding.layoutAmount.setError(null);
 
         return true;
-
     }
 
-// =====================================================
-// Confirmation Dialog
-// =====================================================
+    // ============================================================
+    // CONFIRMATION DIALOG
+    // ============================================================
 
     private void showConfirmation() {
 
         String message =
-
-                "Mobile Number : " + mobile +
-
-                        "\n\nOperator : " + operator +
-
-                        "\nCircle : " + circle +
-
-                        "\nAmount : ₹" + rechargeAmount +
-
-                        "\n\nDo you want to continue?";
+                "Mobile Number: " + mobile
+                        + "\n\nOperator: " + operator
+                        + "\nCircle: " + circle
+                        + "\nAmount: " + formatCurrency(rechargeAmount)
+                        + "\n\nDo you want to continue?";
 
         new AlertDialog.Builder(this)
 
@@ -488,88 +549,108 @@ public class MobileRechargeActivity extends AppCompatActivity {
                 )
 
                 .setPositiveButton(
-
                         "Recharge",
+                        (dialog, which) -> {
 
-                        (dialog, which) ->
+                            PaymentSecurityHelper securityHelper =
+                                    new PaymentSecurityHelper(
+                                            MobileRechargeActivity.this,
+                                            pinVerificationLauncher,
+                                            new PaymentCallback() {
 
-                                new PaymentSecurityHelper(
+                                                @Override
+                                                public void onSuccess() {
 
-                                        MobileRechargeActivity.this,
-
-                                        pinVerificationLauncher,
-
-                                        new PaymentCallback() {
-
-                                            @Override
-                                            public void onSuccess() {
-
-                                                performRecharge();
-
+                                                    performRecharge();
+                                                }
                                             }
+                                    );
 
-                                        }
-
-                                ).verifyPayment()
-
+                            securityHelper.verifyPayment();
+                        }
                 )
 
                 .show();
-
     }
-    // =====================================================
-// Perform Recharge
-// =====================================================
+
+    // ============================================================
+    // PERFORM RECHARGE
+    // ============================================================
 
     private void performRecharge() {
 
-        MobileRechargeRequest request =
+        if (rechargeInProgress || isFinishing()) {
+            return;
+        }
+
+        updateSummary();
+
+        if (!validateInput()) {
+            return;
+        }
+
+        MobileRechargeRequest rechargeRequest =
                 new MobileRechargeRequest();
 
-        request.setMobileNumber(mobile);
+        rechargeRequest.setMobileNumber(mobile);
 
-        request.setOperator(operator);
+        rechargeRequest.setOperator(operator);
 
-        request.setCircle(circle);
+        rechargeRequest.setCircle(circle);
 
-        request.setAmount(rechargeAmount);
+        rechargeRequest.setAmount(rechargeAmount);
+
+        rechargeInProgress = true;
 
         showLoading(true);
 
-        repository.recharge(request)
-
+        repository.recharge(rechargeRequest)
                 .enqueue(new Callback<MobileRechargeResponse>() {
 
                     @Override
                     public void onResponse(
                             @NonNull Call<MobileRechargeResponse> call,
-                            @NonNull Response<MobileRechargeResponse> response) {
+                            @NonNull Response<MobileRechargeResponse> response
+                    ) {
+
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        rechargeInProgress = false;
 
                         showLoading(false);
 
+                        // -----------------------------------------
+                        // HTTP ERROR RESPONSE
+                        // -----------------------------------------
+
                         if (!response.isSuccessful()) {
 
-                            Toast.makeText(
-                                    MobileRechargeActivity.this,
-                                    "Server Error : " + response.code(),
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            String errorMessage =
+                                    extractRechargeError(response);
+
+                            showErrorDialog(errorMessage);
 
                             return;
-
                         }
+
+                        // -----------------------------------------
+                        // EMPTY RESPONSE
+                        // -----------------------------------------
 
                         if (response.body() == null) {
 
-                            Toast.makeText(
-                                    MobileRechargeActivity.this,
-                                    "Empty server response.",
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            showErrorDialog(
+                                    "Unable to process recharge. Please try again later."
+                            );
 
                             return;
-
                         }
+
+                        // -----------------------------------------
+                        // PROCESS RESPONSE
+                        // -----------------------------------------
 
                         MobileRechargeResponse rechargeResponse =
                                 response.body();
@@ -581,73 +662,256 @@ public class MobileRechargeActivity extends AppCompatActivity {
                         } else {
 
                             showErrorDialog(
-                                    rechargeResponse.getMessage()
+                                    normalizeRechargeError(
+                                            rechargeResponse.getMessage()
+                                    )
                             );
-
                         }
-
                     }
 
                     @Override
                     public void onFailure(
                             @NonNull Call<MobileRechargeResponse> call,
-                            @NonNull Throwable t) {
+                            @NonNull Throwable throwable
+                    ) {
+
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        rechargeInProgress = false;
 
                         showLoading(false);
 
-                        Toast.makeText(
-                                MobileRechargeActivity.this,
-                                "Network Error\n\n"
-                                        + t.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
+                        if (call.isCanceled()) {
+                            return;
+                        }
 
+                        showErrorDialog(
+                                "Unable to connect to the server. Please try again."
+                        );
                     }
-
                 });
-
     }
 
-// =====================================================
-// Loading
-// =====================================================
+    // ============================================================
+    // EXTRACT ERROR FROM UNSUCCESSFUL HTTP RESPONSE
+    // ============================================================
+
+    private String extractRechargeError(
+            Response<MobileRechargeResponse> response
+    ) {
+
+        String errorMessage = null;
+
+        try {
+
+            if (response.errorBody() != null) {
+
+                String errorBody =
+                        response.errorBody().string();
+
+                errorMessage =
+                        extractMessageFromBody(errorBody);
+            }
+
+        } catch (IOException ignored) {
+
+            // Use the safe fallback message below.
+        }
+
+        String normalizedMessage =
+                normalizeRechargeError(errorMessage);
+
+        if (!normalizedMessage.equals(
+                "Unable to process recharge. Please try again later."
+        )) {
+
+            return normalizedMessage;
+        }
+
+        // --------------------------------------------------------
+        // AUTHENTICATION ERRORS
+        // --------------------------------------------------------
+
+        if (response.code() == 401
+                || response.code() == 403) {
+
+            return "Your session may have expired. Please log in again.";
+        }
+
+        // --------------------------------------------------------
+        // GENERIC SERVER ERROR
+        // --------------------------------------------------------
+
+        return "Unable to process recharge. Please try again later.";
+    }
+
+    // ============================================================
+    // EXTRACT MESSAGE FROM ERROR BODY
+    // ============================================================
+
+    private String extractMessageFromBody(String body) {
+
+        if (body == null || body.trim().isEmpty()) {
+            return null;
+        }
+
+        String trimmedBody = body.trim();
+
+        // --------------------------------------------------------
+        // PLAIN-TEXT RESPONSE
+        // --------------------------------------------------------
+
+        if (!trimmedBody.startsWith("{")) {
+
+            return trimmedBody;
+        }
+
+        // --------------------------------------------------------
+        // JSON RESPONSE
+        // --------------------------------------------------------
+
+        try {
+
+            JSONObject json =
+                    new JSONObject(trimmedBody);
+
+            String[] possibleKeys = {
+                    "message",
+                    "error",
+                    "detail",
+                    "description"
+            };
+
+            for (String key : possibleKeys) {
+
+                if (json.has(key) && !json.isNull(key)) {
+
+                    String value =
+                            json.optString(key, "").trim();
+
+                    if (!value.isEmpty()) {
+                        return value;
+                    }
+                }
+            }
+
+        } catch (JSONException ignored) {
+
+            // Fall through to the safe fallback.
+        }
+
+        return null;
+    }
+
+    // ============================================================
+    // NORMALIZE RECHARGE ERROR
+    // ============================================================
+
+    private String normalizeRechargeError(String message) {
+
+        if (message == null || message.trim().isEmpty()) {
+
+            return "Unable to process recharge. Please try again later.";
+        }
+
+        String normalized =
+                message.trim().toLowerCase(Locale.ROOT);
+
+        // --------------------------------------------------------
+        // INSUFFICIENT BALANCE
+        // --------------------------------------------------------
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient funds")
+                || normalized.contains("low balance")
+                || normalized.contains("not enough balance")
+                || normalized.contains("not enough funds")) {
+
+            return "Insufficient balance";
+        }
+
+        // --------------------------------------------------------
+        // INVALID RECHARGE DETAILS
+        // --------------------------------------------------------
+
+        if (normalized.contains("invalid mobile")) {
+
+            return "Please enter a valid mobile number.";
+        }
+
+        if (normalized.contains("invalid operator")) {
+
+            return "Please select a valid mobile operator.";
+        }
+
+        if (normalized.contains("invalid circle")) {
+
+            return "Please select a valid telecom circle.";
+        }
+
+        // --------------------------------------------------------
+        // SERVER ERRORS
+        // --------------------------------------------------------
+
+        if (normalized.matches(".*\\b5\\d\\d\\b.*")
+                || normalized.contains("internal server error")
+                || normalized.contains("server error")
+                || normalized.contains("exception")
+                || normalized.contains("stacktrace")) {
+
+            return "Unable to process recharge. Please try again later.";
+        }
+
+        /*
+         * Avoid exposing arbitrary backend exception details
+         * to the customer.
+         */
+        return "Unable to process recharge. Please try again later.";
+    }
+
+    // ============================================================
+    // LOADING STATE
+    // ============================================================
 
     private void showLoading(boolean loading) {
 
+        if (binding == null) {
+            return;
+        }
+
         binding.progressBar.setVisibility(
-
-                loading
-                        ? View.VISIBLE
-                        : View.GONE
-
+                loading ? View.VISIBLE : View.GONE
         );
 
-        binding.btnRecharge.setEnabled(!loading);
-
+        binding.btnRecharge.setEnabled(
+                !loading
+                        && mobile.matches("\\d{10}")
+                        && !operator.isEmpty()
+                        && !operator.equals("Select Operator")
+                        && !circle.isEmpty()
+                        && !circle.equals("Select Circle")
+                        && rechargeAmount > 0
+        );
     }
-    // =====================================================
-// Success Dialog
-// =====================================================
+
+    // ============================================================
+    // SUCCESS DIALOG
+    // ============================================================
 
     private void showSuccessDialog(
             MobileRechargeResponse response
     ) {
 
         String receipt =
-
-                "✓ " + response.getMessage() +
-
-                        "\n\nPayment ID : " + response.getPaymentId() +
-
-                        "\n\nMobile Number : " + mobile +
-
-                        "\nOperator : " + operator +
-
-                        "\nCircle : " + circle +
-
-                        "\nAmount : ₹" + rechargeAmount +
-
-                        "\n\nStatus : SUCCESS";
+                "✓ " + response.getMessage()
+                        + "\n\nPayment ID: " + response.getPaymentId()
+                        + "\n\nMobile Number: " + mobile
+                        + "\nOperator: " + operator
+                        + "\nCircle: " + circle
+                        + "\nAmount: " + formatCurrency(rechargeAmount)
+                        + "\n\nStatus: SUCCESS";
 
         new AlertDialog.Builder(this)
 
@@ -658,35 +922,32 @@ public class MobileRechargeActivity extends AppCompatActivity {
                 .setMessage(receipt)
 
                 .setPositiveButton(
-
                         "Done",
-
                         (dialog, which) -> {
 
                             dialog.dismiss();
 
                             finish();
-
                         }
-
                 )
 
                 .show();
-
     }
 
-// =====================================================
-// Error Dialog
-// =====================================================
+    // ============================================================
+    // ERROR DIALOG
+    // ============================================================
 
-    private void showErrorDialog(
-            String message
-    ) {
+    private void showErrorDialog(String message) {
+
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
 
         if (message == null || message.trim().isEmpty()) {
 
-            message = "Recharge failed.";
-
+            message =
+                    "Unable to process recharge. Please try again later.";
         }
 
         new AlertDialog.Builder(this)
@@ -696,28 +957,63 @@ public class MobileRechargeActivity extends AppCompatActivity {
                 .setMessage(message)
 
                 .setPositiveButton(
-
                         "OK",
-
                         (dialog, which) -> dialog.dismiss()
-
                 )
 
                 .show();
-
     }
 
-// =====================================================
-// Activity Destroy
-// =====================================================
+    // ============================================================
+    // FORMAT CURRENCY
+    // ============================================================
+
+    private String formatCurrency(double amount) {
+
+        return String.format(
+                Locale.getDefault(),
+                "₹%.2f",
+                amount
+        );
+    }
+
+    // ============================================================
+    // HIDE KEYBOARD
+    // ============================================================
+
+    private void hideKeyboard() {
+
+        if (binding == null) {
+            return;
+        }
+
+        InputMethodManager inputMethodManager =
+                (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (inputMethodManager != null) {
+
+            inputMethodManager.hideSoftInputFromWindow(
+                    binding.getRoot().getWindowToken(),
+                    0
+            );
+        }
+    }
+
+    // ============================================================
+    // ACTIVITY DESTROY
+    // ============================================================
 
     @Override
     protected void onDestroy() {
 
+        if (binding != null) {
+
+            binding.getRoot().clearFocus();
+
+            binding = null;
+        }
+
         super.onDestroy();
-
-        binding = null;
-
     }
-
 }

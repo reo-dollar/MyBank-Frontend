@@ -13,6 +13,7 @@
 
     tools:context=".activities.payments.recurringdeposit.RDCalculatorActivity">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,38 +91,109 @@
 
         <!-- ===================================================== -->
         <!-- INTEREST RATE -->
+        <!-- FIXED BY MYBANK -->
         <!-- ===================================================== -->
 
-        <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/layoutInterestRate"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
             android:layout_marginTop="16dp"
 
-            android:hint="Interest Rate (%)"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
 
-            app:boxBackgroundMode="outline"
+            app:strokeColor="?attr/colorOutline"
+            app:strokeWidth="1dp">
 
-            app:boxCornerRadiusBottomEnd="14dp"
-            app:boxCornerRadiusBottomStart="14dp"
-            app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp"
 
-            app:boxStrokeColor="@color/text_secondary"
-            app:hintTextColor="@color/text_secondary">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etInterestRate"
-
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:inputType="numberDecimal"
+                android:orientation="vertical"
 
-                android:textColor="@color/text_primary"
-                android:textColorHint="@color/text_secondary" />
+                android:paddingStart="14dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="10dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Interest Rate Label -->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Interest Rate"
+
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+
+                <!-- Rate + Fixed By MyBank -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="2dp"
+
+                    android:gravity="center_vertical"
+
+                    android:orientation="horizontal">
+
+
+                    <!-- Fixed Rate -->
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etInterestRate"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+
+                        android:layout_weight="1"
+
+                        android:background="@android:color/transparent"
+
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:inputType="none"
+
+                        android:paddingStart="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingBottom="0dp"
+
+                        android:text="7.00% p.a."
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+
+                    <!-- Fixed By MyBank -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="8dp"
+
+                        android:text="Fixed by MyBank"
+
+                        android:textColor="@color/success"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <!-- ===================================================== -->
@@ -212,9 +284,7 @@
                 android:padding="20dp">
 
 
-                <!-- ================================================= -->
                 <!-- RESULT TITLE -->
-                <!-- ================================================= -->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -227,9 +297,7 @@
                     android:textStyle="bold" />
 
 
-                <!-- ================================================= -->
-                <!-- TOTAL DEPOSIT LABEL -->
-                <!-- ================================================= -->
+                <!-- TOTAL DEPOSIT -->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -243,8 +311,6 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-
-                <!-- TOTAL DEPOSIT VALUE -->
 
                 <TextView
                     android:id="@+id/tvTotalDeposit"
@@ -261,9 +327,7 @@
                     android:textStyle="bold" />
 
 
-                <!-- ================================================= -->
-                <!-- ESTIMATED INTEREST LABEL -->
-                <!-- ================================================= -->
+                <!-- ESTIMATED INTEREST -->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -277,8 +341,6 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-
-                <!-- ESTIMATED INTEREST VALUE -->
 
                 <TextView
                     android:id="@+id/tvEstimatedInterest"
@@ -295,9 +357,7 @@
                     android:textStyle="bold" />
 
 
-                <!-- ================================================= -->
-                <!-- MATURITY AMOUNT LABEL -->
-                <!-- ================================================= -->
+                <!-- MATURITY AMOUNT -->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -311,8 +371,6 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-
-                <!-- MATURITY AMOUNT VALUE -->
 
                 <TextView
                     android:id="@+id/tvMaturityAmount"

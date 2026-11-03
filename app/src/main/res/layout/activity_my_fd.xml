@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical">
+
+
+    <!-- ================================================= -->
+    <!-- TOOLBAR -->
+    <!-- ================================================= -->
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+
+        android:background="?attr/colorSurface"
+
+        app:navigationIcon="@drawable/ic_arrow_back"
+
+        app:title="My Fixed Deposits" />
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+
+        android:paddingStart="20dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="12dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:text="Your Fixed Deposits"
+
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="5dp"
+
+            android:text="Your FD investments will appear here."
+
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+    <!-- ================================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================================= -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        android:layout_weight="1">
+
+
+        <!-- ============================================= -->
+        <!-- FIXED DEPOSIT LIST -->
+        <!-- ============================================= -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerMyFd"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:clipToPadding="false"
+
+            android:paddingTop="4dp"
+            android:paddingBottom="20dp"
+
+            android:scrollbars="vertical" />
+
+
+        <!-- ============================================= -->
+        <!-- LOADING -->
+        <!-- ============================================= -->
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+
+            android:visibility="gone" />
+
+
+        <!-- ============================================= -->
+        <!-- EMPTY / ERROR STATE -->
+        <!-- ============================================= -->
+
+        <TextView
+            android:id="@+id/tvEmpty"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="center"
+
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+
+            android:gravity="center"
+
+            android:text="You don't have any Fixed Deposits yet."
+            android:textSize="15sp"
+
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+</LinearLayout>

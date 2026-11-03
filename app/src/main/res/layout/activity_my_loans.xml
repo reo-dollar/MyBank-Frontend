@@ -27,26 +27,6 @@
         android:paddingEnd="20dp"
         android:paddingBottom="16dp">
 
-
-        <!-- BACK BUTTON -->
-
-        <ImageButton
-            android:id="@+id/btnBack"
-
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-
-            android:background="?attr/selectableItemBackgroundBorderless"
-
-            android:contentDescription="Back"
-
-            android:padding="10dp"
-
-            android:src="@android:drawable/ic_menu_revert"
-
-            android:tint="@color/text_primary" />
-
-
         <!-- TITLE -->
 
         <TextView

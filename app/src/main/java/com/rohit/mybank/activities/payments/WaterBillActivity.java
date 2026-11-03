@@ -494,36 +494,13 @@ public class WaterBillActivity extends AppCompatActivity {
                                 binding.btnPayBill.setEnabled(true);
 
                                 if (!response.isSuccessful()) {
-
-                                    Toast.makeText(
-
-                                            WaterBillActivity.this,
-
-                                            "HTTP Error : "
-                                                    + response.code(),
-
-                                            Toast.LENGTH_LONG
-
-                                    ).show();
-
+                                    showPaymentErrorDialog(extractPaymentError(response));
                                     return;
-
                                 }
 
                                 if (response.body() == null) {
-
-                                    Toast.makeText(
-
-                                            WaterBillActivity.this,
-
-                                            "Empty server response.",
-
-                                            Toast.LENGTH_LONG
-
-                                    ).show();
-
+                                    showPaymentErrorDialog("Unable to process the payment right now. Please try again.");
                                     return;
-
                                 }
 
                                 WaterBillResponse billResponse =
@@ -536,17 +513,9 @@ public class WaterBillActivity extends AppCompatActivity {
                                     );
 
                                 } else {
-
-                                    Toast.makeText(
-
-                                            WaterBillActivity.this,
-
-                                            billResponse.getMessage(),
-
-                                            Toast.LENGTH_LONG
-
-                                    ).show();
-
+                                    showPaymentErrorDialog(
+                                            normalizePaymentError(billResponse.getMessage())
+                                    );
                                 }
 
                             }
@@ -560,16 +529,13 @@ public class WaterBillActivity extends AppCompatActivity {
 
                                 binding.btnPayBill.setEnabled(true);
 
-                                Toast.makeText(
+                                if (call.isCanceled()) {
+                                    return;
+                                }
 
-                                        WaterBillActivity.this,
-
-                                        "Network Error\n"
-                                                + t.getMessage(),
-
-                                        Toast.LENGTH_LONG
-
-                                ).show();
+                                showPaymentErrorDialog(
+                                        "Unable to connect to the server. Please check your internet connection and try again."
+                                );
 
                             }
 
@@ -578,6 +544,87 @@ public class WaterBillActivity extends AppCompatActivity {
                 );
 
     }
+
+    // =====================================================
+    // Payment Error Handling
+    // =====================================================
+
+    private String extractPaymentError(Response<WaterBillResponse> response) {
+        String fallback = "Unable to process the payment right now. Please try again.";
+
+        try {
+            if (response.errorBody() != null) {
+                return normalizePaymentError(
+                        extractMessageFromBody(response.errorBody().string())
+                );
+            }
+        } catch (Exception ignored) {
+            // Use a safe fallback if the server error response cannot be read.
+        }
+
+        return fallback;
+    }
+
+    private String extractMessageFromBody(String body) {
+        if (TextUtils.isEmpty(body)) {
+            return "Unable to process the payment right now. Please try again.";
+        }
+
+        String trimmed = body.trim();
+
+        try {
+            org.json.JSONObject json = new org.json.JSONObject(trimmed);
+            String[] keys = {"message", "error", "detail", "description"};
+
+            for (String key : keys) {
+                String value = json.optString(key, "").trim();
+                if (!TextUtils.isEmpty(value)
+                        && !"null".equalsIgnoreCase(value)) {
+                    return value;
+                }
+            }
+        } catch (org.json.JSONException ignored) {
+            // The server may return plain text instead of JSON.
+        }
+
+        if (!trimmed.startsWith("{") && !trimmed.startsWith("[")) {
+            return trimmed;
+        }
+
+        return "Unable to process the payment right now. Please try again.";
+    }
+
+    private String normalizePaymentError(String message) {
+        if (TextUtils.isEmpty(message)) {
+            return "Unable to process the payment right now. Please try again.";
+        }
+
+        String normalized = message.trim();
+        String lower = normalized.toLowerCase(java.util.Locale.ROOT);
+
+        if (lower.contains("insufficient balance")
+                || lower.contains("insufficient account balance")
+                || lower.contains("not enough balance")
+                || lower.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        if ("null".equalsIgnoreCase(normalized) || normalized.isEmpty()) {
+            return "Unable to process the payment right now. Please try again.";
+        }
+
+        return normalized;
+    }
+
+    private void showPaymentErrorDialog(String message) {
+        new AlertDialog.Builder(WaterBillActivity.this)
+                .setTitle("Bill Payment Failed")
+                .setMessage(normalizePaymentError(message))
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
     // =====================================================
 // Payment Success Dialog
 // =====================================================

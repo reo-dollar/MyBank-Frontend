@@ -8,8 +8,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@drawable/bg_dashboard">
+    android:background="@drawable/bg_dashboard"
+    android:fitsSystemWindows="true">
 
+    <!-- FIXED MY BANK BRAND HEADER -->
+    <LinearLayout
+        android:id="@+id/dashboardHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="12dp"
+        android:background="@drawable/bg_dashboard"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:gravity="center"
+            android:background="#1E3B82F6"
+            android:text="🏦"
+            android:textSize="23sp"
+            android:contentDescription="My Bank logo" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MY BANK"
+                android:textColor="@color/admin_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.04" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Secure digital banking"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- ================================================== -->
+        <!-- PROFILE BUTTON -->
+        <!-- ================================================== -->
+
+        <ImageButton
+            android:id="@+id/btnProfile"
+
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+
+            android:background="?attr/selectableItemBackgroundBorderless"
+
+            android:padding="12dp"
+
+            android:src="@android:drawable/ic_menu_myplaces"
+
+            android:scaleType="centerInside"
+
+            android:contentDescription="Profile" />
+
+    </LinearLayout>
 
     <!-- ====================================================== -->
     <!-- DASHBOARD CONTENT -->
@@ -22,14 +94,12 @@
         android:layout_height="0dp"
 
         android:fillViewport="true"
-        android:fitsSystemWindows="true"
         android:clipToPadding="false"
 
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dashboardHeader"
         app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,12 +107,10 @@
 
             android:orientation="vertical"
 
-            android:padding="20dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:paddingTop="72dp"
+            android:paddingTop="16dp"
             android:paddingBottom="110dp">
-
 
             <!-- ====================================================== -->
             <!-- HEADER -->
@@ -54,7 +122,6 @@
 
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
-
 
                 <!-- ================================================== -->
                 <!-- GREETING / WELCOME -->
@@ -68,7 +135,6 @@
 
                     android:orientation="vertical">
 
-
                     <!-- Greeting -->
 
                     <TextView
@@ -81,7 +147,6 @@
 
                         android:textColor="@color/text_secondary"
                         android:textSize="15sp" />
-
 
                     <!-- Greeting Message -->
 
@@ -97,7 +162,6 @@
 
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp" />
-
 
                     <!-- Welcome -->
 
@@ -119,9 +183,7 @@
                         android:ellipsize="end"
                         android:lineSpacingExtra="1dp" />
 
-
                 </LinearLayout>
-
 
                 <!-- ================================================== -->
                 <!-- MY QR BUTTON -->
@@ -146,29 +208,8 @@
                     app:tint="@color/primary" />
 
 
-                <!-- ================================================== -->
-                <!-- PROFILE BUTTON -->
-                <!-- ================================================== -->
-
-                <ImageButton
-                    android:id="@+id/btnProfile"
-
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-
-                    android:background="?attr/selectableItemBackgroundBorderless"
-
-                    android:padding="12dp"
-
-                    android:src="@android:drawable/ic_menu_myplaces"
-
-                    android:scaleType="centerInside"
-
-                    android:contentDescription="Profile" />
-
 
             </LinearLayout>
-
 
             <!-- ====================================================== -->
             <!-- PREMIUM BALANCE CARD -->
@@ -190,7 +231,6 @@
 
                 app:cardBackgroundColor="@color/surface">
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -200,7 +240,6 @@
                     android:background="@drawable/bg_balance_card"
 
                     android:padding="24dp">
-
 
                     <!-- Savings Account -->
 
@@ -215,7 +254,6 @@
                         android:textStyle="bold"
                         android:textSize="17sp" />
 
-
                     <!-- ====================================================== -->
                     <!-- AVAILABLE BALANCE -->
                     <!-- ====================================================== -->
@@ -229,7 +267,6 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -241,7 +278,6 @@
                             android:textColor="#E3F2FD"
 
                             android:textSize="14sp" />
-
 
                         <ImageView
                             android:id="@+id/imgToggleBalance"
@@ -257,9 +293,7 @@
 
                             android:contentDescription="Show or hide balance" />
 
-
                     </LinearLayout>
-
 
                     <!-- Balance -->
 
@@ -278,7 +312,6 @@
                         android:textStyle="bold"
                         android:textSize="34sp" />
 
-
                     <!-- Divider -->
 
                     <View
@@ -289,7 +322,6 @@
                         android:layout_marginBottom="20dp"
 
                         android:background="#40FFFFFF" />
-
 
                     <!-- ====================================================== -->
                     <!-- ACCOUNT NUMBER -->
@@ -302,7 +334,6 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -310,7 +341,6 @@
                             android:layout_weight="1"
 
                             android:orientation="vertical">
-
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -321,7 +351,6 @@
                                 android:textColor="#E3F2FD"
 
                                 android:textSize="13sp" />
-
 
                             <TextView
                                 android:id="@+id/tvAccountNumber"
@@ -338,9 +367,7 @@
                                 android:textStyle="bold"
                                 android:textSize="18sp" />
 
-
                         </LinearLayout>
-
 
                         <ImageView
                             android:id="@+id/imgToggleAccount"
@@ -356,9 +383,7 @@
 
                             android:contentDescription="Show or hide account number" />
 
-
                     </LinearLayout>
-
 
                     <!-- Divider -->
 
@@ -371,7 +396,6 @@
 
                         android:background="#40FFFFFF" />
 
-
                     <!-- ====================================================== -->
                     <!-- ACCOUNT DETAILS ROW 1 -->
                     <!-- ====================================================== -->
@@ -381,7 +405,6 @@
                         android:layout_height="wrap_content"
 
                         android:orientation="horizontal">
-
 
                         <!-- Account Type -->
 
@@ -393,7 +416,6 @@
 
                             android:orientation="vertical">
 
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -403,7 +425,6 @@
                                 android:textColor="#E3F2FD"
 
                                 android:textSize="12sp" />
-
 
                             <TextView
                                 android:id="@+id/tvAccountType"
@@ -417,9 +438,7 @@
 
                                 android:textStyle="bold" />
 
-
                         </LinearLayout>
-
 
                         <!-- Branch -->
 
@@ -431,7 +450,6 @@
 
                             android:orientation="vertical">
 
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -441,7 +459,6 @@
                                 android:textColor="#E3F2FD"
 
                                 android:textSize="12sp" />
-
 
                             <TextView
                                 android:id="@+id/tvBranch"
@@ -455,12 +472,9 @@
 
                                 android:textStyle="bold" />
 
-
                         </LinearLayout>
 
-
                     </LinearLayout>
-
 
                     <!-- ====================================================== -->
                     <!-- ACCOUNT DETAILS ROW 2 -->
@@ -474,7 +488,6 @@
 
                         android:orientation="horizontal">
 
-
                         <!-- IFSC -->
 
                         <LinearLayout
@@ -485,7 +498,6 @@
 
                             android:orientation="vertical">
 
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -495,7 +507,6 @@
                                 android:textColor="#E3F2FD"
 
                                 android:textSize="12sp" />
-
 
                             <TextView
                                 android:id="@+id/tvIfsc"
@@ -509,9 +520,7 @@
 
                                 android:textStyle="bold" />
 
-
                         </LinearLayout>
-
 
                         <!-- Status -->
 
@@ -523,7 +532,6 @@
 
                             android:orientation="vertical">
 
-
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -533,7 +541,6 @@
                                 android:textColor="#E3F2FD"
 
                                 android:textSize="12sp" />
-
 
                             <TextView
                                 android:id="@+id/tvStatus"
@@ -547,18 +554,13 @@
 
                                 android:textStyle="bold" />
 
-
                         </LinearLayout>
-
 
                     </LinearLayout>
 
-
                 </LinearLayout>
 
-
             </com.google.android.material.card.MaterialCardView>
-
 
             <!-- ====================================================== -->
             <!-- QUICK ACTIONS -->
@@ -578,7 +580,6 @@
                 android:textStyle="bold"
                 android:textSize="22sp" />
 
-
             <!-- ====================================================== -->
             <!-- QUICK ACTION ROW 1 -->
             <!-- ====================================================== -->
@@ -588,7 +589,6 @@
                 android:layout_height="wrap_content"
 
                 android:orientation="horizontal">
-
 
                 <!-- Deposit -->
 
@@ -614,7 +614,6 @@
 
                     app:cardBackgroundColor="@color/surface">
 
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -625,7 +624,6 @@
 
                         android:padding="18dp">
 
-
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -635,7 +633,6 @@
                             app:tint="@color/primary"
 
                             android:contentDescription="Deposit" />
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -650,12 +647,9 @@
                             android:textStyle="bold"
                             android:textSize="15sp" />
 
-
                     </LinearLayout>
 
-
                 </com.google.android.material.card.MaterialCardView>
-
 
                 <!-- Withdraw -->
 
@@ -681,7 +675,6 @@
 
                     app:cardBackgroundColor="@color/surface">
 
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -692,7 +685,6 @@
 
                         android:padding="18dp">
 
-
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -702,7 +694,6 @@
                             app:tint="@color/primary"
 
                             android:contentDescription="Withdraw" />
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -717,15 +708,11 @@
                             android:textStyle="bold"
                             android:textSize="15sp" />
 
-
                     </LinearLayout>
-
 
                 </com.google.android.material.card.MaterialCardView>
 
-
             </LinearLayout>
-
 
             <!-- ====================================================== -->
             <!-- QUICK ACTION ROW 2 -->
@@ -738,7 +725,6 @@
                 android:layout_marginTop="18dp"
 
                 android:orientation="horizontal">
-
 
                 <!-- Transfer -->
 
@@ -764,7 +750,6 @@
 
                     app:cardBackgroundColor="@color/surface">
 
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -775,7 +760,6 @@
 
                         android:padding="18dp">
 
-
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -785,7 +769,6 @@
                             app:tint="@color/primary"
 
                             android:contentDescription="Transfer" />
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -800,12 +783,9 @@
                             android:textStyle="bold"
                             android:textSize="15sp" />
 
-
                     </LinearLayout>
 
-
                 </com.google.android.material.card.MaterialCardView>
-
 
                 <!-- History -->
 
@@ -831,7 +811,6 @@
 
                     app:cardBackgroundColor="@color/surface">
 
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -842,7 +821,6 @@
 
                         android:padding="18dp">
 
-
                         <ImageView
                             android:layout_width="40dp"
                             android:layout_height="40dp"
@@ -852,7 +830,6 @@
                             app:tint="@color/primary"
 
                             android:contentDescription="History" />
-
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -867,15 +844,11 @@
                             android:textStyle="bold"
                             android:textSize="15sp" />
 
-
                     </LinearLayout>
-
 
                 </com.google.android.material.card.MaterialCardView>
 
-
             </LinearLayout>
-
 
             <!-- ====================================================== -->
             <!-- RECENT TRANSACTIONS TITLE -->
@@ -891,7 +864,6 @@
 
                 android:orientation="horizontal">
 
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -905,7 +877,6 @@
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
-
                 <TextView
                     android:id="@+id/tvViewAll"
 
@@ -918,9 +889,7 @@
 
                     android:textStyle="bold" />
 
-
             </LinearLayout>
-
 
             <!-- Recent Transactions RecyclerView -->
 
@@ -936,12 +905,9 @@
 
                 android:overScrollMode="never" />
 
-
         </LinearLayout>
 
-
     </androidx.core.widget.NestedScrollView>
-
 
     <!-- ====================================================== -->
     <!-- FIXED BOTTOM NAVIGATION -->
@@ -967,7 +933,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
 
@@ -987,8 +952,6 @@
 
             app:menu="@menu/bottom_menu" />
 
-
     </com.google.android.material.card.MaterialCardView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

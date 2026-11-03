@@ -290,14 +290,6 @@ public class LoanCalculatorActivity
     private void setupListeners() {
 
 
-        // =====================================================
-        // BACK
-        // =====================================================
-
-        binding.btnBack.setOnClickListener(
-                v -> finish()
-        );
-
 
         // =====================================================
         // CALCULATE

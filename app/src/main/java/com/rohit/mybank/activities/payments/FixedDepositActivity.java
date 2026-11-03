@@ -95,6 +95,7 @@ public class FixedDepositActivity extends AppCompatActivity {
 
     private MaterialButton btnCalculate;
     private MaterialButton btnReset;
+    private MaterialButton btnMyFd;
 
 
     //==================================================
@@ -209,6 +210,23 @@ public class FixedDepositActivity extends AppCompatActivity {
 
         });
 
+
+        //==================================================
+        // My FD Button
+        //==================================================
+
+        btnMyFd.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(
+                            FixedDepositActivity.this,
+                            MyFDActivity.class
+                    );
+
+            startActivity(intent);
+
+        });
+
     }
 
 
@@ -292,6 +310,9 @@ public class FixedDepositActivity extends AppCompatActivity {
 
         btnReset =
                 findViewById(R.id.btnReset);
+
+        btnMyFd =
+                findViewById(R.id.btnMyFd);
 
     }
 

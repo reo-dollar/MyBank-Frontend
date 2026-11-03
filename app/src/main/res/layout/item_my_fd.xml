@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+
+    app:cardCornerRadius="18dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="18dp">
+
+
+        <!-- ========================================= -->
+        <!-- FD HEADER -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fixed Deposit"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFdNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text="FD000000"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <!-- STATUS -->
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_status_active"
+                android:paddingStart="12dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="6dp"
+                android:text="ACTIVE"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- DIVIDER -->
+        <!-- ========================================= -->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="14dp"
+            android:alpha="0.15"
+            android:background="?android:attr/textColorPrimary" />
+
+
+        <!-- ========================================= -->
+        <!-- PRINCIPAL -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Principal"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvPrincipal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹50,000.00"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- INTEREST RATE -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Interest Rate"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvInterestRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7.00% p.a."
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- INTEREST EARNED -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Interest Earned"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvInterestEarned"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹3,500.00"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- MATURITY AMOUNT -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Maturity Amount"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMaturityAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₹53,500.00"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- TENURE -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tenure"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvTenure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12 Months"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- CREATED DATE -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Created Date"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/tvCreatedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30 Sep 2026"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+
+        <!-- ========================================= -->
+        <!-- MATURITY DATE -->
+        <!-- ========================================= -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Maturity Date"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMaturityDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30 Sep 2027"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -332,14 +332,6 @@ public class CardsActivity extends AppCompatActivity {
                                     card;
 
                             // -------------------------------------------------
-                            // LOG CARD DATA
-                            // -------------------------------------------------
-
-                            logCardResponse(
-                                    card
-                            );
-
-                            // -------------------------------------------------
                             // DISPLAY
                             // -------------------------------------------------
 
@@ -481,18 +473,8 @@ public class CardsActivity extends AppCompatActivity {
 
         if (tvCardNumber != null) {
 
-            String cardNumber =
-                    card.getCardNumber();
-
-            if (cardNumber == null
-                    || cardNumber.trim().isEmpty()) {
-
-                cardNumber =
-                        "**** **** **** ****";
-            }
-
             tvCardNumber.setText(
-                    cardNumber
+                    maskCardNumber(card.getCardNumber())
             );
         }
 
@@ -563,6 +545,27 @@ public class CardsActivity extends AppCompatActivity {
                 TAG,
                 "Debit card displayed successfully."
         );
+    }
+
+    // =========================================================
+    // MASK CARD NUMBER FOR LANDING SCREEN
+    // =========================================================
+
+    private String maskCardNumber(String cardNumber) {
+        if (cardNumber == null) {
+            return "•••• •••• •••• ••••";
+        }
+
+        String digits = cardNumber.replaceAll("\\D", "");
+        if (digits.isEmpty()) {
+            return "•••• •••• •••• ••••";
+        }
+
+        String lastFour = digits.length() <= 4
+                ? digits
+                : digits.substring(digits.length() - 4);
+
+        return "•••• •••• •••• " + lastFour;
     }
 
     // =========================================================
@@ -701,11 +704,8 @@ public class CardsActivity extends AppCompatActivity {
                         + code
         );
 
-        Log.e(
-                TAG,
-                "ERROR BODY: "
-                        + errorBody
-        );
+        // Avoid logging server error payloads because they may
+        // contain sensitive information.
 
         Log.e(
                 TAG,
@@ -811,177 +811,32 @@ public class CardsActivity extends AppCompatActivity {
     }
 
     // =========================================================
-    // LOG RESPONSE
+    // LOADING STATE
     // =========================================================
 
-    private void logCardResponse(
-            DebitCardResponse card
-    ) {
-
-        Log.d(
-                TAG,
-                "--------------- CARD RESPONSE ---------------"
-        );
-
-        Log.d(
-                TAG,
-                "Card Number: "
-                        + card.getCardNumber()
-        );
-
-        Log.d(
-                TAG,
-                "Card Holder: "
-                        + card.getCardHolderName()
-        );
-
-        Log.d(
-                TAG,
-                "Card Type: "
-                        + card.getCardType()
-        );
-
-        Log.d(
-                TAG,
-                "Status: "
-                        + card.getStatus()
-        );
-
-        Log.d(
-                TAG,
-                "Expiry: "
-                        + card.getExpiryDate()
-        );
-
-        Log.d(
-                TAG,
-                "Issue Date: "
-                        + card.getIssueDate()
-        );
-
-        Log.d(
-                TAG,
-                "Account Number: "
-                        + card.getAccountNumber()
-        );
-
-        Log.d(
-                TAG,
-                "Daily Limit: "
-                        + card.getDailyLimit()
-        );
-
-        Log.d(
-                TAG,
-                "Spent Today: "
-                        + card.getSpentToday()
-        );
-
-        Log.d(
-                TAG,
-                "Remaining Limit: "
-                        + card.getRemainingDailyLimit()
-        );
-
-        Log.d(
-                TAG,
-                "Online Enabled: "
-                        + card.isOnlineTransactionsEnabled()
-        );
-
-        Log.d(
-                TAG,
-                "Contactless Enabled: "
-                        + card.isContactlessEnabled()
-        );
-
-        Log.d(
-                TAG,
-                "International Enabled: "
-                        + card.isInternationalTransactionsEnabled()
-        );
-
-        Log.d(
-                TAG,
-                "ATM Enabled: "
-                        + card.isAtmTransactionsEnabled()
-        );
-
-        Log.d(
-                TAG,
-                "POS Enabled: "
-                        + card.isPosTransactionsEnabled()
-        );
-
-        Log.d(
-                TAG,
-                "----------------------------------------------"
-        );
-    }
-
-    // =========================================================
-    // LOADING
-    // =========================================================
-
-    private void showLoading(
-            boolean loading
-    ) {
+    /**
+     * Shows or hides the loading indicator and prevents repeated
+     * taps on the View Card Details button while the request runs.
+     */
+    private void showLoading(boolean isLoading) {
 
         if (progressBar != null) {
-
             progressBar.setVisibility(
-                    loading
-                            ? View.VISIBLE
-                            : View.GONE
-            );
-        }
-
-        if (!loading) {
-
-            return;
-        }
-
-        if (tvNoCard != null) {
-
-            tvNoCard.setVisibility(
-                    View.GONE
-            );
-        }
-
-        if (tvCardNumber != null) {
-
-            tvCardNumber.setVisibility(
-                    View.GONE
-            );
-        }
-
-        if (tvCardHolderName != null) {
-
-            tvCardHolderName.setVisibility(
-                    View.GONE
-            );
-        }
-
-        if (tvCardType != null) {
-
-            tvCardType.setVisibility(
-                    View.GONE
-            );
-        }
-
-        if (tvCardStatus != null) {
-
-            tvCardStatus.setVisibility(
-                    View.GONE
+                    isLoading ? View.VISIBLE : View.GONE
             );
         }
 
         if (btnViewCard != null) {
-
-            btnViewCard.setVisibility(
-                    View.GONE
-            );
+            btnViewCard.setEnabled(!isLoading);
         }
+    }
+
+    /**
+     * Compatibility helper for any existing call sites that use
+     * showLoading() without an argument.
+     */
+    private void showLoading() {
+        showLoading(true);
     }
 
     // =========================================================
@@ -1025,3 +880,4 @@ public class CardsActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
+

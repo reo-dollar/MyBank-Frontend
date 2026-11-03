@@ -76,13 +76,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
 
         setupLoanTypeSpinner();
 
-        // =====================================================
-        // BUTTONS
-        // =====================================================
-
-        binding.btnBack.setOnClickListener(
-                v -> finish()
-        );
 
         binding.btnApplyLoan.setOnClickListener(
                 v -> submitLoanApplication()
@@ -644,10 +637,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
                     false
             );
 
-            binding.btnBack.setEnabled(
-                    false
-            );
-
             binding.btnApplyLoan.setText(
                     "Submitting..."
             );
@@ -659,10 +648,6 @@ public class LoanApplicationActivity extends AppCompatActivity {
             );
 
             binding.btnApplyLoan.setEnabled(
-                    true
-            );
-
-            binding.btnBack.setEnabled(
                     true
             );
 

@@ -23,35 +23,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 /**
- * =========================================================
- * ADMIN DASHBOARD ACTIVITY
- * =========================================================
+ * Admin dashboard showing system-wide statistics, transaction
+ * distribution, financial-volume comparison and administration links.
  *
- * Displays system-wide banking statistics and provides
- * navigation to:
- *
- * 1. Admin User Management
- * 2. Admin Customer Management
- * 3. Admin Account Management
- * 4. Admin Transaction Management
- * 5. Admin Loan Management
- *
- * Admin Loan Management will be used for:
- *
- * - Viewing pending loan applications
- * - Viewing loan details
- * - Approving loans
- * - Rejecting loans
+ * Analytics are calculated from the dashboard totals currently returned
+ * by the existing API. They are not historical or time-series statistics.
  */
-public class AdminDashboardActivity
-        extends AppCompatActivity {
-
-
-    // ==========================================================
-    // VIEWS
-    // ==========================================================
+public class AdminDashboardActivity extends AppCompatActivity {
 
     private TextView tvAdminTitle;
     private TextView tvAdminStatus;
@@ -71,916 +50,354 @@ public class AdminDashboardActivity
     private TextView tvTotalTransferAmount;
     private TextView tvTotalPaymentAmount;
 
+    private TextView tvAnalyticsDepositsPercent;
+    private TextView tvAnalyticsWithdrawalsPercent;
+    private TextView tvAnalyticsTransfersPercent;
+    private TextView tvAnalyticsPaymentsPercent;
+
     private ProgressBar progressBar;
+    private ProgressBar progressAnalyticsDeposits;
+    private ProgressBar progressAnalyticsWithdrawals;
+    private ProgressBar progressAnalyticsTransfers;
+    private ProgressBar progressAnalyticsPayments;
+
+    private AdminAnalyticsChartView chartTransactionDistribution;
+    private AdminAnalyticsChartView chartFinancialVolume;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-
-    // ==========================================================
-    // ADMINISTRATION BUTTONS
-    // ==========================================================
-
     private Button btnUserManagement;
-
     private Button btnCustomerManagement;
-
     private Button btnAccountManagement;
-
     private Button btnTransactionManagement;
-
-    /**
-     * Loan management button.
-     *
-     * Opens AdminLoanManagementActivity.
-     */
     private Button btnLoanManagement;
-
     private Button btnAdminLogout;
 
-
-    // ==========================================================
-    // REPOSITORY
-    // ==========================================================
-
     private DashboardRepository dashboardRepository;
-
     private SessionManager sessionManager;
-
-
-    // ==========================================================
-    // ACTIVITY STATE
-    // ==========================================================
-
     private boolean firstResume = true;
-
-
-    // ==========================================================
-    // ON CREATE
-    // ==========================================================
+    private Call<AdminDashboardResponse> dashboardCall;
 
     @Override
-    protected void onCreate(
-            Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(
-                R.layout.activity_admin_dashboard
-        );
-
-
-        // ------------------------------------------------------
-        // INITIALIZE VIEWS
-        // ------------------------------------------------------
+        setContentView(R.layout.activity_admin_dashboard);
 
         initializeViews();
-
-
-        // ------------------------------------------------------
-        // INITIALIZE REPOSITORIES
-        // ------------------------------------------------------
-
-        dashboardRepository =
-                new DashboardRepository(this);
-
-        sessionManager =
-                new SessionManager(this);
-
-
-        // ------------------------------------------------------
-        // SETUP UI
-        // ------------------------------------------------------
+        dashboardRepository = new DashboardRepository(this);
+        sessionManager = new SessionManager(this);
 
         setupRefresh();
-
         setupLogout();
-
         setupUserManagement();
-
         setupCustomerManagement();
-
         setupAccountManagement();
-
         setupTransactionManagement();
-
         setupLoanManagement();
-
-
-        // ------------------------------------------------------
-        // LOAD DASHBOARD
-        // ------------------------------------------------------
-
         loadAdminDashboard();
     }
 
-
-    // ==========================================================
-    // INITIALIZE VIEWS
-    // ==========================================================
-
     private void initializeViews() {
+        tvAdminTitle = findViewById(R.id.tvAdminTitle);
+        tvAdminStatus = findViewById(R.id.tvAdminStatus);
 
-        // ------------------------------------------------------
-        // TITLE
-        // ------------------------------------------------------
+        tvTotalUsers = findViewById(R.id.tvTotalUsers);
+        tvTotalCustomers = findViewById(R.id.tvTotalCustomers);
+        tvTotalAccounts = findViewById(R.id.tvTotalAccounts);
 
-        tvAdminTitle =
-                findViewById(
-                        R.id.tvAdminTitle
-                );
+        tvTotalTransactions = findViewById(R.id.tvTotalTransactions);
+        tvTotalDeposits = findViewById(R.id.tvTotalDeposits);
+        tvTotalWithdrawals = findViewById(R.id.tvTotalWithdrawals);
+        tvTotalTransfers = findViewById(R.id.tvTotalTransfers);
+        tvTotalPayments = findViewById(R.id.tvTotalPayments);
 
+        tvTotalDepositAmount = findViewById(R.id.tvTotalDepositAmount);
+        tvTotalWithdrawalAmount = findViewById(R.id.tvTotalWithdrawalAmount);
+        tvTotalTransferAmount = findViewById(R.id.tvTotalTransferAmount);
+        tvTotalPaymentAmount = findViewById(R.id.tvTotalPaymentAmount);
 
-        // ------------------------------------------------------
-        // STATUS
-        // ------------------------------------------------------
+        progressBar = findViewById(R.id.progressBar);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
-        tvAdminStatus =
-                findViewById(
-                        R.id.tvAdminStatus
-                );
+        btnUserManagement = findViewById(R.id.btnUserManagement);
+        btnCustomerManagement = findViewById(R.id.btnCustomerManagement);
+        btnAccountManagement = findViewById(R.id.btnAccountManagement);
+        btnTransactionManagement = findViewById(R.id.btnTransactionManagement);
+        btnLoanManagement = findViewById(R.id.btnLoanManagement);
+        btnAdminLogout = findViewById(R.id.btnAdminLogout);
 
+        tvAnalyticsDepositsPercent = findViewById(R.id.tvAnalyticsDepositsPercent);
+        tvAnalyticsWithdrawalsPercent = findViewById(R.id.tvAnalyticsWithdrawalsPercent);
+        tvAnalyticsTransfersPercent = findViewById(R.id.tvAnalyticsTransfersPercent);
+        tvAnalyticsPaymentsPercent = findViewById(R.id.tvAnalyticsPaymentsPercent);
 
-        // ------------------------------------------------------
-        // SYSTEM OVERVIEW
-        // ------------------------------------------------------
+        progressAnalyticsDeposits = findViewById(R.id.progressAnalyticsDeposits);
+        progressAnalyticsWithdrawals = findViewById(R.id.progressAnalyticsWithdrawals);
+        progressAnalyticsTransfers = findViewById(R.id.progressAnalyticsTransfers);
+        progressAnalyticsPayments = findViewById(R.id.progressAnalyticsPayments);
 
-        tvTotalUsers =
-                findViewById(
-                        R.id.tvTotalUsers
-                );
-
-
-        tvTotalCustomers =
-                findViewById(
-                        R.id.tvTotalCustomers
-                );
-
-
-        tvTotalAccounts =
-                findViewById(
-                        R.id.tvTotalAccounts
-                );
-
-
-        tvTotalTransactions =
-                findViewById(
-                        R.id.tvTotalTransactions
-                );
-
-
-        // ------------------------------------------------------
-        // TRANSACTION ACTIVITY
-        // ------------------------------------------------------
-
-        tvTotalDeposits =
-                findViewById(
-                        R.id.tvTotalDeposits
-                );
-
-
-        tvTotalWithdrawals =
-                findViewById(
-                        R.id.tvTotalWithdrawals
-                );
-
-
-        tvTotalTransfers =
-                findViewById(
-                        R.id.tvTotalTransfers
-                );
-
-
-        tvTotalPayments =
-                findViewById(
-                        R.id.tvTotalPayments
-                );
-
-
-        // ------------------------------------------------------
-        // FINANCIAL SUMMARY
-        // ------------------------------------------------------
-
-        tvTotalDepositAmount =
-                findViewById(
-                        R.id.tvTotalDepositAmount
-                );
-
-
-        tvTotalWithdrawalAmount =
-                findViewById(
-                        R.id.tvTotalWithdrawalAmount
-                );
-
-
-        tvTotalTransferAmount =
-                findViewById(
-                        R.id.tvTotalTransferAmount
-                );
-
-
-        tvTotalPaymentAmount =
-                findViewById(
-                        R.id.tvTotalPaymentAmount
-                );
-
-
-        // ------------------------------------------------------
-        // PROGRESS
-        // ------------------------------------------------------
-
-        progressBar =
-                findViewById(
-                        R.id.progressBar
-                );
-
-
-        // ------------------------------------------------------
-        // SWIPE REFRESH
-        // ------------------------------------------------------
-
-        swipeRefreshLayout =
-                findViewById(
-                        R.id.swipeRefreshLayout
-                );
-
-
-        // ======================================================
-        // USER MANAGEMENT
-        // ======================================================
-
-        btnUserManagement =
-                findViewById(
-                        R.id.btnUserManagement
-                );
-
-
-        // ======================================================
-        // CUSTOMER MANAGEMENT
-        // ======================================================
-
-        btnCustomerManagement =
-                findViewById(
-                        R.id.btnCustomerManagement
-                );
-
-
-        // ======================================================
-        // ACCOUNT MANAGEMENT
-        // ======================================================
-
-        btnAccountManagement =
-                findViewById(
-                        R.id.btnAccountManagement
-                );
-
-
-        // ======================================================
-        // TRANSACTION MANAGEMENT
-        // ======================================================
-
-        btnTransactionManagement =
-                findViewById(
-                        R.id.btnTransactionManagement
-                );
-
-
-        // ======================================================
-        // LOAN MANAGEMENT
-        // ======================================================
-
-        btnLoanManagement =
-                findViewById(
-                        R.id.btnLoanManagement
-                );
-
-
-        // ======================================================
-        // LOGOUT
-        // ======================================================
-
-        btnAdminLogout =
-                findViewById(
-                        R.id.btnAdminLogout
-                );
+        chartTransactionDistribution = findViewById(R.id.chartTransactionDistribution);
+        chartFinancialVolume = findViewById(R.id.chartFinancialVolume);
     }
-
-
-    // ==========================================================
-    // SETUP REFRESH
-    // ==========================================================
 
     private void setupRefresh() {
-
-        if (swipeRefreshLayout == null) {
-            return;
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(this::loadAdminDashboard);
         }
-
-
-        swipeRefreshLayout.setOnRefreshListener(
-                this::loadAdminDashboard
-        );
     }
-
-
-    // ==========================================================
-    // SETUP USER MANAGEMENT
-    // ==========================================================
 
     private void setupUserManagement() {
-
-        if (btnUserManagement == null) {
-            return;
+        if (btnUserManagement != null) {
+            btnUserManagement.setOnClickListener(v ->
+                    startActivity(new Intent(this, AdminUserManagementActivity.class)));
         }
-
-
-        btnUserManagement.setOnClickListener(
-                v -> {
-
-                    Intent intent =
-                            new Intent(
-                                    AdminDashboardActivity.this,
-                                    AdminUserManagementActivity.class
-                            );
-
-                    startActivity(intent);
-                }
-        );
     }
-
-
-    // ==========================================================
-    // SETUP CUSTOMER MANAGEMENT
-    // ==========================================================
 
     private void setupCustomerManagement() {
-
-        if (btnCustomerManagement == null) {
-            return;
+        if (btnCustomerManagement != null) {
+            btnCustomerManagement.setOnClickListener(v ->
+                    startActivity(new Intent(this, AdminCustomerManagementActivity.class)));
         }
-
-
-        btnCustomerManagement.setOnClickListener(
-                v -> {
-
-                    Intent intent =
-                            new Intent(
-                                    AdminDashboardActivity.this,
-                                    AdminCustomerManagementActivity.class
-                            );
-
-                    startActivity(intent);
-                }
-        );
     }
-
-
-    // ==========================================================
-    // SETUP ACCOUNT MANAGEMENT
-    // ==========================================================
 
     private void setupAccountManagement() {
-
-        if (btnAccountManagement == null) {
-            return;
+        if (btnAccountManagement != null) {
+            btnAccountManagement.setOnClickListener(v ->
+                    startActivity(new Intent(this, AdminAccountManagementActivity.class)));
         }
-
-
-        btnAccountManagement.setOnClickListener(
-                v -> {
-
-                    Intent intent =
-                            new Intent(
-                                    AdminDashboardActivity.this,
-                                    AdminAccountManagementActivity.class
-                            );
-
-                    startActivity(intent);
-                }
-        );
     }
-
-
-    // ==========================================================
-    // SETUP TRANSACTION MANAGEMENT
-    // ==========================================================
 
     private void setupTransactionManagement() {
-
-        if (btnTransactionManagement == null) {
-            return;
+        if (btnTransactionManagement != null) {
+            btnTransactionManagement.setOnClickListener(v ->
+                    startActivity(new Intent(this, AdminTransactionsActivity.class)));
         }
-
-
-        btnTransactionManagement.setOnClickListener(
-                v -> {
-
-                    Intent intent =
-                            new Intent(
-                                    AdminDashboardActivity.this,
-                                    AdminTransactionsActivity.class
-                            );
-
-                    startActivity(intent);
-                }
-        );
     }
-
-
-    // ==========================================================
-    // SETUP LOAN MANAGEMENT
-    // ==========================================================
 
     private void setupLoanManagement() {
-
-        if (btnLoanManagement == null) {
-            return;
+        if (btnLoanManagement != null) {
+            btnLoanManagement.setOnClickListener(v ->
+                    startActivity(new Intent(this, AdminLoanManagementActivity.class)));
         }
-
-
-        btnLoanManagement.setOnClickListener(
-                v -> {
-
-                    Intent intent =
-                            new Intent(
-                                    AdminDashboardActivity.this,
-                                    AdminLoanManagementActivity.class
-                            );
-
-                    startActivity(intent);
-                }
-        );
     }
-
-
-    // ==========================================================
-    // SETUP LOGOUT
-    // ==========================================================
 
     private void setupLogout() {
-
-        if (btnAdminLogout == null) {
-            return;
+        if (btnAdminLogout != null) {
+            btnAdminLogout.setOnClickListener(v -> logout());
         }
-
-
-        btnAdminLogout.setOnClickListener(
-                v -> logout()
-        );
     }
 
-
-    // ==========================================================
-    // LOGOUT
-    // ==========================================================
-
     private void logout() {
-
-        sessionManager.logout();
-
-
-        if (swipeRefreshLayout != null) {
-
-            swipeRefreshLayout.setRefreshing(
-                    false
-            );
+        if (dashboardCall != null) {
+            dashboardCall.cancel();
         }
+        sessionManager.logout();
+        stopRefreshing();
 
+        Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(
-                AdminDashboardActivity.this,
-                "Logged out successfully",
-                Toast.LENGTH_SHORT
-        ).show();
-
-
-        Intent intent =
-                new Intent(
-                        AdminDashboardActivity.this,
-                        LoginActivity.class
-                );
-
-
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
-        );
-
-
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-
         finish();
     }
 
-
-    // ==========================================================
-    // LOAD ADMIN DASHBOARD
-    // ==========================================================
-
     private void loadAdminDashboard() {
-
-        if (dashboardRepository == null) {
+        if (dashboardRepository == null || isFinishing()) {
+            stopRefreshing();
             return;
         }
 
+        if (dashboardCall != null) {
+            dashboardCall.cancel();
+        }
 
         showLoading(true);
+        dashboardCall = dashboardRepository.getAdminDashboard();
 
+        dashboardCall.enqueue(new Callback<AdminDashboardResponse>() {
+            @Override
+            public void onResponse(Call<AdminDashboardResponse> call,
+                                   Response<AdminDashboardResponse> response) {
+                if (call.isCanceled() || isFinishing()) {
+                    return;
+                }
 
-        dashboardRepository
-                .getAdminDashboard()
-                .enqueue(
-                        new Callback<AdminDashboardResponse>() {
+                showLoading(false);
+                stopRefreshing();
 
-                            @Override
-                            public void onResponse(
-                                    Call<AdminDashboardResponse> call,
-                                    Response<AdminDashboardResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    displayDashboard(response.body());
+                } else {
+                    handleHttpError(response);
+                }
+            }
 
-                                showLoading(false);
+            @Override
+            public void onFailure(Call<AdminDashboardResponse> call, Throwable t) {
+                if (call.isCanceled() || isFinishing()) {
+                    return;
+                }
 
-                                stopRefreshing();
+                showLoading(false);
+                stopRefreshing();
 
+                String message = t.getMessage();
+                if (message == null || message.trim().isEmpty()) {
+                    message = "Unable to connect to server.";
+                }
 
-                                if (response.isSuccessful()
-                                        && response.body() != null) {
-
-                                    displayDashboard(
-                                            response.body()
-                                    );
-
-                                } else {
-
-                                    handleHttpError(
-                                            response
-                                    );
-                                }
-                            }
-
-
-                            @Override
-                            public void onFailure(
-                                    Call<AdminDashboardResponse> call,
-                                    Throwable t) {
-
-                                showLoading(false);
-
-                                stopRefreshing();
-
-
-                                t.printStackTrace();
-
-
-                                String message =
-                                        t.getMessage();
-
-
-                                if (message == null
-                                        || message.trim().isEmpty()) {
-
-                                    message =
-                                            "Unable to connect to server.";
-                                }
-
-
-                                Toast.makeText(
-                                        AdminDashboardActivity.this,
-                                        message,
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
-                        }
-                );
+                Toast.makeText(AdminDashboardActivity.this,
+                        message, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
-
-    // ==========================================================
-    // HTTP ERROR
-    // ==========================================================
-
-    private void handleHttpError(
-            Response<AdminDashboardResponse> response) {
-
-        int code =
-                response.code();
-
-
-        // ======================================================
-        // UNAUTHORIZED
-        // ======================================================
+    private void handleHttpError(Response<AdminDashboardResponse> response) {
+        int code = response.code();
 
         if (code == 401) {
-
-            Toast.makeText(
-                    this,
-                    "Session expired. Please login again.",
-                    Toast.LENGTH_LONG
-            ).show();
-
-
+            Toast.makeText(this,
+                    "Session expired. Please login again.", Toast.LENGTH_LONG).show();
             sessionManager.logout();
 
-
-            Intent intent =
-                    new Intent(
-                            this,
-                            LoginActivity.class
-                    );
-
-
-            intent.setFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK
-                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
-            );
-
-
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-
             finish();
-
-
             return;
         }
-
-
-        // ======================================================
-        // FORBIDDEN
-        // ======================================================
 
         if (code == 403) {
-
-            Toast.makeText(
-                    this,
+            Toast.makeText(this,
                     "Access denied. Administrator privileges required.",
-                    Toast.LENGTH_LONG
-            ).show();
-
-
+                    Toast.LENGTH_LONG).show();
             return;
         }
 
-
-        // ======================================================
-        // OTHER ERRORS
-        // ======================================================
-
-        Toast.makeText(
-                this,
-                "Unable to load Admin Dashboard.\nHTTP "
-                        + code,
-                Toast.LENGTH_LONG
-        ).show();
+        Toast.makeText(this,
+                "Unable to load Admin Dashboard.\nHTTP " + code,
+                Toast.LENGTH_LONG).show();
     }
 
+    private void displayDashboard(AdminDashboardResponse dashboard) {
+        tvAdminTitle.setText("Admin Dashboard");
+        tvAdminStatus.setText("Live banking statistics");
 
-    // ==========================================================
-    // DISPLAY DASHBOARD
-    // ==========================================================
+        tvTotalUsers.setText(String.valueOf(dashboard.getTotalUsers()));
+        tvTotalCustomers.setText(String.valueOf(dashboard.getTotalCustomers()));
+        tvTotalAccounts.setText(String.valueOf(dashboard.getTotalAccounts()));
+        tvTotalTransactions.setText(String.valueOf(dashboard.getTotalTransactions()));
 
-    private void displayDashboard(
-            AdminDashboardResponse dashboard) {
+        tvTotalDeposits.setText(String.valueOf(dashboard.getTotalDeposits()));
+        tvTotalWithdrawals.setText(String.valueOf(dashboard.getTotalWithdrawals()));
+        tvTotalTransfers.setText(String.valueOf(dashboard.getTotalTransfers()));
+        tvTotalPayments.setText(String.valueOf(dashboard.getTotalPayments()));
 
+        double depositAmount = nonNegative(dashboard.getTotalDepositAmount());
+        double withdrawalAmount = nonNegative(dashboard.getTotalWithdrawalAmount());
+        double transferAmount = nonNegative(dashboard.getTotalTransferAmount());
+        double paymentAmount = nonNegative(dashboard.getTotalPaymentAmount());
 
-        // ======================================================
-        // HEADER
-        // ======================================================
+        tvTotalDepositAmount.setText(formatAmount(depositAmount));
+        tvTotalWithdrawalAmount.setText(formatAmount(withdrawalAmount));
+        tvTotalTransferAmount.setText(formatAmount(transferAmount));
+        tvTotalPaymentAmount.setText(formatAmount(paymentAmount));
 
-        if (tvAdminTitle != null) {
+        updateTransactionAnalytics(
+                nonNegative(dashboard.getTotalDeposits()),
+                nonNegative(dashboard.getTotalWithdrawals()),
+                nonNegative(dashboard.getTotalTransfers()),
+                nonNegative(dashboard.getTotalPayments())
+        );
 
-            tvAdminTitle.setText(
-                    "Admin Dashboard"
-            );
-        }
-
-
-        if (tvAdminStatus != null) {
-
-            tvAdminStatus.setText(
-                    "Live banking statistics"
-            );
-        }
-
-
-        // ======================================================
-        // SYSTEM OVERVIEW
-        // ======================================================
-
-        if (tvTotalUsers != null) {
-
-            tvTotalUsers.setText(
-                    String.valueOf(
-                            dashboard.getTotalUsers()
-                    )
-            );
-        }
-
-
-        if (tvTotalCustomers != null) {
-
-            tvTotalCustomers.setText(
-                    String.valueOf(
-                            dashboard.getTotalCustomers()
-                    )
-            );
-        }
-
-
-        if (tvTotalAccounts != null) {
-
-            tvTotalAccounts.setText(
-                    String.valueOf(
-                            dashboard.getTotalAccounts()
-                    )
-            );
-        }
-
-
-        if (tvTotalTransactions != null) {
-
-            tvTotalTransactions.setText(
-                    String.valueOf(
-                            dashboard.getTotalTransactions()
-                    )
-            );
-        }
-
-
-        // ======================================================
-        // TRANSACTION ACTIVITY
-        // ======================================================
-
-        if (tvTotalDeposits != null) {
-
-            tvTotalDeposits.setText(
-                    String.valueOf(
-                            dashboard.getTotalDeposits()
-                    )
-            );
-        }
-
-
-        if (tvTotalWithdrawals != null) {
-
-            tvTotalWithdrawals.setText(
-                    String.valueOf(
-                            dashboard.getTotalWithdrawals()
-                    )
-            );
-        }
-
-
-        if (tvTotalTransfers != null) {
-
-            tvTotalTransfers.setText(
-                    String.valueOf(
-                            dashboard.getTotalTransfers()
-                    )
-            );
-        }
-
-
-        if (tvTotalPayments != null) {
-
-            tvTotalPayments.setText(
-                    String.valueOf(
-                            dashboard.getTotalPayments()
-                    )
-            );
-        }
-
-
-        // ======================================================
-        // FINANCIAL SUMMARY
-        // ======================================================
-
-        if (tvTotalDepositAmount != null) {
-
-            tvTotalDepositAmount.setText(
-                    formatAmount(
-                            dashboard.getTotalDepositAmount()
-                    )
-            );
-        }
-
-
-        if (tvTotalWithdrawalAmount != null) {
-
-            tvTotalWithdrawalAmount.setText(
-                    formatAmount(
-                            dashboard.getTotalWithdrawalAmount()
-                    )
-            );
-        }
-
-
-        if (tvTotalTransferAmount != null) {
-
-            tvTotalTransferAmount.setText(
-                    formatAmount(
-                            dashboard.getTotalTransferAmount()
-                    )
-            );
-        }
-
-
-        if (tvTotalPaymentAmount != null) {
-
-            tvTotalPaymentAmount.setText(
-                    formatAmount(
-                            dashboard.getTotalPaymentAmount()
-                    )
-            );
-        }
-    }
-
-
-    // ==========================================================
-    // FORMAT MONEY
-    // ==========================================================
-
-    private String formatAmount(
-            double amount) {
-
-        return "₹ "
-                + String.format(
-                Locale.getDefault(),
-                "%,.2f",
-                amount
+        updateAmountAnalytics(
+                depositAmount, withdrawalAmount, transferAmount, paymentAmount
         );
     }
 
+    private void updateTransactionAnalytics(double deposits,
+                                            double withdrawals,
+                                            double transfers,
+                                            double payments) {
+        double total = deposits + withdrawals + transfers + payments;
 
-    // ==========================================================
-    // SHOW / HIDE LOADING
-    // ==========================================================
+        setDistribution(progressAnalyticsDeposits, tvAnalyticsDepositsPercent, deposits, total);
+        setDistribution(progressAnalyticsWithdrawals, tvAnalyticsWithdrawalsPercent, withdrawals, total);
+        setDistribution(progressAnalyticsTransfers, tvAnalyticsTransfersPercent, transfers, total);
+        setDistribution(progressAnalyticsPayments, tvAnalyticsPaymentsPercent, payments, total);
 
-    private void showLoading(
-            boolean loading) {
-
-        if (progressBar == null) {
-            return;
+        if (chartTransactionDistribution != null) {
+            chartTransactionDistribution.setTransactionData(deposits, withdrawals, transfers, payments);
         }
-
-
-        progressBar.setVisibility(
-                loading
-                        ? View.VISIBLE
-                        : View.GONE
-        );
     }
 
+    private void setDistribution(ProgressBar bar, TextView label,
+                                 double value, double total) {
+        int percent = total <= 0 ? 0 : (int) Math.round((value / total) * 100.0);
+        percent = Math.max(0, Math.min(100, percent));
 
-    // ==========================================================
-    // STOP REFRESH ANIMATION
-    // ==========================================================
+        if (bar != null) {
+            bar.setMax(100);
+            bar.setProgress(percent);
+        }
+        if (label != null) {
+            label.setText(percent + "%");
+        }
+    }
+
+    private void updateAmountAnalytics(double deposits,
+                                       double withdrawals,
+                                       double transfers,
+                                       double payments) {
+        if (chartFinancialVolume != null) {
+            chartFinancialVolume.setFinancialData(deposits, withdrawals, transfers, payments);
+        }
+    }
+
+    private double nonNegative(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            return 0.0;
+        }
+        return Math.max(0.0, value);
+    }
+
+    private String formatAmount(double amount) {
+        return "₹ " + String.format(Locale.getDefault(), "%,.2f", amount);
+    }
+
+    private void showLoading(boolean loading) {
+        if (progressBar != null) {
+            progressBar.setVisibility(loading ? View.VISIBLE : View.GONE);
+        }
+    }
 
     private void stopRefreshing() {
-
         if (swipeRefreshLayout != null) {
-
-            swipeRefreshLayout.setRefreshing(
-                    false
-            );
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
-
-
-    // ==========================================================
-    // AUTO REFRESH WHEN RETURNING
-    // ==========================================================
 
     @Override
     protected void onResume() {
-
         super.onResume();
 
-
         if (firstResume) {
-
             firstResume = false;
-
             return;
         }
-
 
         loadAdminDashboard();
     }
 
-
-    // ==========================================================
-    // CLEANUP
-    // ==========================================================
-
     @Override
     protected void onDestroy() {
-
-        if (swipeRefreshLayout != null) {
-
-            swipeRefreshLayout.setOnRefreshListener(
-                    null
-            );
+        if (dashboardCall != null) {
+            dashboardCall.cancel();
         }
-
-
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(null);
+        }
         super.onDestroy();
     }
 }

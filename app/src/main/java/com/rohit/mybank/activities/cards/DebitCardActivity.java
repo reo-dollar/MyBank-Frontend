@@ -385,22 +385,9 @@ public class DebitCardActivity extends AppCompatActivity {
         );
 
 
-        // =====================================================
-        // IMPORTANT
-        // =====================================================
-        //
-        // DO NOT USE:
-        //
-        // apiService.getMyDebitCard()
-        //
-        // Use:
-        //
-        // apiService.getMyDebitCardDetails()
-        //
-        // =====================================================
-
-        debitCardCall =
-                apiService.getMyDebitCard();
+        // The current backend exposes GET /api/debit-cards/my.
+        // This endpoint already returns the card details needed here.
+        debitCardCall = apiService.getMyDebitCard();
 
 
         // -----------------------------------------------------
@@ -579,10 +566,6 @@ public class DebitCardActivity extends AppCompatActivity {
                         )
                 );
 
-                Log.d(
-                        TAG,
-                        "Full card number displayed."
-                );
             }
         }
 
@@ -593,33 +576,9 @@ public class DebitCardActivity extends AppCompatActivity {
 
         if (tvCardCvv != null) {
 
-            String cvv =
-                    card.getCvv();
-
-
-            if (cvv == null
-                    || cvv.trim().isEmpty()) {
-
-                tvCardCvv.setText(
-                        "---"
-                );
-
-                Log.w(
-                        TAG,
-                        "CVV is NULL or EMPTY."
-                );
-
-            } else {
-
-                tvCardCvv.setText(
-                        cvv.trim()
-                );
-
-                Log.d(
-                        TAG,
-                        "CVV displayed."
-                );
-            }
+            // Never display or log the actual CVV in the app.
+            // Production systems should not return CVV from the API.
+            tvCardCvv.setText("Hidden for security");
         }
 
 

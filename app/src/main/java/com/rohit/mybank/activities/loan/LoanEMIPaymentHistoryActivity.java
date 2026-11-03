@@ -2,7 +2,6 @@ package com.rohit.mybank.activities.loan;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +36,6 @@ public class LoanEMIPaymentHistoryActivity
     // =========================================================
     // VIEWS
     // =========================================================
-
-    private ImageButton btnBack;
 
     private TextView tvTitle;
     private TextView tvLoanNumber;
@@ -180,10 +177,6 @@ public class LoanEMIPaymentHistoryActivity
 
     private void initializeViews() {
 
-        btnBack =
-                findViewById(
-                        R.id.btnBack
-                );
 
         tvTitle =
                 findViewById(
@@ -220,12 +213,6 @@ public class LoanEMIPaymentHistoryActivity
         // SAFETY CHECK
         // -----------------------------------------------------
 
-        if (btnBack == null) {
-
-            throw new IllegalStateException(
-                    "btnBack is missing from activity_loan_payment_history.xml"
-            );
-        }
 
         if (tvTitle == null) {
 
@@ -278,14 +265,6 @@ public class LoanEMIPaymentHistoryActivity
                 "EMI Payment History"
         );
 
-
-        // -----------------------------------------------------
-        // BACK BUTTON
-        // -----------------------------------------------------
-
-        btnBack.setOnClickListener(
-                v -> finish()
-        );
     }
 
 

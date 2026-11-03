@@ -1,6 +1,7 @@
 package com.rohit.mybank.activities.qr;
 
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -966,13 +967,9 @@ public class QrPaymentReviewActivity
                                 restoreContinueButton();
 
 
-                                Toast.makeText(
-                                        QrPaymentReviewActivity.this,
-                                        getHttpErrorMessage(
-                                                response
-                                        ),
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                showPaymentErrorDialog(
+                                        getHttpErrorMessage(response)
+                                );
                             }
 
 
@@ -988,14 +985,13 @@ public class QrPaymentReviewActivity
                                 restoreContinueButton();
 
 
-                                Toast.makeText(
-                                        QrPaymentReviewActivity.this,
-                                        "Payment failed.\n"
-                                                + getNetworkErrorMessage(
-                                                throwable
-                                        ),
-                                        Toast.LENGTH_LONG
-                                ).show();
+                                if (call.isCanceled()) {
+                                    return;
+                                }
+
+                                showPaymentErrorDialog(
+                                        getNetworkErrorMessage(throwable)
+                                );
                             }
                         }
                 );
@@ -1238,102 +1234,112 @@ public class QrPaymentReviewActivity
     private String getHttpErrorMessage(
             Response<?> response
     ) {
+        String fallback;
 
         if (response == null) {
-
-            return "Payment failed.";
+            return "Unable to complete the QR payment. Please try again.";
         }
-
-
-        // =====================================================
-        // TRY BACKEND JSON MESSAGE
-        // =====================================================
-
-        try {
-
-            if (response.errorBody() != null) {
-
-                String errorJson =
-                        response.errorBody()
-                                .string();
-
-
-                if (
-                        errorJson != null
-                                && !errorJson.trim().isEmpty()
-                ) {
-
-                    JSONObject object =
-                            new JSONObject(
-                                    errorJson
-                            );
-
-
-                    String message =
-                            object.optString(
-                                    "message",
-                                    ""
-                            );
-
-
-                    if (
-                            message != null
-                                    && !message.trim().isEmpty()
-                    ) {
-
-                        return message;
-                    }
-                }
-            }
-
-        } catch (Exception ignored) {
-
-            // Fall through to generic message.
-        }
-
-
-        // =====================================================
-        // STATUS-BASED FALLBACK
-        // =====================================================
 
         switch (response.code()) {
-
             case 400:
-
-                return "Payment request was rejected.";
-
-
+                fallback = "Payment request was rejected.";
+                break;
             case 401:
-
-                return "Your session has expired. Please log in again.";
-
-
+                fallback = "Your session has expired. Please log in again.";
+                break;
             case 403:
-
-                return "You are not authorized to make this payment.";
-
-
+                fallback = "You are not authorized to make this payment.";
+                break;
             case 404:
-
-                return "Payment recipient could not be found.";
-
-
+                fallback = "Payment recipient could not be found.";
+                break;
             case 409:
-
-                return "Payment could not be completed.";
-
-
+                fallback = "Payment could not be completed.";
+                break;
             case 500:
-
-                return "Bank server error. Please try again.";
-
-
+                fallback = "Bank server error. Please try again.";
+                break;
             default:
-
-                return "Payment failed. Please try again.";
+                fallback = "Payment failed. Please try again.";
+                break;
         }
+
+        try {
+            if (response.errorBody() != null) {
+                String errorBody = response.errorBody().string();
+                String backendMessage = extractBackendMessage(errorBody);
+
+                if (backendMessage != null && !backendMessage.trim().isEmpty()) {
+                    return normalizePaymentError(backendMessage);
+                }
+            }
+        } catch (Exception ignored) {
+            // Use the status-specific fallback if the response body cannot be read.
+        }
+
+        return fallback;
     }
 
+    private String extractBackendMessage(String rawBody) {
+        if (rawBody == null || rawBody.trim().isEmpty()) {
+            return null;
+        }
+
+        String body = rawBody.trim();
+
+        try {
+            JSONObject object = new JSONObject(body);
+            String[] keys = {"message", "error", "detail", "description"};
+
+            for (String key : keys) {
+                String value = object.optString(key, "").trim();
+                if (!value.isEmpty() && !"null".equalsIgnoreCase(value)) {
+                    return value;
+                }
+            }
+        } catch (Exception ignored) {
+            // Backend may return plain text instead of JSON.
+        }
+
+        if (!body.startsWith("{") && !body.startsWith("[")) {
+            return body;
+        }
+
+        return null;
+    }
+
+    private String normalizePaymentError(String message) {
+        if (message == null || message.trim().isEmpty()) {
+            return "Payment failed. Please try again.";
+        }
+
+        String normalized = message.trim();
+        String lower = normalized.toLowerCase(java.util.Locale.ROOT);
+
+        if (lower.contains("insufficient balance")
+                || lower.contains("insufficient account balance")
+                || lower.contains("not enough balance")
+                || lower.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        if ("null".equalsIgnoreCase(normalized)) {
+            return "Payment failed. Please try again.";
+        }
+
+        return normalized;
+    }
+
+    private void showPaymentErrorDialog(String message) {
+        String safeMessage = normalizePaymentError(message);
+
+        new AlertDialog.Builder(QrPaymentReviewActivity.this)
+                .setTitle("Payment Failed")
+                .setMessage(safeMessage)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 
     // =========================================================
     // NETWORK ERROR MESSAGE
@@ -1342,28 +1348,7 @@ public class QrPaymentReviewActivity
     private String getNetworkErrorMessage(
             Throwable throwable
     ) {
-
-        if (
-                throwable == null
-                        || throwable.getMessage() == null
-        ) {
-
-            return "Unable to connect to the bank server.";
-        }
-
-
-        String message =
-                throwable.getMessage()
-                        .trim();
-
-
-        if (message.isEmpty()) {
-
-            return "Unable to connect to the bank server.";
-        }
-
-
-        return message;
+        return "Unable to connect to the bank server. Please check your internet connection and try again.";
     }
 
 

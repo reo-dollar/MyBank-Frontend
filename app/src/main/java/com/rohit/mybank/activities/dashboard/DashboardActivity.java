@@ -404,16 +404,20 @@ public class DashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
+
+        if (bottomNavigation != null) {
+            bottomNavigation.setSelectedItemId(R.id.nav_home);
+        }
 
         setGreeting();
 
         if (dashboardRepository != null) {
-
             loadDashboard();
         }
+
     }
+
 
 
     // =========================================================

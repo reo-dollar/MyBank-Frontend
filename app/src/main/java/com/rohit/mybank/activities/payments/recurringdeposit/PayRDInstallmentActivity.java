@@ -1,5 +1,6 @@
 package com.rohit.mybank.activities.payments.recurringdeposit;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -653,118 +654,103 @@ public class PayRDInstallmentActivity
     private void showServerError(
             Response<RDResponse> response
     ) {
-
-
-        String errorMessage =
-                "Unable to pay RD installment.";
-
+        String serverMessage = "";
 
         try {
-
-            if (response.errorBody()
-                    != null) {
-
-                String serverError =
-                        response.errorBody()
-                                .string();
-
-
-                if (!TextUtils.isEmpty(
-                        serverError
-                )) {
-
-                    errorMessage =
-                            serverError;
-                }
+            if (response.errorBody() != null) {
+                serverMessage = response.errorBody().string();
             }
-
-        } catch (Exception e) {
-
-            errorMessage =
-                    "Unable to read server error.";
+        } catch (Exception ignored) {
+            // Fall back to a status-specific message below.
         }
 
+        String extractedMessage = extractServerMessage(serverMessage);
+        String displayMessage = normalizePaymentError(extractedMessage);
 
-        // =====================================================
-        // STATUS-SPECIFIC MESSAGE
-        // =====================================================
-
-        String statusMessage;
-
-
-        switch (
-                response.code()
-        ) {
-
-            case 400:
-
-                statusMessage =
-                        "Invalid payment request.";
-
-                break;
-
-
-            case 401:
-
-                statusMessage =
-                        "Session expired. Please login again.";
-
-                break;
-
-
-            case 403:
-
-                statusMessage =
-                        "You are not authorized to make this payment.";
-
-                break;
-
-
-            case 404:
-
-                statusMessage =
-                        "RD account was not found.";
-
-                break;
-
-
-            case 409:
-
-                statusMessage =
-                        "This installment cannot be paid right now.";
-
-                break;
-
-
-            case 500:
-
-                statusMessage =
-                        "Server error while processing the RD payment.";
-
-                break;
-
-
-            default:
-
-                statusMessage =
-                        "Payment request failed.";
+        if (TextUtils.isEmpty(displayMessage)) {
+            switch (response.code()) {
+                case 400:
+                    displayMessage = "Invalid payment request. Please check the details and try again.";
+                    break;
+                case 401:
+                    displayMessage = "Session expired. Please log in again.";
+                    break;
+                case 403:
+                    displayMessage = "You are not authorized to make this payment.";
+                    break;
+                case 404:
+                    displayMessage = "RD account was not found.";
+                    break;
+                case 409:
+                    displayMessage = "This installment cannot be paid right now.";
+                    break;
+                case 500:
+                    displayMessage = "Server error while processing the RD payment.";
+                    break;
+                default:
+                    displayMessage = "Unable to pay the RD installment. Please try again.";
+                    break;
+            }
         }
 
-
-        Toast.makeText(
-                PayRDInstallmentActivity.this,
-
-                "HTTP "
-                        + response.code()
-                        + "\n\n"
-                        + statusMessage
-                        + "\n\n"
-                        + errorMessage,
-
-                Toast.LENGTH_LONG
-        ).show();
+        new AlertDialog.Builder(PayRDInstallmentActivity.this)
+                .setTitle("RD Installment Payment Failed")
+                .setMessage(displayMessage)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
+    private String extractServerMessage(String rawBody) {
+        if (TextUtils.isEmpty(rawBody)) {
+            return "";
+        }
+
+        String body = rawBody.trim();
+
+        try {
+            org.json.JSONObject json = new org.json.JSONObject(body);
+            String[] keys = {"message", "error", "detail", "description"};
+
+            for (String key : keys) {
+                String value = json.optString(key, "").trim();
+                if (!TextUtils.isEmpty(value)
+                        && !"null".equalsIgnoreCase(value)) {
+                    return value;
+                }
+            }
+        } catch (org.json.JSONException ignored) {
+            // Server may return plain text instead of JSON.
+        }
+
+        if (!body.startsWith("{") && !body.startsWith("[")) {
+            return body;
+        }
+
+        return "";
+    }
+
+    private String normalizePaymentError(String message) {
+        if (TextUtils.isEmpty(message)) {
+            return "";
+        }
+
+        String normalized = message.trim();
+        String lower = normalized.toLowerCase(java.util.Locale.ROOT);
+
+        if (lower.contains("insufficient balance")
+                || lower.contains("insufficient account balance")
+                || lower.contains("not enough balance")
+                || lower.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        if ("null".equalsIgnoreCase(normalized)) {
+            return "";
+        }
+
+        return normalized;
+    }
 
     // =========================================================
     // SAFE VALUE

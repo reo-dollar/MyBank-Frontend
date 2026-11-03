@@ -25,6 +25,12 @@ import com.rohit.mybank.model.electricity.ElectricityBillResponse;
 import com.rohit.mybank.repository.ElectricityBillRepository;
 import com.rohit.mybank.utils.PaymentSecurityHelper;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.Locale;
+
 public class ElectricityBillActivity extends AppCompatActivity {
 
     // =====================================================
@@ -587,11 +593,9 @@ public class ElectricityBillActivity extends AppCompatActivity {
 
                         if (!response.isSuccessful()) {
 
-                            Toast.makeText(
-                                    ElectricityBillActivity.this,
-                                    "HTTP Error : " + response.code(),
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            String errorMessage = extractPaymentError(response);
+
+                            showPaymentErrorDialog(errorMessage);
 
                             return;
 
@@ -599,11 +603,9 @@ public class ElectricityBillActivity extends AppCompatActivity {
 
                         if (response.body() == null) {
 
-                            Toast.makeText(
-                                    ElectricityBillActivity.this,
-                                    "Empty server response.",
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            showPaymentErrorDialog(
+                                    "Unable to process electricity bill payment. Please try again."
+                            );
 
                             return;
 
@@ -620,11 +622,9 @@ public class ElectricityBillActivity extends AppCompatActivity {
 
                         } else {
 
-                            Toast.makeText(
-                                    ElectricityBillActivity.this,
-                                    billResponse.getMessage(),
-                                    Toast.LENGTH_LONG
-                            ).show();
+                            showPaymentErrorDialog(
+                                    normalizePaymentError(billResponse.getMessage())
+                            );
 
                         }
 
@@ -649,6 +649,136 @@ public class ElectricityBillActivity extends AppCompatActivity {
 
     }
     // =====================================================
+    // Extract and normalize payment errors from the backend
+    // =====================================================
+
+    private String extractPaymentError(
+            retrofit2.Response<?> response) {
+
+        String backendMessage = null;
+
+        try {
+            if (response.errorBody() != null) {
+                String body = response.errorBody().string();
+
+                if (body != null && !body.trim().isEmpty()) {
+                    backendMessage = parseErrorMessage(body.trim());
+                }
+            }
+        } catch (IOException ignored) {
+            // Use a safe fallback if the error body cannot be read.
+        }
+
+        if (backendMessage == null || backendMessage.trim().isEmpty()) {
+            return "Unable to process electricity bill payment. Please try again.";
+        }
+
+        String normalized = backendMessage.trim().toLowerCase(Locale.ROOT);
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient funds")
+                || normalized.contains("not enough balance")
+                || normalized.contains("not enough funds")
+                || normalized.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        // Do not expose backend exception details or stack traces to customers.
+        if (normalized.contains("internal server error")
+                || normalized.contains("server error")
+                || normalized.contains("exception")
+                || normalized.contains("stacktrace")) {
+            return "Unable to process electricity bill payment. Please try again.";
+        }
+
+        // Return known business messages, but avoid raw HTTP status codes.
+        return backendMessage;
+    }
+
+    private String parseErrorMessage(String body) {
+
+        // Some APIs return a plain-text error instead of JSON.
+        if (!body.startsWith("{")) {
+            return body;
+        }
+
+        try {
+            JSONObject json = new JSONObject(body);
+
+            String[] messageKeys = {
+                    "message",
+                    "error",
+                    "detail",
+                    "description"
+            };
+
+            for (String key : messageKeys) {
+                if (json.has(key) && !json.isNull(key)) {
+                    String value = json.optString(key, "").trim();
+
+                    if (!value.isEmpty()) {
+                        return value;
+                    }
+                }
+            }
+        } catch (JSONException ignored) {
+            // Use a safe fallback below.
+        }
+
+        return null;
+    }
+
+    // =====================================================
+    // =====================================================
+    // Normalize payment error messages
+    // =====================================================
+
+    private String normalizePaymentError(String message) {
+
+        if (message == null || message.trim().isEmpty()) {
+            return "Unable to process electricity bill payment. Please try again.";
+        }
+
+        String normalized = message.trim().toLowerCase(Locale.ROOT);
+
+        if (normalized.contains("insufficient balance")
+                || normalized.contains("insufficient funds")
+                || normalized.contains("not enough balance")
+                || normalized.contains("not enough funds")
+                || normalized.contains("low balance")) {
+            return "Insufficient balance";
+        }
+
+        if (normalized.contains("internal server error")
+                || normalized.contains("server error")
+                || normalized.contains("stacktrace")
+                || normalized.contains("exception")) {
+            return "Unable to process electricity bill payment. Please try again.";
+        }
+
+        return message.trim();
+    }
+
+    // =====================================================
+    // Persistent Payment Error Dialog
+    // =====================================================
+
+    private void showPaymentErrorDialog(String message) {
+
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        String safeMessage = normalizePaymentError(message);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Payment Failed")
+                .setMessage(safeMessage)
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
 // Payment Success Dialog
 // =====================================================
 
